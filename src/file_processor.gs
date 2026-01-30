@@ -11,11 +11,13 @@ function processFolderCSVs() {
   const processedFolder = DriveApp.getFolderById(CONFIG.PROCESSED_FOLDER_ID);
   const files = folder.getFilesByType(MimeType.CSV);
   
-  // Si Caixabank descarga en .txt o .tsv, añade esto:
-  // || files.getFilesByType(MimeType.PLAIN_TEXT)
-  
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CONFIG.SHEET_NAME);
-  const existingIds = getExistingTransactionIds(sheet);
+  
+  // 1. Obtenemos los Hashes existentes (Columna J) para no duplicar
+  const existingHashes = getExistingHashes(sheet);
+  
+  // 2. Obtenemos el último número de secuencia TRN (Columna I) para seguir contando
+  let nextSequenceNum = getNextTrnNumber(sheet);
   
   let totalNewRows = 0;
 
@@ -44,18 +46,30 @@ function processFolderCSVs() {
 
     // --- BUCLE DE INSERCIÓN GENÉRICO ---
     parsedTransactions.forEach(trn => {
-      if (!isDuplicate(trn.id, existingIds)) {
-        // Pasamos el nombre del banco (source) para que utils sepa qué poner en Método de Pago
-        const rowsToInsert = processTransactionLogic(trn, trn.id, trn.sourceBank);
+      // Chequeamos contra el HASH (Col J), no contra el TRN
+      if (!isDuplicate(trn.id, existingHashes)) {
+        
+        // Pasamos el número de secuencia actual a la lógica
+        const rowsToInsert = processTransactionLogic(trn, trn.id, trn.sourceBank, nextSequenceNum);
+        
         rowsToInsert.forEach(newRow => {
           sheet.appendRow(newRow);
+          // Si hemos insertado fila, añadimos el hash a la lista en memoria para evitar
+          // duplicados dentro del mismo archivo CSV que se está procesando ahora
+          existingHashes.push(newRow[9]); 
           totalNewRows++;
         });
+
+        // Incrementamos el contador de secuencia según cuántas filas hemos insertado (1 o 2)
+        nextSequenceNum += rowsToInsert.length;
       }
     });
     
     file.moveTo(processedFolder);
   }
+  
+  Logger.log("Proceso terminado. Filas añadidas: " + totalNewRows);
+}
   
   Logger.log("Proceso terminado. Filas añadidas: " + totalNewRows);
 }

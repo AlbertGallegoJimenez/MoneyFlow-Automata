@@ -70,16 +70,13 @@ function processFolderCSVs() {
   
   Logger.log("Proceso terminado. Filas añadidas: " + totalNewRows);
 }
-  
-  Logger.log("Proceso terminado. Filas añadidas: " + totalNewRows);
-}
 
 // ==========================================
 // PARSER 1: TRADE REPUBLIC
 // ==========================================
 function parseTradeRepublicCSV(csvString) {
   const csvData = Utilities.parseCsv(csvString, ',');
-  const transactions = [];
+  const rawTransactions = [];
 
   for (let i = 1; i < csvData.length; i++) {
     const row = csvData[i];
@@ -88,16 +85,24 @@ function parseTradeRepublicCSV(csvString) {
     if (row[3] === "yes" || !row[2]) continue;
     if (row[1].includes(MY_NAMES[0])) continue; // Filtro auto-transferencia
 
-    transactions.push({
+    rawTransactions.push({
       bookingDate: row[0], // Ya viene en YYYY-MM-DD
       title: row[1],
-      amount: row[2],
+      amount: parseFloat(row[2]),
       isSpecial: row[4], 
       sourceBank: "Trade Republic",
-      id: Utilities.base64Encode(row[0] + row[1] + row[2] + "TR")
+      originalAmountStr: row[2]
     });
   }
-  return transactions;
+  
+  // Filtro de pares de pre-autorización
+  const finalTransactions = filterPreAuthPairs(rawTransactions);
+  
+  // Generación de IDs
+  return finalTransactions.map(t => {
+    t.id = Utilities.base64Encode(t.bookingDate + t.title + t.originalAmountStr + "TR");
+    return t;
+  });
 }
 
 // ==========================================

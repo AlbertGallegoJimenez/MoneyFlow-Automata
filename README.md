@@ -26,6 +26,15 @@ Implementa algoritmos de limpieza para evitar falsos positivos en el análisis d
 - **Filtro de Pre-autorizaciones (Caixabank):** Detecta y elimina pares de transacciones en el mismo día que se anulan matemáticamente (ej. Parking cobrado y devuelto: `-6.50` y `+6.50`).
 - **Filtro de Transferencias Propias:** Ignora movimientos de "Nómina" salientes o transferencias con el nombre del titular para evitar duplicar ingresos/gastos entre cuentas propias.
 
+
+## 📊 Dashboard de Power BI
+
+El dashboard integra los datos procesados desde Google Sheets para ofrecer visualizaciones en tiempo real de las finanzas personales:
+
+![MoneyFlow Dashboard](powerbi/screens/overview.jpeg)
+
+**Archivo incluido:** [MoneyFlow_Dashboard.pbix](powerbi/MoneyFlow_Dashboard.pbix)
+
 ---
 
 ## 🛠️ Stack Tecnológico
@@ -43,3 +52,8 @@ Implementa algoritmos de limpieza para evitar falsos positivos en el análisis d
 ├── file_processor.gs   # Orquestador: Lee Drive, detecta banco y parsea CSVs.
 ├── utils.gs            # Lógica de negocio: Generación de filas y reglas contables.
 └── config.example.gs   # Plantilla de configuración.
+
+/powerbi
+├── MoneyFlow_Dashboard.pbix  # Dashboard interactivo de Power BI.
+└── screens/
+    └── overview.jpeg         # Captura del dashboard.

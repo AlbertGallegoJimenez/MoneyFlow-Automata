@@ -172,10 +172,16 @@ function parseCaixabankCSV(rawString) {
 }
 
 /**
- * Elimina transacciones que se anulan mutuamente en el mismo día (mismo concepto, importe inverso)
+ * Elimina transacciones que se anulan mutuamente en el mismo día
+ * Soporta dos casos:
+ * 1. Trade Republic: Mismo concepto + importes inversos
+ * 2. Caixabank: Concepto "DEVOLUCIO COMPRA" + importes inversos (sin importar el concepto original)
  */
 function filterPreAuthPairs(transactions) {
   const indicesToSkip = new Set();
+  
+  // Palabras clave para detectar devoluciones (case-insensitive)
+  const refundKeywords = ["devolucio compra", "devolucion compra", "devolución"];
   
   for (let i = 0; i < transactions.length; i++) {
     if (indicesToSkip.has(i)) continue;
@@ -186,12 +192,29 @@ function filterPreAuthPairs(transactions) {
       const t1 = transactions[i];
       const t2 = transactions[j];
 
-      // Condición: Misma fecha, Mismo título exacto, Importe suma 0 (ej: -6.50 y +6.50)
-      if (t1.bookingDate === t2.bookingDate && 
-          t1.title === t2.title && 
-          (Math.abs(t1.amount + t2.amount) < 0.01)) { // Margen error flotante pequeño
-        
-        Logger.log(`Detectado par pre-autorización (Ignorando): ${t1.title} ${t1.amount} / ${t2.amount}`);
+      // Verificar si los importes se cancelan (suma 0)
+      const amountsCancel = Math.abs(t1.amount + t2.amount) < 0.01;
+      
+      // Verificar si están en la misma fecha
+      const sameDate = t1.bookingDate === t2.bookingDate;
+      
+      if (!sameDate || !amountsCancel) continue;
+
+      // CASO 1: Mismo concepto (Trade Republic y otros)
+      const sameConcept = t1.title === t2.title;
+      
+      // CASO 2: Uno de los conceptos contiene palabra clave de devolución (Caixabank)
+      const t1IsRefund = refundKeywords.some(keyword => 
+        t1.title.toLowerCase().includes(keyword)
+      );
+      const t2IsRefund = refundKeywords.some(keyword => 
+        t2.title.toLowerCase().includes(keyword)
+      );
+      const hasRefund = t1IsRefund || t2IsRefund;
+      
+      // Si cumple alguno de los dos casos, marcar como par a eliminar
+      if (sameConcept || hasRefund) {
+        Logger.log(`Detectado par pre-autorización (Ignorando): "${t1.title}" ${t1.amount} / "${t2.title}" ${t2.amount}`);
         indicesToSkip.add(i);
         indicesToSkip.add(j);
         break; // Ya encontramos su pareja, dejamos de buscar para este 'i'

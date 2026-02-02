@@ -76,7 +76,7 @@ function processTransactionLogic(trn, trnHash, sourceBank, currentSequenceNum) {
       "Cuenta Efectivo",                            // Campo Método de Pago
       "False",                                      // Campo ¿Gasto fijo?
       visualId1,                                    // Campo ID Transacción (Visual: TRNxxxx)
-      trnHash + "_INC"                              // Campo Huella Digital (Oculto: Hash)
+      trnHash + "_INC",                              // Campo Huella Digital (Oculto: Hash)
       ""                                            // Campo Concepto Original Banco
     ]);
     
@@ -91,7 +91,7 @@ function processTransactionLogic(trn, trnHash, sourceBank, currentSequenceNum) {
       "Cuenta Efectivo",                            // Campo Método de Pago
       "False",                                      // Campo ¿Gasto fijo?
       visualId2,                                    // Campo ID Transacción (Visual: TRNxxxx+1)
-      trnHash + "_INV"                              // Campo Huella Digital (Oculto: Hash)
+      trnHash + "_INV",                              // Campo Huella Digital (Oculto: Hash)
       ""                                            // Campo Concepto Original Banco
     ]);
 
@@ -136,25 +136,46 @@ function mapConceptToCategory(concept) {
   const mappings = [
     // Alimentación
     ["condis", "Alimentación", "Supermercado"],
+    ["dia", "Alimentación", "Supermercado"],
     ["mercadona", "Alimentación", "Supermercado"],
     ["carrefour", "Alimentación", "Supermercado"],
+    ["caprabo", "Alimentación", "Supermercado"],
     ["lidl", "Alimentación", "Supermercado"],
-    ["aldi", "Alimentación", "Supermercado"],
+    ["alcampo", "Alimentación", "Supermercado"],
+    ["supermerc", "Alimentación", "Supermercado"],
+    ["just eat", "Alimentación", "Delivery"],
     
     // Transporte
-    ["repsol", "Transporte", "Combustible"],
-    ["cepsa", "Transporte", "Combustible"],
-    ["shell", "Transporte", "Combustible"],
-    
+    ["repsol", "Transporte", "Gasolina"],
+    ["cepsa", "Transporte", "Gasolina"],
+    ["gm oil", "Transporte", "Gasolina"],
+    ["cabify", "Transporte", "Taxi/Cabify/Uber"],
+    ["uber", "Transporte", "Taxi/Cabify/Uber"],
+    ["tmb", "Transporte", "Transporte público"],
+
     // Salud
     ["farmacia", "Salud", "Farmacia"],
-    
+    ["activ fitness esp", "Salud", "Gimnasio"],
+    ["barberia", "Salud", "Peluquería"],
+
     // Ocio
-    ["netflix", "Ocio", "Streaming"],
-    ["spotify", "Ocio", "Streaming"],
-    ["hbo", "Ocio", "Streaming"],
+    ["netflix", "Ocio", "Suscripción streaming"],
+    ["spotify", "Ocio", "Suscripción streaming"],
+    ["hbo", "Ocio", "Suscripción streaming"],
+    ["apple.com/bill", "Ocio", "Suscripción streaming"],
+    ["cine", "Ocio", "Cine"],
+    ["playstation", "Ocio", "Videojuegos"],
+    ["vivari", "Ocio", "Bar (cervezas, cafés, etc.)"],
     
-    // Añade más mapeos aquí...
+    // Ahorro e Inversión
+    ["core s&p 500", "Inversión y ahorro", "ETFs"],
+    ["interés", "Recompensas/Cashback", "Cuenta remunerada TR"],
+
+    // Salario
+    ["nomina (trf)", "Salario", "Nomina Mensual"],
+
+    // Otros
+    ["bizum", "Otros", "Bizum"]
   ];
   
   // Buscar coincidencia en el concepto

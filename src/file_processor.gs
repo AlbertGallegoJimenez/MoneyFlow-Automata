@@ -37,7 +37,7 @@ function processFolderCSVs() {
     } else if (csvContent.includes("Concepte") && csvContent.includes("Saldo")) {
       // 2. CAIXABANK (Busca cabeceras típicas aunque el orden varíe)
       Logger.log("Detectado formato: Caixabank");
-      parsedTransactions = parseBancoCatalanCSV(csvContent);
+      parsedTransactions = parseCaixabankCSV(csvContent);
       
     } else {
       Logger.log("Formato desconocido en archivo: " + file.getName());
@@ -108,7 +108,7 @@ function parseTradeRepublicCSV(csvString) {
 // ==========================================
 // PARSER 2: CAIXABANK
 // ==========================================
-function parseBancoCatalanCSV(rawString) {
+function parseCaixabankCSV(rawString) {
   // A veces vienen separados por tabuladores (\t) o punto y coma (;)
   // Detectamos el separador de la primera línea
   const delimiter = rawString.indexOf('\t') !== -1 ? '\t' : ';';

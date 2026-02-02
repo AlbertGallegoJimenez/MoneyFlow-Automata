@@ -44,6 +44,12 @@ function processFolderCSVs() {
       continue;
     }
 
+    // --- ORDENAMIENTO CRONOLÓGICO ---
+    // Ordenar por fecha (de más antigua a más reciente)
+    parsedTransactions.sort((a, b) => {
+      return a.bookingDate.localeCompare(b.bookingDate);
+    });
+
     // --- BUCLE DE INSERCIÓN GENÉRICO ---
     parsedTransactions.forEach(trn => {
       // Chequeamos contra el HASH (Col J), no contra el TRN

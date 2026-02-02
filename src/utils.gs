@@ -77,6 +77,7 @@ function processTransactionLogic(trn, trnHash, sourceBank, currentSequenceNum) {
       "False",                                      // Campo ¿Gasto fijo?
       visualId1,                                    // Campo ID Transacción (Visual: TRNxxxx)
       trnHash + "_INC"                              // Campo Huella Digital (Oculto: Hash)
+      ""                                            // Campo Concepto Original Banco
     ]);
     
     // FILA 2: La Inversión (Salida)
@@ -91,6 +92,7 @@ function processTransactionLogic(trn, trnHash, sourceBank, currentSequenceNum) {
       "False",                                      // Campo ¿Gasto fijo?
       visualId2,                                    // Campo ID Transacción (Visual: TRNxxxx+1)
       trnHash + "_INV"                              // Campo Huella Digital (Oculto: Hash)
+      ""                                            // Campo Concepto Original Banco
     ]);
 
   } else {
@@ -98,19 +100,78 @@ function processTransactionLogic(trn, trnHash, sourceBank, currentSequenceNum) {
     
     const tipo = parseFloat(trn.amount) < 0 ? "Gasto" : "Ingreso";
     
+    // Intentar mapear el concepto a una categoría conocida
+    const mappedCategory = mapConceptToCategory(trn.title);
+    
     rowsToInsert.push([
       trn.bookingDate,                              // Campo Fecha
       tipo,                                         // Campo Tipo de Transacción
-      "Pendiente Categorizar",                      // Campo Categoría Principal
-      "Pendiente Categorizar",                      // Campo Subcategoría
-      trn.title,                                    // Campo Descripción
+      mappedCategory.categoria,                     // Campo Categoría Principal
+      mappedCategory.subcategoria,                  // Campo Subcategoría
+      "",                                           // Campo Descripción
       amount,                                       // Campo Valor (€)
       paymentMethod,                                // Campo Método de Pago
       "False",                                      // Campo ¿Gasto fijo?
       visualId1,                                    // Campo ID Transacción (Visual: TRNxxxx)
-      trnHash                                       // Campo Huella Digital (Oculto: Hash)
+      trnHash,                                      // Campo Huella Digital (Oculto: Hash)
+      trn.title                                     // Campo Concepto Original Banco
     ]);
   }
   
   return rowsToInsert;
+}
+
+/**
+ * Mapea el concepto bancario a categoría y subcategoría
+ * Busca coincidencias parciales (case-insensitive) en el texto del concepto
+ * @param {string} concept - El concepto/descripción de la transacción
+ * @returns {object} - {categoria: string, subcategoria: string}
+ */
+function mapConceptToCategory(concept) {
+  // Convertir a minúsculas para comparación insensible a mayúsculas
+  const conceptLower = concept.toLowerCase();
+  
+  // --- DICCIONARIO DE MAPEO ---
+  // Formato: ["palabra clave", "Categoría Principal", "Subcategoría"]
+  const mappings = [
+    // Alimentación
+    ["condis", "Alimentación", "Supermercado"],
+    ["mercadona", "Alimentación", "Supermercado"],
+    ["carrefour", "Alimentación", "Supermercado"],
+    ["lidl", "Alimentación", "Supermercado"],
+    ["aldi", "Alimentación", "Supermercado"],
+    
+    // Transporte
+    ["repsol", "Transporte", "Combustible"],
+    ["cepsa", "Transporte", "Combustible"],
+    ["shell", "Transporte", "Combustible"],
+    
+    // Salud
+    ["farmacia", "Salud", "Farmacia"],
+    
+    // Ocio
+    ["netflix", "Ocio", "Streaming"],
+    ["spotify", "Ocio", "Streaming"],
+    ["hbo", "Ocio", "Streaming"],
+    
+    // Añade más mapeos aquí...
+  ];
+  
+  // Buscar coincidencia en el concepto
+  for (let i = 0; i < mappings.length; i++) {
+    const [keyword, categoria, subcategoria] = mappings[i];
+    
+    if (conceptLower.includes(keyword)) {
+      return {
+        categoria: categoria,
+        subcategoria: subcategoria
+      };
+    }
+  }
+  
+  // Si no hay coincidencia, devolver categoría por defecto
+  return {
+    categoria: "Pendiente Categorizar",
+    subcategoria: "Pendiente Categorizar"
+  };
 }

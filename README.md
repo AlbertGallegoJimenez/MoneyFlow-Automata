@@ -23,7 +23,7 @@ Para mantener un balance neto real, el script detecta las recompensas (*Saveback
 ### 3. Filtros de "Ruido" y Pre-autorizaciones
 Implementa algoritmos de limpieza para evitar falsos positivos en el análisis de gastos:
 - **Anti-Duplicados:** Generación de un Hash ID único (Base64) basado en `Fecha + Concepto + Importe + Banco`. Evita duplicados incluso si se sube el mismo CSV tres veces.
-- **Filtro de Pre-autorizaciones (Caixabank):** Detecta y elimina pares de transacciones en el mismo día que se anulan matemáticamente (ej. Parking cobrado y devuelto: `-6.50` y `+6.50`).
+- **Filtro de Pre-autorizaciones:** Detecta y elimina pares de transacciones en el mismo día que se anulan matemáticamente (ej. Parking cobrado y devuelto: `-6.50` y `+6.50`).
 - **Filtro de Transferencias Propias:** Ignora movimientos de "Nómina" salientes o transferencias con el nombre del titular para evitar duplicar ingresos/gastos entre cuentas propias.
 
 

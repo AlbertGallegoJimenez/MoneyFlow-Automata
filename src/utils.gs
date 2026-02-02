@@ -76,7 +76,7 @@ function processTransactionLogic(trn, trnHash, sourceBank, currentSequenceNum) {
       "Cuenta Efectivo",                            // Campo Método de Pago
       "False",                                      // Campo ¿Gasto fijo?
       visualId1,                                    // Campo ID Transacción (Visual: TRNxxxx)
-      trnHash + "_INC",                              // Campo Huella Digital (Oculto: Hash)
+      trnHash + "_INC",                             // Campo Huella Digital (Oculto: Hash)
       ""                                            // Campo Concepto Original Banco
     ]);
     
@@ -91,7 +91,7 @@ function processTransactionLogic(trn, trnHash, sourceBank, currentSequenceNum) {
       "Cuenta Efectivo",                            // Campo Método de Pago
       "False",                                      // Campo ¿Gasto fijo?
       visualId2,                                    // Campo ID Transacción (Visual: TRNxxxx+1)
-      trnHash + "_INV",                              // Campo Huella Digital (Oculto: Hash)
+      trnHash + "_INV",                             // Campo Huella Digital (Oculto: Hash)
       ""                                            // Campo Concepto Original Banco
     ]);
 

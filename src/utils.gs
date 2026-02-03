@@ -174,6 +174,9 @@ function mapConceptToCategory(concept) {
     // Salario
     ["nomina (trf)", "Salario", "Nomina Mensual"],
 
+    // Ropa y calzado
+    ["cortefiel", "Ropa y calzado", ""],
+
     // Otros
     ["bizum", "Otros", "Bizum"]
   ];

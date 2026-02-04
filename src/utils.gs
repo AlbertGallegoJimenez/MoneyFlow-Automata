@@ -144,6 +144,7 @@ function mapConceptToCategory(concept) {
     ["alcampo", "Alimentación", "Supermercado"],
     ["supermerc", "Alimentación", "Supermercado"],
     ["just eat", "Alimentación", "Delivery"],
+    ["sushi", "Alimentación", "Restaurante"],
     
     // Transporte
     ["repsol", "Transporte", "Gasolina"],
@@ -152,6 +153,10 @@ function mapConceptToCategory(concept) {
     ["cabify", "Transporte", "Taxi/Cabify/Uber"],
     ["uber", "Transporte", "Taxi/Cabify/Uber"],
     ["tmb", "Transporte", "Transporte público"],
+    ["metro barcelona", "Transporte", "Transporte público"],
+    ["residents barcelo", "Transporte", "Aparcamiento"],
+    ["itv", "Transporte", "Mantenimiento coche"],
+    ["renfe", "Transporte", "Transporte público"],
 
     // Salud
     ["farmacia", "Salud", "Farmacia"],
@@ -159,23 +164,36 @@ function mapConceptToCategory(concept) {
     ["barberia", "Salud", "Peluquería"],
 
     // Ocio
-    ["netflix", "Ocio", "Suscripción streaming"],
-    ["spotify", "Ocio", "Suscripción streaming"],
-    ["hbo", "Ocio", "Suscripción streaming"],
     ["apple.com/bill", "Ocio", "Suscripción streaming"],
+    ["pago traspasos", "Ocio", "Suscripción streaming"], // Transferencia Spotify Mar
     ["cine", "Ocio", "Cine"],
+    ["yelmo", "Ocio", "Cine"],
     ["playstation", "Ocio", "Videojuegos"],
     ["vivari", "Ocio", "Bar (cervezas, cafés, etc.)"],
+    ["ticketmaster", "Ocio", "Concierto"],
     
     // Ahorro e Inversión
     ["core s&p 500", "Inversión y ahorro", "ETFs"],
     ["interés", "Recompensas/Cashback", "Cuenta remunerada TR"],
+    ["occident", "Inversión y ahorro", "Seguro Unit Linked"],
+    ["universitat obert", "Inversión y ahorro", "Matrícula máster"],
+
+    // Vivienda
+    ["pago transferencias", "Vivienda", "Alquiler"], // Transferencia ajuda Mama
 
     // Salario
     ["nomina (trf)", "Salario", "Nomina Mensual"],
 
+    // Impuestos y multas
+    ["ajunt. de barcelon", "Impuestos y multas", "Impuesto circulación"],
+    ["impuesto renta", "Impuestos y multas", "IRPF"],
+
     // Ropa y calzado
-    ["cortefiel", "Ropa y calzado", ""],
+    ["cortefiel", "Ropa y calzado", "Ropa"],
+    ["massimo dutti", "Ropa y calzado", "Ropa"],
+
+    // Regalos
+    ["colvin", "Regalos", "Cumpleaños"],
 
     // Otros
     ["bizum", "Otros", "Bizum"]

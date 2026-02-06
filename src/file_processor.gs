@@ -155,7 +155,7 @@ function parseCaixabankCSV(rawString) {
       title: rawConcept,
       amount: amountFloat, // Guardamos como número para poder comparar
       isSpecial: "no",
-      sourceBank: "Banco Principal",
+      sourceBank: "Caixabank",
       originalAmountStr: cleanAmountStr // Para generar ID
     });
   }
@@ -166,7 +166,7 @@ function parseCaixabankCSV(rawString) {
 
   // Paso 3: Generar IDs finales
   return finalTransactions.map(t => {
-    t.id = Utilities.base64Encode(t.bookingDate + t.title + t.originalAmountStr + "BP");
+    t.id = Utilities.base64Encode(t.bookingDate + t.title + t.originalAmountStr + "CB");
     return t;
   });
 }

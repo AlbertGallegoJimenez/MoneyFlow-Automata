@@ -54,7 +54,7 @@ function processTransactionLogic(trn, trnHash, sourceBank, currentSequenceNum) {
   
   let paymentMethod = "Tarjeta/Transferencia";
   if (sourceBank === "Trade Republic") paymentMethod = "Tarjeta Débito - Trade Republic";
-  if (sourceBank === "Banco Principal") paymentMethod = "Cuenta/Tarjeta Principal";
+  if (sourceBank === "Caixabank") paymentMethod = "Domiciliación";
 
   const rowsToInsert = [];
   

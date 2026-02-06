@@ -180,6 +180,7 @@ function mapConceptToCategory(concept) {
 
     // Vivienda
     ["pago transferencias", "Vivienda", "Alquiler"], // Transferencia ajuda Mama
+    ["pagament transf", "Vivienda", "Alquiler"], // Transferencia ajuda Mama
 
     // Salario
     ["nomina (trf)", "Salario", "Nomina Mensual"],

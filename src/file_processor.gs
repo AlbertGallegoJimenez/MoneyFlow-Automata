@@ -174,8 +174,8 @@ function parseCaixabankCSV(rawString) {
 /**
  * Elimina transacciones que se anulan mutuamente en el mismo día
  * Soporta dos casos:
- * 1. Trade Republic: Mismo concepto + importes inversos
- * 2. Caixabank: Concepto "DEVOLUCIO COMPRA" + importes inversos (sin importar el concepto original)
+ * 1. Mismo concepto + importes inversos
+ * 2. Concepto "DEVOLUCIO COMPRA" + importes inversos (sin importar el concepto original)
  */
 function filterPreAuthPairs(transactions) {
   const indicesToSkip = new Set();

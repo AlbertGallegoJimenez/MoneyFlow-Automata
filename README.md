@@ -2,13 +2,15 @@
 
 > **Sistema automatizado de ingeniería de datos para finanzas personales.** > Ingesta, limpieza y normalización de transacciones bancarias (Caixabank & Trade Republic) sin dependencias de APIs de terceros.
 
-## 📋 Resumen del Proyecto
+## Resumen del Proyecto
 
 Este repositorio contiene el código fuente (Google Apps Script) para transformar una hoja de cálculo de Google en un **Data Warehouse personal**. El sistema está diseñado bajo una arquitectura de "Dropzone" en Google Drive, permitiendo la carga asíncrona de extractos bancarios en formato CSV.
 
 El objetivo es eliminar la entrada manual de datos y alimentar un Dashboard de **Power BI** con datos financieros limpios, categorizados y conciliados.
 
-## 🚀 Características "Smart"
+![alt text](diagrama_moneyflow-automata.drawio.png)
+
+## Características "Smart"
 
 ### 1. Arquitectura Multi-Banco
 El sistema detecta automáticamente el origen del archivo CSV basándose en sus cabeceras y aplica el parser correspondiente:
@@ -37,9 +39,9 @@ El dashboard integra los datos procesados desde Google Sheets para ofrecer visua
 
 ---
 
-## 🛠️ Stack Tecnológico
+## Stack Tecnológico
 
-- **ETL / Backend:** Google Apps Script (JavaScript ES6).
+- **ETL / Backend:** Google Apps Script (JavaScript).
 - **Almacenamiento:** Google Sheets & Google Drive.
 - **Visualización:** Power BI Desktop.
 - **Fuentes de Datos:** CSVs planos (Exportación web).

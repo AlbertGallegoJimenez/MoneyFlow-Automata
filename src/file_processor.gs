@@ -34,7 +34,7 @@ function processFolderCSVs() {
       Logger.log("Detectado formato: Trade Republic");
       parsedTransactions = parseTradeRepublicCSV(csvContent);
       
-    } else if (csvContent.includes("Concepte") && csvContent.includes("Saldo")) {
+    } else if (csvContent.includes("Concept") && csvContent.includes("Saldo")) {
       // 2. CAIXABANK (Busca cabeceras típicas aunque el orden varíe)
       Logger.log("Detectado formato: Caixabank");
       parsedTransactions = parseCaixabankCSV(csvContent);

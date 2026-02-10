@@ -156,6 +156,7 @@ function mapConceptToCategory(concept) {
     ["metro barcelona", "Transporte", "Transporte público"],
     ["residents barcelo", "Transporte", "Aparcamiento"],
     ["itv", "Transporte", "Mantenimiento coche"],
+    ["qualitas auto", "Transporte", "Seguro coche"],
     ["renfe", "Transporte", "Transporte público"],
 
     // Salud

@@ -54,7 +54,8 @@ function processTransactionLogic(trn, trnHash, sourceBank, currentSequenceNum) {
   
   let paymentMethod = "Tarjeta/Transferencia";
   if (sourceBank === "Trade Republic") paymentMethod = "Tarjeta Débito - Trade Republic";
-  if (sourceBank === "Caixabank") paymentMethod = "Domiciliación";
+  if (sourceBank === "Caixabank")      paymentMethod = "Domiciliación";
+  if (sourceBank === "MyInvestor")     paymentMethod = "Cuenta MyInvestor";
 
   const rowsToInsert = [];
   
@@ -171,6 +172,7 @@ function mapConceptToCategory(concept) {
     ["yelmo", "Ocio", "Cine"],
     ["playstation", "Ocio", "Videojuegos"],
     ["vivari", "Ocio", "Bar (cervezas, cafés, etc.)"],
+    ["collonut", "Ocio", "Bar (cervezas, cafés, etc.)"],
     ["ticketmaster", "Ocio", "Concierto"],
     
     // Ahorro e Inversión
@@ -196,6 +198,11 @@ function mapConceptToCategory(concept) {
 
     // Regalos
     ["colvin", "Regalos", "Cumpleaños"],
+
+    // MyInvestor - Fondo indexado
+    ["ishares",     "Inversión y ahorro", "Fondo indexado"],
+    ["sam smart",     "Inversión y ahorro", "Fondo indexado"],
+    ["promocion amigo inv", "Recompensas/Cashback", "Promoción amigo"],
 
     // Otros
     ["bizum", "Otros", "Bizum"]

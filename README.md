@@ -1,6 +1,6 @@
 # 💸 MoneyFlow-Automata: Personal FinOps Pipeline
 
-> **Sistema automatizado de ingeniería de datos para finanzas personales.** > Ingesta, limpieza y normalización de transacciones bancarias (Caixabank & Trade Republic) sin dependencias de APIs de terceros.
+> **Sistema automatizado de ingeniería de datos para finanzas personales.** > Ingesta, limpieza y normalización de transacciones bancarias (Caixabank, Trade Republic & MyInvestor) sin dependencias de APIs de terceros.
 
 ## Resumen del Proyecto
 
@@ -16,6 +16,7 @@ El objetivo es eliminar la entrada manual de datos y alimentar un Dashboard de *
 El sistema detecta automáticamente el origen del archivo CSV basándose en sus cabeceras y aplica el parser correspondiente:
 - **Trade Republic:** Procesa exportaciones (vía extensión) y gestiona decimales/fechas internacionales.
 - **Caixabank:** Normaliza el formato europeo (`-2.800,00EUR`) a flotantes estándar y limpia descripciones.
+- **MyInvestor:** Parsea el formato de exportación nativo (`Fecha de operación;Concepto;Importe;Divisa`), normaliza importes con coma decimal y mapea automáticamente fondos de inversión y promociones.
 
 ### 2. Lógica Contable de Doble Registro (Trade Republic)
 Para mantener un balance neto real, el script detecta las recompensas (*Saveback*, *Round-up*) y divide la transacción en dos:

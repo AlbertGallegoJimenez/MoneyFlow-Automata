@@ -38,6 +38,11 @@ function processFolderCSVs() {
       // 2. CAIXABANK (Busca cabeceras típicas aunque el orden varíe)
       Logger.log("Detectado formato: Caixabank");
       parsedTransactions = parseCaixabankCSV(csvContent);
+
+    } else if (csvContent.includes("Fecha de operación") && csvContent.includes("Fecha de valor")) {
+      // 3. MYINVESTOR
+      Logger.log("Detectado formato: MyInvestor");
+      parsedTransactions = parseMyInvestorCSV(csvContent);
       
     } else {
       Logger.log("Formato desconocido en archivo: " + file.getName());
@@ -167,6 +172,52 @@ function parseCaixabankCSV(rawString) {
   // Paso 3: Generar IDs finales
   return finalTransactions.map(t => {
     t.id = Utilities.base64Encode(t.bookingDate + t.title + t.originalAmountStr + "CB");
+    return t;
+  });
+}
+
+// ==========================================
+// PARSER 3: MYINVESTOR
+// ==========================================
+function parseMyInvestorCSV(rawString) {
+  // Cabeceras: Fecha de operación(0);Fecha de valor(1);Concepto(2);Importe(3);Divisa(4)
+  const csvData = Utilities.parseCsv(rawString, ';');
+  const rawTransactions = [];
+
+  for (let i = 1; i < csvData.length; i++) {
+    const row = csvData[i];
+    if (row.length < 4) continue;
+
+    const rawDate    = row[0].trim(); // "18/02/2026"
+    const rawConcept = row[2].trim();
+    const rawAmount  = row[3].trim(); // "-720" o "-499,99"
+
+    if (!rawDate || !rawConcept || !rawAmount) continue;
+
+    // Fecha: DD/MM/YYYY -> YYYY-MM-DD
+    const dateParts = rawDate.split('/');
+    const cleanDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+
+    // Importe: reemplazar coma decimal por punto
+    const cleanAmountStr = rawAmount.replace(',', '.');
+    const amountFloat = parseFloat(cleanAmountStr);
+
+    rawTransactions.push({
+      bookingDate:       cleanDate,
+      title:             rawConcept,
+      amount:            amountFloat,
+      isSpecial:         "no",
+      sourceBank:        "MyInvestor",
+      originalAmountStr: cleanAmountStr
+    });
+  }
+
+  // Filtro de pares de pre-autorización
+  const finalTransactions = filterPreAuthPairs(rawTransactions);
+
+  // Generación de IDs (sufijo "MI" para diferenciar del resto de bancos)
+  return finalTransactions.map(t => {
+    t.id = Utilities.base64Encode(t.bookingDate + t.title + t.originalAmountStr + "MI");
     return t;
   });
 }

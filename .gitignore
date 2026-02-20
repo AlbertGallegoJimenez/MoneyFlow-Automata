@@ -1,1 +1,5 @@
 src/config.gs
+src/generate_synthetic_data.py
+simulacion_gastos_anual.csv
+simulacion_gastos_anual.xlsx
+powerbi/MoneyFlow_Dashboard_simulation.pbix

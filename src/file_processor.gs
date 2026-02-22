@@ -3,7 +3,11 @@
  * Detecta automáticamente el banco (TR o Caixabank) y procesa los datos.
  */
 
-const MY_NAMES = ["ALBERT GALLEGO JIMENEZ"]; // Filtro para TR
+const MY_NAMES = [
+  "ALBERT GALLEGO JIMENEZ",
+  "Albert Revolut",
+  "Albert MyInvestor"
+]; // Filtro para TR
 const SELF_TRANSFER_CONCEPT = "nomina";      // Filtro para Caixabank (la salida a TR)
 
 function processFolderCSVs() {
@@ -94,7 +98,7 @@ function parseTradeRepublicCSV(csvString) {
     // row[0]=date, row[1]=title, row[2]=amount, row[3]=canceled, row[4]=special
     
     if (row[3] === "yes" || !row[2]) continue;
-    if (row[1].includes(MY_NAMES[0])) continue; // Filtro auto-transferencia
+    if (MY_NAMES.some(name => row[1].includes(name))) continue; // Filtro auto-transferencia
 
     rawTransactions.push({
       bookingDate: row[0], // Ya viene en YYYY-MM-DD

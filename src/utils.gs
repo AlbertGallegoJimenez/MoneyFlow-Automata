@@ -151,8 +151,8 @@ function mapConceptToCategory(concept) {
     ["repsol", "Transporte", "Gasolina"],
     ["cepsa", "Transporte", "Gasolina"],
     ["gm oil", "Transporte", "Gasolina"],
-    ["cabify", "Transporte", "Taxi/Cabify/Uber"],
-    ["uber", "Transporte", "Taxi/Cabify/Uber"],
+    ["cabify", "Transporte", "Taxi/VTC"],
+    ["uber", "Transporte", "Taxi/VTC"],
     ["tmb", "Transporte", "Transporte público"],
     ["metro barcelona", "Transporte", "Transporte público"],
     ["residents barcelo", "Transporte", "Aparcamiento"],
@@ -196,8 +196,9 @@ function mapConceptToCategory(concept) {
     ["cortefiel", "Ropa y calzado", "Ropa"],
     ["massimo dutti", "Ropa y calzado", "Ropa"],
 
-    // Regalos
+    // Regalos y donaciones
     ["colvin", "Regalos", "Cumpleaños"],
+    ["fundación francisco luzon", "Regalos", "Donación"],
 
     // MyInvestor - Fondo indexado
     ["ishares",     "Inversión y ahorro", "Fondo indexado"],

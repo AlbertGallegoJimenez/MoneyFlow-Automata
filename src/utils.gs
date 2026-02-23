@@ -146,6 +146,7 @@ function mapConceptToCategory(concept) {
     ["supermerc", "Alimentación", "Supermercado"],
     ["just eat", "Alimentación", "Delivery"],
     ["sushi", "Alimentación", "Restaurante"],
+    ["hsn", "Alimentación", "Suplementación"],
     
     // Transporte
     ["repsol", "Transporte", "Gasolina"],

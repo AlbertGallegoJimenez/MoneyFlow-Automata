@@ -187,7 +187,7 @@ function mapConceptToCategory(concept) {
     ["pagament transf", "Vivienda", "Alquiler"], // Transferencia ajuda Mama
 
     // Salario
-    ["nomina (trf)", "Salario", "Nomina Mensual"],
+    ["nomina (trf)", "Salario", "Nómina Mensual"],
 
     // Impuestos y multas
     ["ajunt. de barcelon", "Impuestos y multas", "Impuesto circulación"],

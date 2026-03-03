@@ -179,6 +179,7 @@ function mapConceptToCategory(concept) {
     // Ahorro e Inversión
     ["core s&p 500", "Inversión y ahorro", "ETFs"],
     ["interés", "Recompensas/Cashback", "Cuenta remunerada TR"],
+    ["interest", "Recompensas/Cashback", "Cuenta remunerada TR"],
     ["occident", "Inversión y ahorro", "Seguro Unit Linked"],
     ["universitat obert", "Inversión y ahorro", "Matrícula máster"],
 

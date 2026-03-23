@@ -154,6 +154,7 @@ function mapConceptToCategory(concept) {
     ["gm oil", "Transporte", "Gasolina"],
     ["cabify", "Transporte", "Taxi/VTC"],
     ["uber", "Transporte", "Taxi/VTC"],
+    ["t-mobilitat", "Transporte", "Transporte público"],
     ["tmb", "Transporte", "Transporte público"],
     ["metro barcelona", "Transporte", "Transporte público"],
     ["residents barcelo", "Transporte", "Aparcamiento"],

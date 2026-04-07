@@ -170,6 +170,7 @@ function mapConceptToCategory(concept) {
     // Ocio
     ["apple.com/bill", "Ocio", "Suscripción streaming"],
     ["pago traspasos", "Ocio", "Suscripción streaming"], // Transferencia Spotify Mar
+    ["pagament traspassos", "Ocio", "Suscripción streaming"], // Transferencia Spotify Mar
     ["cine", "Ocio", "Cine"],
     ["yelmo", "Ocio", "Cine"],
     ["playstation", "Ocio", "Videojuegos"],

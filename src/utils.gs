@@ -1,12 +1,11 @@
 /**
- * Funciones auxiliares y lógica de procesamiento
+ * utils.gs
+ * Funciones de apoyo y lógica de categorización para MoneyFlow-Automata.
  */
 
-// 1. Detección de duplicados mirando la COLUMNA J (Huella Digital)
 function getExistingHashes(sheet) {
   const lastRow = sheet.getLastRow();
   if (lastRow < 2) return [];
-  // Leemos la Columna 10 (J) que es la oculta con el Hash
   return sheet.getRange(2, 10, lastRow - 1, 1).getValues().flat();
 }
 
@@ -14,16 +13,11 @@ function isDuplicate(hash, existingHashes) {
   return existingHashes.includes(hash);
 }
 
-// 2. Generador de IDs secuenciales (TRNxxx) mirando la COLUMNA I
 function getNextTrnNumber(sheet) {
   const lastRow = sheet.getLastRow();
-  if (lastRow < 2) return 1; // Si está vacía, empezamos por 1
-
-  // Leemos todos los IDs visuales de la columna I (9)
+  if (lastRow < 2) return 1;
   const ids = sheet.getRange(2, 9, lastRow - 1, 1).getValues().flat();
-  
   let maxNum = 0;
-  // Regex para extraer el número limpio de "TRN00123"
   const regex = /TRN0*(\d+)/; 
 
   ids.forEach(id => {
@@ -35,87 +29,77 @@ function getNextTrnNumber(sheet) {
       }
     }
   });
-
-  return maxNum + 1; // Devolvemos el siguiente número disponible
+  return maxNum + 1;
 }
 
-// 3. Formateador visual: Convierte 5 -> "TRN0005"
 function formatTrnId(num) {
-  return "TRN" + num.toString().padStart(4, '0');
+  return "TRN" + num.toString().padStart(5, '0');
 }
 
 /**
- * Lógica de procesamiento de transacciones
- * params: trn (objeto), trnHash (string), sourceBank (string), currentSequenceNum (int)
+ * PROCESAMIENTO DE FILAS
  */
 function processTransactionLogic(trn, trnHash, sourceBank, currentSequenceNum) {
   const amount = Math.abs(parseFloat(trn.amount));
-  const isTRSpecial = (trn.isSpecial && trn.isSpecial !== "no"); 
-  
   let paymentMethod = "Tarjeta/Transferencia";
+  
   if (sourceBank === "Trade Republic") paymentMethod = "Tarjeta Débito - Trade Republic";
-  if (sourceBank === "Caixabank")      paymentMethod = "Domiciliación";
-  if (sourceBank === "MyInvestor")     paymentMethod = "Cuenta MyInvestor";
+  if (sourceBank === "Caixabank") paymentMethod = "Cuenta Principal";
 
   const rowsToInsert = [];
-  
-  // Preparamos los IDs visuales necesarios
-  const visualId1 = formatTrnId(currentSequenceNum);     // Para la 1ª fila
-  const visualId2 = formatTrnId(currentSequenceNum + 1); // Para la 2ª fila (si hay doble asiento)
+  const visualId1 = formatTrnId(currentSequenceNum);
 
-  if (isTRSpecial) {
-    // --- DOBLE ASIENTO (Saveback / Round Up) ---
+  // --- LÓGICA ESPECIAL: SAVEBACK (Doble Asiento) ---
+  if (trn.isSpecial === "Saveback") {
+    const visualId2 = formatTrnId(currentSequenceNum + 1);
     
-    // FILA 1: El Ingreso (Reward)
+    // Fila 1: El REGALO del banco (Ingreso)
     rowsToInsert.push([
-      trn.bookingDate,                              // Campo Fecha
-      "Ingreso",                                    // Campo Tipo de Transacción
-      "Recompensas/Cashback",                       // Campo Categoría Principal
-      "Saveback+Round up TR",                       // Campo Subcategoría
-      "TR Reward (" + trn.isSpecial + ")",          // Campo Descripción
-      amount,                                       // Campo Valor (€)
-      "Cuenta Efectivo",                            // Campo Método de Pago
-      "False",                                      // Campo ¿Gasto fijo?
-      visualId1,                                    // Campo ID Transacción (Visual: TRNxxxx)
-      trnHash + "_INC",                             // Campo Huella Digital (Oculto: Hash)
-      ""                                            // Campo Concepto Original Banco
+      trn.bookingDate,          // A. Fecha
+      "Ingreso",                // B. Tipo
+      "Recompensas/Cashback",   // C. Categoría Principal
+      "Saveback TR",            // D. Subcategoría
+      "Saveback TR (Ingreso)",  // E. Descripción
+      amount,                   // F. Valor (€)
+      paymentMethod,            // G. Método de Pago
+      "False",                  // H. Gasto Fijo
+      visualId1,                // I. ID Visual
+      trnHash + "_INC",         // J. Hash Único para el ingreso
+      trn.title                 // K. Concepto Original
     ]);
     
-    // FILA 2: La Inversión (Salida)
+    // Fila 2: La INVERSIÓN automática (Gasto)
     rowsToInsert.push([
-      trn.bookingDate,                              // Campo Fecha
-      "Gasto",                                      // Campo Tipo de Transacción
-      "Inversión y ahorro",                         // Campo Categoría Principal
-      "ETFs",                                       // Campo Subcategoría
-      "Inversión auto (" + trn.isSpecial + ")",     // Campo Descripción
-      amount,                                       // Campo Valor (€)
-      "Cuenta Efectivo",                            // Campo Método de Pago
-      "False",                                      // Campo ¿Gasto fijo?
-      visualId2,                                    // Campo ID Transacción (Visual: TRNxxxx+1)
-      trnHash + "_INV",                             // Campo Huella Digital (Oculto: Hash)
-      ""                                            // Campo Concepto Original Banco
+      trn.bookingDate,          // A. Fecha
+      "Gasto",                  // B. Tipo
+      "Inversión y ahorro",     // C. Categoría Principal
+      "ETFs",                   // D. Subcategoría
+      "Saveback TR (Inversión)",// E. Descripción
+      amount,                   // F. Valor (€)
+      paymentMethod,            // G. Método de Pago
+      "False",                  // H. Gasto Fijo
+      visualId2,                // I. ID Visual
+      trnHash + "_INV",         // J. Hash Único para el gasto
+      trn.title                 // K. Concepto Original
     ]);
 
   } else {
-    // --- TRANSACCIÓN ESTÁNDAR ---
-    
+    // --- CASO NORMAL: Planes de Inversión, Round Up, Compras ---
     const tipo = parseFloat(trn.amount) < 0 ? "Gasto" : "Ingreso";
-    
-    // Intentar mapear el concepto a una categoría conocida
-    const mappedCategory = mapConceptToCategory(trn.title);
-    
+    const mapped = mapConceptToCategory(trn.title);
+
     rowsToInsert.push([
-      trn.bookingDate,                              // Campo Fecha
-      tipo,                                         // Campo Tipo de Transacción
-      mappedCategory.categoria,                     // Campo Categoría Principal
-      mappedCategory.subcategoria,                  // Campo Subcategoría
-      "",                                           // Campo Descripción
-      amount,                                       // Campo Valor (€)
-      paymentMethod,                                // Campo Método de Pago
-      "False",                                      // Campo ¿Gasto fijo?
-      visualId1,                                    // Campo ID Transacción (Visual: TRNxxxx)
-      trnHash,                                      // Campo Huella Digital (Oculto: Hash)
-      trn.title                                     // Campo Concepto Original Banco
+      trn.bookingDate,          // A. Fecha
+      tipo,                     // B. Tipo
+      mapped.categoria,         // C. Categoría Principal
+      mapped.subcategoria,      // D. Subcategoría
+      trn.title,                // E. Descripción
+      amount,                   // F. Valor (€)
+      paymentMethod,            // G. Método de Pago
+      "False",                  // H. Gasto Fijo
+      visualId1,                // I. ID Visual
+      trnHash,                  // J. Hash
+      trn.title                 // K. Concepto Original
     ]);
   }
   
@@ -129,12 +113,20 @@ function processTransactionLogic(trn, trnHash, sourceBank, currentSequenceNum) {
  * @returns {object} - {categoria: string, subcategoria: string}
  */
 function mapConceptToCategory(concept) {
-  // Convertir a minúsculas para comparación insensible a mayúsculas
   const conceptLower = concept.toLowerCase();
-  
-  // --- DICCIONARIO DE MAPEO ---
-  // Formato: ["palabra clave", "Categoría Principal", "Subcategoría"]
+
+  // Diccionario de palabras clave y sus categorías correspondientes
+  // Formato: ["Palabra Clave", "Categoría Principal", "Subcategoría"]
   const mappings = [
+    // --- 1. NUEVA LÓGICA TRADE REPUBLIC (Nativo 2026) ---
+    // Importante: Estos nombres vienen forzados por nuestro nuevo Parser
+    ["saveback tr (ingreso)",    "Recompensas/Cashback", "Saveback TR"],
+    ["saveback tr (inversión)",  "Inversión y ahorro",   "ETFs"],
+    ["intereses tr",             "Recompensas/Cashback", "Cuenta remunerada TR"],
+    ["inversión",                "Inversión y ahorro",   "ETFs"],
+    ["comisión tarjeta tr",      "Otros",                "Comisiones bancarias"],
+    ["dividendos",               "Inversión y ahorro",   "Dividendos"],
+
     // Alimentación
     ["condis", "Alimentación", "Supermercado"],
     ["dia", "Alimentación", "Supermercado"],
@@ -213,19 +205,18 @@ function mapConceptToCategory(concept) {
     ["bizum", "Otros", "Bizum"]
   ];
   
-  // Buscar coincidencia en el concepto
+// Buscamos si el concepto contiene alguna de las palabras clave
   for (let i = 0; i < mappings.length; i++) {
     const [keyword, categoria, subcategoria] = mappings[i];
-    
     if (conceptLower.includes(keyword)) {
-      return {
-        categoria: categoria,
-        subcategoria: subcategoria
+      return { 
+        categoria: categoria, 
+        subcategoria: subcategoria 
       };
     }
   }
-  
-  // Si no hay coincidencia, devolver categoría por defecto
+
+  // Si no encuentra nada, devuelve "Pendiente"
   return {
     categoria: "Pendiente Categorizar",
     subcategoria: "Pendiente Categorizar"

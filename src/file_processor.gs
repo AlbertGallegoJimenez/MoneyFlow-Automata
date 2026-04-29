@@ -45,15 +45,19 @@ function processFolderCSVs() {
       continue;
     }
 
-    // Procesar transacciones filtrando duplicados
+    // --- ORDENAMIENTO CRONOLÓGICO (Recuperado) ---
+    parsedTransactions.sort((a, b) => {
+      return a.bookingDate.localeCompare(b.bookingDate);
+    });
+
+    // --- PROCESADO E INSERCIÓN ---
     let fileRows = [];
     parsedTransactions.forEach(trn => {
-      const trnHash = trn.id;
-      if (!isDuplicate(trnHash, existingHashes)) {
-        const newRows = processTransactionLogic(trn, trnHash, trn.sourceBank, nextSequenceNum);
+      if (!isDuplicate(trn.id, existingHashes)) {
+        const newRows = processTransactionLogic(trn, trn.id, trn.sourceBank, nextSequenceNum);
         fileRows = fileRows.concat(newRows);
         
-        // Si es Saveback, sumamos 2 al contador de IDs porque genera 2 filas
+        // Sumamos al contador según las filas generadas (1 o 2 en Saveback)
         nextSequenceNum += (trn.isSpecial === "Saveback" ? 2 : 1);
       }
     });
@@ -135,30 +139,59 @@ function parseTradeRepublicCSV(csvString) {
 // ==========================================
 // PARSER 2: CAIXABANK
 // ==========================================
-function parseCaixabankCSV(csvString) {
-  const csvData = Utilities.parseCsv(csvString, ';');
-  const transactions = [];
+function parseCaixabankCSV(rawString) {
+  // A veces vienen separados por tabuladores (\t) o punto y coma (;)
+  // Detectamos el separador de la primera línea
+  const delimiter = rawString.indexOf('\t') !== -1 ? '\t' : ';';
+  const csvData = Utilities.parseCsv(rawString, delimiter);
   
-  for (let i = 4; i < csvData.length; i++) {
-    const row = csvData[i];
-    if (row.length < 3 || !row[0]) continue;
-    
-    const amount = parseFloat(row[2].replace(/\./g, '').replace(',', '.'));
-    if (amount === 0) continue;
+  let rawTransactions = [];
 
-    transactions.push({
-      bookingDate: row[0].split('/').reverse().join('-'),
-      title: row[1].trim(),
-      amount: amount,
+  // Paso 1: Lectura Cruda y Limpieza de Formatos
+  // Empezamos en i=1 asumiendo cabecera en fila 0
+  for (let i = 1; i < csvData.length; i++) {
+    const row = csvData[i];
+    if (row.length < 3) continue;
+
+    // Mapeo (Asumiendo orden: Concepte(0), Data(1), Import(2), Saldo(3))
+    // Si el orden cambia, ajusta los índices.
+    const rawConcept = row[0];
+    const rawDate = row[1];   // "29/01/2026"
+    const rawAmount = row[2]; // "-2.800,00EUR"
+
+    // Limpieza de Fecha (DD/MM/YYYY -> YYYY-MM-DD)
+    const dateParts = rawDate.split('/');
+    const cleanDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+
+    // Limpieza de Importe
+    // Quitamos "EUR", quitamos puntos de mil, cambiamos coma decimal por punto
+    let cleanAmountStr = rawAmount.replace("EUR", "").replace(/\./g, "").replace(",", ".");
+    let amountFloat = parseFloat(cleanAmountStr);
+
+    // FILTRO 1: Transferencia a mí mismo (Concepto "nomina" salida)
+    // Si es "nomina" y es negativo (salida de dinero), lo ignoramos.
+    if (rawConcept.trim() === SELF_TRANSFER_CONCEPT && amountFloat < 0) {
+      Logger.log("Saltando transferencia propia (nomina salida): " + rawAmount);
+      continue;
+    }
+
+    rawTransactions.push({
+      bookingDate: cleanDate,
+      title: rawConcept,
+      amount: amountFloat, // Guardamos como número para poder comparar
       isSpecial: "no",
       sourceBank: "Caixabank",
-      originalAmountStr: amount.toFixed(2)
+      originalAmountStr: cleanAmountStr // Para generar ID
     });
   }
-  
-  const finalTransactions = filterPreAuthPairs(transactions);
+
+  // Paso 2: Filtro de Pares de Pre-autorización (Parking/Gasolineras)
+  // Elimina movimientos identicos de signo contrario en el mismo día
+  const finalTransactions = filterPreAuthPairs(rawTransactions);
+
+  // Paso 3: Generar IDs finales
   return finalTransactions.map(t => {
-    t.id = Utilities.base64Encode(t.bookingDate + t.title + t.originalAmountStr + "CAIXA");
+    t.id = Utilities.base64Encode(t.bookingDate + t.title + t.originalAmountStr + "CB");
     return t;
   });
 }
@@ -166,27 +199,45 @@ function parseCaixabankCSV(csvString) {
 // ==========================================
 // PARSER 3: MYINVESTOR
 // ==========================================
-function parseMyInvestorCSV(csvString) {
-  const csvData = Utilities.parseCsv(csvString, ';');
-  const transactions = [];
+function parseMyInvestorCSV(rawString) {
+  // Cabeceras: Fecha de operación(0);Fecha de valor(1);Concepto(2);Importe(3);Divisa(4)
+  const csvData = Utilities.parseCsv(rawString, ';');
+  const rawTransactions = [];
 
   for (let i = 1; i < csvData.length; i++) {
     const row = csvData[i];
-    if (row.length < 5) continue;
+    if (row.length < 4) continue;
 
-    const amount = parseFloat(row[4].replace(/\./g, '').replace(',', '.'));
-    transactions.push({
-      bookingDate: row[0].split('/').reverse().join('-'),
-      title: row[2].trim(),
-      amount: amount,
-      isSpecial: "no",
-      sourceBank: "MyInvestor",
-      originalAmountStr: amount.toFixed(2)
+    const rawDate    = row[0].trim(); // "18/02/2026"
+    const rawConcept = row[2].trim();
+    const rawAmount  = row[3].trim(); // "-720" o "-499,99"
+
+    if (!rawDate || !rawConcept || !rawAmount) continue;
+
+    // Fecha: DD/MM/YYYY -> YYYY-MM-DD
+    const dateParts = rawDate.split('/');
+    const cleanDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+
+    // Importe: reemplazar coma decimal por punto
+    const cleanAmountStr = rawAmount.replace(',', '.');
+    const amountFloat = parseFloat(cleanAmountStr);
+
+    rawTransactions.push({
+      bookingDate:       cleanDate,
+      title:             rawConcept,
+      amount:            amountFloat,
+      isSpecial:         "no",
+      sourceBank:        "MyInvestor",
+      originalAmountStr: cleanAmountStr
     });
   }
 
-  return transactions.map(t => {
-    t.id = Utilities.base64Encode(t.bookingDate + t.title + t.originalAmountStr + "MYINV");
+  // Filtro de pares de pre-autorización
+  const finalTransactions = filterPreAuthPairs(rawTransactions);
+
+  // Generación de IDs (sufijo "MI" para diferenciar del resto de bancos)
+  return finalTransactions.map(t => {
+    t.id = Utilities.base64Encode(t.bookingDate + t.title + t.originalAmountStr + "MI");
     return t;
   });
 }

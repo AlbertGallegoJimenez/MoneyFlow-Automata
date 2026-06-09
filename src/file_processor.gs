@@ -59,36 +59,41 @@ function detectBank(csvContent) {
 // FUNCIÓN PRINCIPAL
 // ==========================================
 function processFolderCSVs() {
+  // --- INICIO DE LOG ---
+  initLogger();
+
   const folder = DriveApp.getFolderById(CONFIG.FOLDER_ID);
   const processedFolder = DriveApp.getFolderById(CONFIG.PROCESSED_FOLDER_ID);
   const files = folder.getFilesByType(MimeType.CSV);
-  
+
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CONFIG.SHEET_NAME);
   const existingHashes = getExistingHashes(sheet);
   let nextSequenceNum = getNextTrnNumber(sheet);
-  let totalNewRows = 0;
 
   while (files.hasNext()) {
     const file = files.next();
-    // replace(/^\ufeff/, "") limpia el carácter invisible BOM que traen los CSV de TR
     const csvContent = file.getBlob().getDataAsString().replace(/^\ufeff/, "");
 
     // --- DETECTOR DE BANCOS (#1) ---
     const detectedBank = detectBank(csvContent);
     if (!detectedBank) {
-      Logger.log("❌ Formato desconocido en archivo: " + file.getName());
-      Logger.log("   Primera línea: " + csvContent.split('\n')[0].substring(0, 120));
+      logSkippedFile(file.getName(), csvContent.split('\n')[0]);
       continue;
     }
-    Logger.log("✅ Detectado formato: " + detectedBank + " | Archivo: " + file.getName());
+    logEvent("INFO", `Detectado formato: ${detectedBank} | Archivo: ${file.getName()}`);
 
     let parsedTransactions = [];
-    if (detectedBank === "Trade Republic") {
-      parsedTransactions = parseTradeRepublicCSV(csvContent);
-    } else if (detectedBank === "Caixabank") {
-      parsedTransactions = parseCaixabankCSV(csvContent);
-    } else if (detectedBank === "MyInvestor") {
-      parsedTransactions = parseMyInvestorCSV(csvContent);
+    try {
+      if (detectedBank === "Trade Republic") {
+        parsedTransactions = parseTradeRepublicCSV(csvContent);
+      } else if (detectedBank === "Caixabank") {
+        parsedTransactions = parseCaixabankCSV(csvContent);
+      } else if (detectedBank === "MyInvestor") {
+        parsedTransactions = parseMyInvestorCSV(csvContent);
+      }
+    } catch (e) {
+      logError(`Parser ${detectedBank}`, e.toString());
+      continue;
     }
 
     // --- ORDENAMIENTO CRONOLÓGICO ---
@@ -99,7 +104,6 @@ function processFolderCSVs() {
     parsedTransactions.forEach(trn => {
       if (!isDuplicate(trn.id, existingHashes)) {
         const newRows = processTransactionLogic(trn, trn.id, trn.sourceBank, nextSequenceNum, sheet);
-
         fileRows = fileRows.concat(newRows);
         nextSequenceNum += (trn.isSpecial === "Saveback" ? 2 : 1);
       }
@@ -107,13 +111,22 @@ function processFolderCSVs() {
 
     if (fileRows.length > 0) {
       sheet.getRange(sheet.getLastRow() + 1, 1, fileRows.length, fileRows[0].length).setValues(fileRows);
-      totalNewRows += fileRows.length;
     }
 
+    logFileProcessed(file.getName(), detectedBank, fileRows.length);
     file.moveTo(processedFolder);
   }
 
-  Logger.log("✅ Proceso finalizado. Filas nuevas: " + totalNewRows);
+  // --- CATEGORIZACIÓN CON GEMINI ---
+  const geminiResult = categorizePendingWithGemini();
+
+  // Recogemos las filas que siguen pendientes para incluirlas en el email
+  const stillPending = getStillPendingRows(sheet);
+  logGeminiResult(geminiResult.resolved, geminiResult.failed, stillPending);
+
+  // --- CIERRE: LOG + EMAIL ---
+  resetHistoryCache();
+  finalizeLogger(CONFIG.NOTIFICATION_EMAIL);
 }
 
 // ==========================================

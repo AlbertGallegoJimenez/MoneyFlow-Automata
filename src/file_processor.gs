@@ -98,7 +98,8 @@ function processFolderCSVs() {
     let fileRows = [];
     parsedTransactions.forEach(trn => {
       if (!isDuplicate(trn.id, existingHashes)) {
-        const newRows = processTransactionLogic(trn, trn.id, trn.sourceBank, nextSequenceNum);
+        const newRows = processTransactionLogic(trn, trn.id, trn.sourceBank, nextSequenceNum, sheet);
+
         fileRows = fileRows.concat(newRows);
         nextSequenceNum += (trn.isSpecial === "Saveback" ? 2 : 1);
       }

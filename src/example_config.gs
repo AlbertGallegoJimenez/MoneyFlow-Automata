@@ -3,5 +3,6 @@ const CONFIG = {
   PROCESSED_FOLDER_ID: 'TU_ID_DE_CARPETA_PROCESADOS',
   SHEET_NAME: 'Gastos', // O el nombre de tu hoja
   CURRENCY: 'EUR',
-  START_DATE: '2026-01-01'
+  START_DATE: '2026-01-01',
+  GOOGLE_API_KEY: 'TU_API_KEY'
 };

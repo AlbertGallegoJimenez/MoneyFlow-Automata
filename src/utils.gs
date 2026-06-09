@@ -41,7 +41,7 @@ function formatTrnId(num) {
 }
 
 // ==========================================
-// CACHÉ DEL HISTORIAL
+// CACHÉ DEL HISTORIAL (#5)
 // ==========================================
 // Cargamos el historial UNA sola vez por ejecución y lo guardamos aquí.
 // Estructura: array de {conceptoOriginal, categoria, subcategoria}
@@ -94,7 +94,7 @@ function resetHistoryCache() {
 }
 
 // ==========================================
-// EXTRACCIÓN DE PALABRAS SIGNIFICATIVAS
+// EXTRACCIÓN DE PALABRAS SIGNIFICATIVAS (#5)
 // ==========================================
 // Palabras que aparecen mucho en conceptos bancarios pero no aportan
 // información de categorización. Las filtramos antes de la búsqueda parcial.
@@ -122,7 +122,7 @@ function extractSignificantWords(concept) {
 }
 
 // ==========================================
-// NÚCLEO DE CATEGORIZACIÓN
+// NÚCLEO DE CATEGORIZACIÓN (#5)
 // ==========================================
 
 /**
@@ -288,7 +288,6 @@ function mapConceptToKeyword(conceptLower) {
     // Ropa y calzado
     ["cortefiel",    "Ropa y calzado", "Ropa"],
     ["massimo dutti","Ropa y calzado", "Ropa"],
-    ["zalando","Ropa y calzado", "Ropa"],
 
     // Regalos y donaciones
     ["colvin",                  "Regalos", "Cumpleaños"],
@@ -368,10 +367,10 @@ function processTransactionLogic(trn, trnHash, sourceBank, currentSequenceNum, s
     // --- CASO NORMAL ---
     const tipo = parseFloat(trn.amount) < 0 ? "Gasto" : "Ingreso";
 
-    // Categorización: historial → keywords → pendiente
+    // Categorización: historial → keywords → pendiente (#5)
     const mapped = mapConceptToCategory(trn.title, sheet);
 
-    // Descripción limpia: nombre del comercio capitalizado, sin códigos numéricos
+    // Descripción limpia (#7): nombre del comercio capitalizado, sin códigos numéricos
     const cleanDescription = cleanConceptDescription(trn.title);
 
     rowsToInsert.push([
@@ -393,7 +392,7 @@ function processTransactionLogic(trn, trnHash, sourceBank, currentSequenceNum, s
 }
 
 // ==========================================
-// LIMPIEZA DE DESCRIPCIÓN
+// LIMPIEZA DE DESCRIPCIÓN (#7)
 // ==========================================
 
 /**
@@ -421,4 +420,34 @@ function cleanConceptDescription(concept) {
 
   // Si tras la limpieza quedara vacío, devolvemos el original
   return clean.length > 0 ? clean : concept;
+}
+
+// ==========================================
+// HELPER: FILAS QUE SIGUEN PENDIENTES
+// ==========================================
+
+/**
+ * Devuelve las filas de la hoja Gastos que siguen con "Pendiente Categorizar"
+ * en la columna C, para incluirlas en el email de resumen.
+ * @param {object} sheet
+ * @returns {Array<{sheetRow: number, concepto: string}>}
+ */
+function getStillPendingRows(sheet) {
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return [];
+
+  // Leemos C (categoría) y K (concepto original) — cols 3 y 11
+  const catData = sheet.getRange(2, 3, lastRow - 1, 1).getValues();
+  const conData  = sheet.getRange(2, 11, lastRow - 1, 1).getValues();
+
+  const pending = [];
+  for (let i = 0; i < catData.length; i++) {
+    if (catData[i][0] === "Pendiente Categorizar") {
+      pending.push({
+        sheetRow: i + 2,
+        concepto: conData[i][0] || "(sin concepto)"
+      });
+    }
+  }
+  return pending;
 }

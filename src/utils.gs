@@ -363,6 +363,40 @@ function processTransactionLogic(trn, trnHash, sourceBank, currentSequenceNum, s
       trn.title
     ]);
 
+  // --- BIZUM ENTRANTE: se inserta como marcador temporal ---
+  // El reconciliador lo procesará después y decidirá si ajusta un gasto
+  // o lo convierte en ingreso. Se marca con categoría especial para localizarlo.
+  } else if (trn.isSpecial === "BizumInbound") {
+    rowsToInsert.push([
+      trn.bookingDate,
+      "Ingreso",
+      "__BIZUM_PENDIENTE__",   // Marcador interno, el reconciliador lo eliminará o reemplazará
+      "Bizum entrante",
+      `Bizum de ${trn.title}`,
+      amount,
+      paymentMethod,
+      "False",
+      visualId1,
+      trnHash,
+      trn.title
+    ]);
+
+  // --- BIZUM SALIENTE: categorización manual ---
+  } else if (trn.isSpecial === "BizumOutbound") {
+    rowsToInsert.push([
+      trn.bookingDate,
+      "Gasto",
+      "Pendiente Categorizar",
+      "Pendiente Categorizar",
+      `Bizum a ${trn.title}`,
+      amount,
+      paymentMethod,
+      "False",
+      visualId1,
+      trnHash,
+      trn.title
+    ]);
+
   } else {
     // --- CASO NORMAL ---
     const tipo = parseFloat(trn.amount) < 0 ? "Gasto" : "Ingreso";
@@ -423,7 +457,7 @@ function cleanConceptDescription(concept) {
 }
 
 // ==========================================
-// HELPER: FILAS QUE SIGUEN PENDIENTES
+// HELPER: FILAS QUE SIGUEN PENDIENTES (#8)
 // ==========================================
 
 /**

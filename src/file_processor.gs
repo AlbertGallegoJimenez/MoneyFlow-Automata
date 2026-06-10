@@ -59,7 +59,7 @@ function detectBank(csvContent) {
 // FUNCIÓN PRINCIPAL
 // ==========================================
 function processFolderCSVs() {
-  // --- INICIO DE LOG ---
+  // --- INICIO DE LOG (#8) ---
   initLogger();
 
   const folder = DriveApp.getFolderById(CONFIG.FOLDER_ID);
@@ -117,71 +117,122 @@ function processFolderCSVs() {
     file.moveTo(processedFolder);
   }
 
-  // --- CATEGORIZACIÓN CON GEMINI ---
+  // --- RECONCILIACIÓN DE BIZUMS ---
+  // Debe ejecutarse antes de Gemini para que los Bizums convertidos a ingreso
+  // pasen también por la categorización automática si quedan como "Otros/Bizum"
+  const bizumResult = reconcileBizums();
+  logEvent("INFO",
+    `Bizums: ${bizumResult.adjusted} gasto(s) ajustado(s), ` +
+    `${bizumResult.converted} convertido(s) a ingreso, ` +
+    `${bizumResult.bizumRowsRemoved} fila(s) eliminada(s).`
+  );
+
+  // --- CATEGORIZACIÓN CON GEMINI (#9) ---
   const geminiResult = categorizePendingWithGemini();
 
   // Recogemos las filas que siguen pendientes para incluirlas en el email
   const stillPending = getStillPendingRows(sheet);
   logGeminiResult(geminiResult.resolved, geminiResult.failed, stillPending);
 
-  // --- CIERRE: LOG + EMAIL ---
+  // --- CIERRE: LOG + EMAIL (#8 + #10) ---
   resetHistoryCache();
   finalizeLogger(CONFIG.NOTIFICATION_EMAIL);
 }
 
 // ==========================================
-// PARSER 1: TRADE REPUBLIC (NATIVO 2026)
+// PARSER 1: TRADE REPUBLIC (HEADER 2026 — 23 columnas)
+// datetime,date,account_type,category,type,asset_class,name,symbol,
+// shares,price,amount,fee,tax,currency,original_amount,original_currency,
+// fx_rate,description,transaction_id,counterparty_name,counterparty_iban,
+// payment_reference,mcc_code
 // ==========================================
 function parseTradeRepublicCSV(csvString) {
   const csvData = Utilities.parseCsv(csvString, ',');
+  if (csvData.length < 2) return [];
+
+  // Construimos el mapa de columnas por nombre (igual que Caixabank y MyInvestor)
+  const headerRow = csvData[0].map(h => h.trim().toLowerCase());
+  const col = {
+    date:             headerRow.indexOf("date"),
+    type:             headerRow.indexOf("type"),
+    name:             headerRow.indexOf("name"),
+    amount:           headerRow.indexOf("amount"),
+    fee:              headerRow.indexOf("fee"),
+    tax:              headerRow.indexOf("tax"),
+    description:      headerRow.indexOf("description"),
+    counterpartyName: headerRow.indexOf("counterparty_name"),
+    counterpartyIban: headerRow.indexOf("counterparty_iban")
+  };
+
+  // Validación de columnas esenciales
+  const essential = ["date", "type", "amount"];
+  const missing = essential.filter(k => col[k] === -1);
+  if (missing.length > 0) {
+    Logger.log("❌ TR: Columnas no encontradas: " + missing.join(", ")
+      + ". Headers: " + headerRow.join(" | "));
+    return [];
+  }
+
   const rawTransactions = [];
 
   for (let i = 1; i < csvData.length; i++) {
     const row = csvData[i];
-    if (row.length < 18) continue;
+    if (row.length < 10) continue;
 
-    const date = row[1];            // Columna 'date'
-    const type = row[4];            // Columna 'type' (antes era row[5], ahora row[4] según header)
-    const name = row[6];            // Columna 'name'
-    const amount = parseFloat(row[10]) || 0; // 'amount'
-    const fee = parseFloat(row[11]) || 0;    // 'fee'
-    const tax = parseFloat(row[12]) || 0;    // 'tax'
-    const description = row[17].replace(/null$/i, '').trim(); // 'description'
+    const date            = (row[col.date]             || "").trim();
+    const type            = (row[col.type]             || "").trim();
+    const name            = (row[col.name]             || "").trim();
+    const amount          = parseFloat(row[col.amount]) || 0;
+    const fee             = parseFloat(row[col.fee])    || 0;
+    const tax             = parseFloat(row[col.tax])    || 0;
+    const description     = (row[col.description]      || "").replace(/null$/i, "").trim();
+    const counterpartyName = col.counterpartyName !== -1 ? (row[col.counterpartyName] || "").trim() : "";
 
     // Filtro de transferencias propias
-    if (MY_NAMES.some(n => description.includes(n))) continue;
+    if (MY_NAMES.some(n => description.includes(n) || counterpartyName.includes(n))) continue;
 
-    // Cálculo del Flujo de Caja Real Neto
+    // Flujo de caja neto
     const netAmount = amount + fee + tax;
     if (Math.abs(netAmount) < 0.01 && type !== "CARD_ORDERING_FEE") continue;
 
+    const typeUpper = type.toUpperCase();
     const descUpper = description.toUpperCase();
-    const typeUpper = (type || "").toUpperCase();
-    
-    let specialFlag = "no";
-    let finalTitle = name || description;
 
-    // LÓGICA DE DETECCIÓN PARA EL DOBLE ASIENTO
-    if (typeUpper.includes("SAVEBACK") || descUpper.includes("SAVEBACK")) {
+    let specialFlag = "no";
+    let finalTitle  = name || description;
+
+    // --- BIZUM ENTRANTE ---
+    if (typeUpper === "TRANSFER_INSTANT_INBOUND") {
+      specialFlag = "BizumInbound";
+      finalTitle  = counterpartyName || name || "Bizum entrante";
+
+    // --- BIZUM SALIENTE ---
+    } else if (typeUpper === "TRANSFER_INSTANT_OUTBOUND") {
+      specialFlag = "BizumOutbound";
+      finalTitle  = counterpartyName || name || "Bizum saliente";
+
+    // --- SAVEBACK (doble asiento) ---
+    } else if (typeUpper.includes("SAVEBACK") || descUpper.includes("SAVEBACK")) {
       if (netAmount > 0) {
         specialFlag = "Saveback";
-        finalTitle = "Saveback TR";
+        finalTitle  = "Saveback TR";
       } else {
-        // Saltamos la línea de gasto negativa que TR trae por defecto para el Saveback
-        // porque la generaremos nosotros artificialmente para tener control total
-        continue; 
+        continue; // La línea negativa la generamos nosotros
       }
+
+    // --- ROUND UP ---
     } else if (descUpper.includes("ROUND UP")) {
       finalTitle = "Round Up TR";
     }
 
     rawTransactions.push({
-      bookingDate: date,
-      title: finalTitle,
-      amount: netAmount,
-      isSpecial: specialFlag,
-      sourceBank: "Trade Republic",
-      originalAmountStr: netAmount.toFixed(4)
+      bookingDate:       date,
+      title:             finalTitle,
+      amount:            netAmount,
+      isSpecial:         specialFlag,
+      sourceBank:        "Trade Republic",
+      originalAmountStr: netAmount.toFixed(4),
+      counterpartyName:  counterpartyName  // Guardamos para el reconciliador de Bizums
     });
   }
 

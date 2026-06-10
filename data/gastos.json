@@ -1,0 +1,2202 @@
+{
+  "last_updated": "2026-06-10T14:56:35.408Z",
+  "total_transactions": 244,
+  "transactions": [
+    {
+      "fecha": "2026-01-01",
+      "tipo": "Ingreso",
+      "categoria": "Recompensas/Cashback",
+      "subcategoria": "Cuenta remunerada TR",
+      "valor": 16.18,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-01-02",
+      "tipo": "Gasto",
+      "categoria": "Transporte",
+      "subcategoria": "Gasolina",
+      "valor": 55,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-01-02",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 50,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-01-02",
+      "tipo": "Ingreso",
+      "categoria": "Recompensas/Cashback",
+      "subcategoria": "Saveback TR",
+      "valor": 11.32,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-01-02",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 11.32,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-01-02",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 7.85,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-01-04",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Delivery",
+      "valor": 28.04,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-01-05",
+      "tipo": "Gasto",
+      "categoria": "Vivienda",
+      "subcategoria": "Alquiler",
+      "valor": 200,
+      "metodo_pago": "Transferencia",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-01-05",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 3.4,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-01-05",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Restaurante",
+      "valor": 18.883333333333333,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-01-05",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 1.9666666666666668,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-01-05",
+      "tipo": "Gasto",
+      "categoria": "Transporte",
+      "subcategoria": "Taxi/VTC",
+      "valor": 9.55,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-01-07",
+      "tipo": "Gasto",
+      "categoria": "Salud",
+      "subcategoria": "Gimnasio",
+      "valor": 25,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-01-07",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Seguro Unit Linked",
+      "valor": 140,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-01-07",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Suscripci?n streaming",
+      "valor": 7,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-01-07",
+      "tipo": "Gasto",
+      "categoria": "Otros",
+      "subcategoria": "",
+      "valor": 8.65,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-01-07",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 17.1,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-01-09",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 19.75,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-01-09",
+      "tipo": "Gasto",
+      "categoria": "Regalos y donaciones",
+      "subcategoria": "Cumplea?os",
+      "valor": 60,
+      "metodo_pago": "Tarjeta D?bito - Imagin",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-01-16",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 4.61,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-01-18",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Suscripci?n streaming",
+      "valor": 10.8,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-01-19",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Acciones",
+      "valor": 251,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-01-20",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 2.5,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-01-20",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 201,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-01-20",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 10,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-01-21",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 6.5,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-01-22",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Restaurante",
+      "valor": 20.2,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-01-22",
+      "tipo": "Ingreso",
+      "categoria": "Salario",
+      "subcategoria": "N?mina Mensual",
+      "valor": 1503.41,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-01-23",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 5.4,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-01-23",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Delivery",
+      "valor": 29.3,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-01-26",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 11.62,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-01-27",
+      "tipo": "Gasto",
+      "categoria": "Transporte",
+      "subcategoria": "Aparcamiento",
+      "valor": 3.56,
+      "metodo_pago": "Tarjeta D?bito - Imagin",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-01-27",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Seguro Unit Linked",
+      "valor": 62.4,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-01-28",
+      "tipo": "Ingreso",
+      "categoria": "Salario",
+      "subcategoria": "N?mina Mensual",
+      "valor": 622.28,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-01-28",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 2.5,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-01-28",
+      "tipo": "Ingreso",
+      "categoria": "Salario",
+      "subcategoria": "N?mina Mensual",
+      "valor": 2153.28,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-01-29",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 7.97,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-01-29",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Panader?a",
+      "valor": 2.8,
+      "metodo_pago": "Efectivo",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-01-30",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Restaurante",
+      "valor": 11.7,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-01-30",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 7.7,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-01",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Delivery",
+      "valor": 27.24,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-01",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 7.4,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-01",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Cine",
+      "valor": 10.3,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-01",
+      "tipo": "Gasto",
+      "categoria": "Transporte",
+      "subcategoria": "Gasolina",
+      "valor": 35,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-01",
+      "tipo": "Ingreso",
+      "categoria": "Recompensas/Cashback",
+      "subcategoria": "Cuenta remunerada TR",
+      "valor": 17.45,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-02-02",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 11.28,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-02-02",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 50,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-02-02",
+      "tipo": "Ingreso",
+      "categoria": "Recompensas/Cashback",
+      "subcategoria": "Saveback TR",
+      "valor": 2.91,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-02-02",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 2.91,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-02-02",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 13.33,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-04",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 1.15,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-05",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "M?ster Data Science",
+      "valor": 685.56,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-06",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 10.9,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-04",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Seguro Unit Linked",
+      "valor": 145.6,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-02-04",
+      "tipo": "Gasto",
+      "categoria": "Salud",
+      "subcategoria": "Gimnasio",
+      "valor": 25,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-02-05",
+      "tipo": "Gasto",
+      "categoria": "Vivienda",
+      "subcategoria": "Alquiler",
+      "valor": 200,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-02-08",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Suscripci?n streaming",
+      "valor": 5.99,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-02-08",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Suscripci?n streaming",
+      "valor": 0.99,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-02-07",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Restaurante",
+      "valor": 22.6,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-07",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 7.8,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-08",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Restaurante",
+      "valor": 44,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-08",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 4.75,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-08",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 1.55,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-09",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 8.22,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-02-10",
+      "tipo": "Gasto",
+      "categoria": "Transporte",
+      "subcategoria": "Seguro coche",
+      "valor": 238.45,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-12",
+      "tipo": "Gasto",
+      "categoria": "Salud",
+      "subcategoria": "Peluquer?a",
+      "valor": 10,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-12",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Acciones",
+      "valor": 101,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-12",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Acciones",
+      "valor": 101,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-19",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Panader?a",
+      "valor": 2.75,
+      "metodo_pago": "Efectivo",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-02-18",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Suscripci?n streaming",
+      "valor": 10.8,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-02-13",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 13.8,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-14",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Delivery",
+      "valor": 38.65,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-16",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 4.2,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-02-18",
+      "tipo": "Gasto",
+      "categoria": "Ropa y calzado",
+      "subcategoria": "Ropa",
+      "valor": 5.95,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-18",
+      "tipo": "Ingreso",
+      "categoria": "Recompensas/Cashback",
+      "subcategoria": "Dividendos",
+      "valor": 0.25,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-18",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 7.71,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-16",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Fondo indexado",
+      "valor": 499.99,
+      "metodo_pago": "Cuenta MyInvestor",
+      "banco": "MyInvestor"
+    },
+    {
+      "fecha": "2026-02-16",
+      "tipo": "Ingreso",
+      "categoria": "Recompensas/Cashback",
+      "subcategoria": "Promoci?n amigo",
+      "valor": 20.75,
+      "metodo_pago": "Cuenta MyInvestor",
+      "banco": "MyInvestor"
+    },
+    {
+      "fecha": "2026-02-18",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Fondo indexado",
+      "valor": 720,
+      "metodo_pago": "Cuenta MyInvestor",
+      "banco": "MyInvestor"
+    },
+    {
+      "fecha": "2026-02-24",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Panader?a",
+      "valor": 0.95,
+      "metodo_pago": "Efectivo",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-02-21",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 14.59,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-21",
+      "tipo": "Gasto",
+      "categoria": "Regalos y donaciones",
+      "subcategoria": "Donaci?n",
+      "valor": 100,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-22",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Delivery",
+      "valor": 20.55,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-23",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Suplementaci?n",
+      "valor": 42.02,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-23",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 4.4,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-02-23",
+      "tipo": "Gasto",
+      "categoria": "Otros",
+      "subcategoria": "",
+      "valor": 4.67,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-02-25",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Seguro Unit Linked",
+      "valor": 62.4,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-02-27",
+      "tipo": "Ingreso",
+      "categoria": "Salario",
+      "subcategoria": "N?mina Mensual",
+      "valor": 2153.28,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-03-02",
+      "tipo": "Gasto",
+      "categoria": "Transporte",
+      "subcategoria": "Aparcamiento",
+      "valor": 0.65,
+      "metodo_pago": "Tarjeta D?bito - Imagin",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-03-01",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Restaurante",
+      "valor": 35,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-01",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 4,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-01",
+      "tipo": "Ingreso",
+      "categoria": "Recompensas/Cashback",
+      "subcategoria": "Cuenta remunerada TR",
+      "valor": 16.05,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-03-02",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 50,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-03-02",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 6.62,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-03-02",
+      "tipo": "Ingreso",
+      "categoria": "Recompensas/Cashback",
+      "subcategoria": "Saveback TR",
+      "valor": 11.37,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-03-02",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 11.37,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-03-03",
+      "tipo": "Gasto",
+      "categoria": "Regalos y donaciones",
+      "subcategoria": "Cumplea?os",
+      "valor": 18,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-05",
+      "tipo": "Gasto",
+      "categoria": "Regalos y donaciones",
+      "subcategoria": "Cumplea?os",
+      "valor": 10,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-05",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 8.97,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-08",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Delivery",
+      "valor": 17.31,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-04",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Seguro Unit Linked",
+      "valor": 145.6,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-03-04",
+      "tipo": "Gasto",
+      "categoria": "Salud",
+      "subcategoria": "Gimnasio",
+      "valor": 25,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-03-05",
+      "tipo": "Gasto",
+      "categoria": "Vivienda",
+      "subcategoria": "Alquiler",
+      "valor": 200,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-03-08",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Suscripci?n streaming",
+      "valor": 5.99,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-03-08",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Suscripci?n streaming",
+      "valor": 0.99,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-03-09",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 1.46,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-03-10",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 13.65,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-13",
+      "tipo": "Gasto",
+      "categoria": "Ropa y calzado",
+      "subcategoria": "Calzado",
+      "valor": 86.95,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-13",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 11.97,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-15",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Delivery",
+      "valor": 38.15,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-15",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 5.75,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-16",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 3.06,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-03-16",
+      "tipo": "Gasto",
+      "categoria": "Regalos y donaciones",
+      "subcategoria": "Cumplea?os",
+      "valor": 66,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-21",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 3.81,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-21",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 4.1,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-21",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Restaurante",
+      "valor": 48.5,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-22",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Restaurante",
+      "valor": 33,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-22",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 6.65,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-22",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 5.9,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-22",
+      "tipo": "Gasto",
+      "categoria": "Transporte",
+      "subcategoria": "Transporte p?blico",
+      "valor": 14,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-23",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 10.08,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-03-24",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 3.8,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-18",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Suscripci?n streaming",
+      "valor": 10.8,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-03-24",
+      "tipo": "Gasto",
+      "categoria": "Transporte",
+      "subcategoria": "Aparcamiento",
+      "valor": 11.8,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-03-25",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Seguro Unit Linked",
+      "valor": 62.4,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-03-25",
+      "tipo": "Ingreso",
+      "categoria": "Recompensas/Cashback",
+      "subcategoria": "Dividendos",
+      "valor": 0.07,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-27",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 19.75,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-28",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 1.8,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-29",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 3.4,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-29",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Restaurante",
+      "valor": 26.5,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-28",
+      "tipo": "Ingreso",
+      "categoria": "Salario",
+      "subcategoria": "N?mina Mensual",
+      "valor": 45.88,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-03-28",
+      "tipo": "Ingreso",
+      "categoria": "Salario",
+      "subcategoria": "N?mina Mensual",
+      "valor": 3646.38,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-03-03",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Fondo indexado",
+      "valor": 100,
+      "metodo_pago": "Cuenta MyInvestor",
+      "banco": "MyInvestor"
+    },
+    {
+      "fecha": "2026-03-04",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Fondo indexado",
+      "valor": 1000,
+      "metodo_pago": "Cuenta MyInvestor",
+      "banco": "MyInvestor"
+    },
+    {
+      "fecha": "2026-03-04",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Fondo indexado",
+      "valor": 200,
+      "metodo_pago": "Cuenta MyInvestor",
+      "banco": "MyInvestor"
+    },
+    {
+      "fecha": "2026-03-13",
+      "tipo": "Ingreso",
+      "categoria": "Recompensas/Cashback",
+      "subcategoria": "Cuenta remunerada TR",
+      "valor": 0.62,
+      "metodo_pago": "Cuenta MyInvestor",
+      "banco": "MyInvestor"
+    },
+    {
+      "fecha": "2026-04-01",
+      "tipo": "Gasto",
+      "categoria": "Salud",
+      "subcategoria": "Gimnasio",
+      "valor": 25,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-04-02",
+      "tipo": "Gasto",
+      "categoria": "Vivienda",
+      "subcategoria": "Alquiler",
+      "valor": 200,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-04-07",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Seguro Unit Linked",
+      "valor": 145.6,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-04-08",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Suscripci?n streaming",
+      "valor": 0.99,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-03-30",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Restaurante",
+      "valor": 21,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-30",
+      "tipo": "Gasto",
+      "categoria": "Transporte",
+      "subcategoria": "Transporte p?blico",
+      "valor": 31.15,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-31",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 3.8,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-31",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 4.94,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-03-31",
+      "tipo": "Gasto",
+      "categoria": "Salud",
+      "subcategoria": "Peluquer?a",
+      "valor": 10,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-01",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 9.38,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-01",
+      "tipo": "Ingreso",
+      "categoria": "Recompensas/Cashback",
+      "subcategoria": "Cuenta remunerada TR",
+      "valor": 17.34,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-04-02",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 50,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-04-02",
+      "tipo": "Ingreso",
+      "categoria": "Recompensas/Cashback",
+      "subcategoria": "Saveback TR",
+      "valor": 12.15,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-04-02",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 12.15,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-04-02",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 13.98,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-04-03",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Viaje/Vacaciones",
+      "valor": 254.25,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-07",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Restaurante",
+      "valor": 17,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-07",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Fondo indexado",
+      "valor": 100,
+      "metodo_pago": "Cuenta MyInvestor",
+      "banco": "MyInvestor"
+    },
+    {
+      "fecha": "2026-04-08",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Fondo indexado",
+      "valor": 1000,
+      "metodo_pago": "Cuenta MyInvestor",
+      "banco": "MyInvestor"
+    },
+    {
+      "fecha": "2026-04-08",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Fondo indexado",
+      "valor": 200,
+      "metodo_pago": "Cuenta MyInvestor",
+      "banco": "MyInvestor"
+    },
+    {
+      "fecha": "2026-04-08",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Suscripci?n streaming",
+      "valor": 5.99,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-04-08",
+      "tipo": "Gasto",
+      "categoria": "Transporte",
+      "subcategoria": "Avi?n",
+      "valor": 11,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-08",
+      "tipo": "Gasto",
+      "categoria": "Transporte",
+      "subcategoria": "Avi?n",
+      "valor": 207.56,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-09",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 15.38,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-04-10",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 11.93,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-11",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 17.53,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-12",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Restaurante",
+      "valor": 14,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-12",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 3,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-12",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 16.2,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-12",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Restaurante",
+      "valor": 56.4,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-13",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 16.38,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-13",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 6.09,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-13",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 3.4,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-14",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 0.45,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-14",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 18.05,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-15",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Restaurante",
+      "valor": 14.3,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-15",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 0.45,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-16",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 16.14,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-04-16",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Restaurante",
+      "valor": 15.5,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-16",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 3.4,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-16",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 0.45,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-17",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 3.4,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-17",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 0.45,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-18",
+      "tipo": "Gasto",
+      "categoria": "Transporte",
+      "subcategoria": "Taxi/VTC",
+      "valor": 11.11,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-18",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 10,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-18",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 9.2,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-23",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 10.98,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-04-18",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Suscripci?n streaming",
+      "valor": 10.8,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-04-27",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Seguro Unit Linked",
+      "valor": 62.4,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-04-28",
+      "tipo": "Ingreso",
+      "categoria": "Salario",
+      "subcategoria": "N?mina Mensual",
+      "valor": 2210.88,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-04-29",
+      "tipo": "Gasto",
+      "categoria": "Salud",
+      "subcategoria": "Gimnasio",
+      "valor": 25,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-04-29",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 13.33,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-01",
+      "tipo": "Ingreso",
+      "categoria": "Recompensas/Cashback",
+      "subcategoria": "Cuenta remunerada TR",
+      "valor": 14.3,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-01",
+      "tipo": "Ingreso",
+      "categoria": "Recompensas/Cashback",
+      "subcategoria": "Saveback TR",
+      "valor": 10.07,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-01",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 10.07,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-01",
+      "tipo": "Gasto",
+      "categoria": "Regalos y donaciones",
+      "subcategoria": "Cumplea?os",
+      "valor": 55.26,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-01",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Restaurante",
+      "valor": 23,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-02",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 7.5,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-02",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Delivery",
+      "valor": 16,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-03",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 9.96,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-05",
+      "tipo": "Gasto",
+      "categoria": "Vivienda",
+      "subcategoria": "Alquiler",
+      "valor": 200,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-05-01",
+      "tipo": "Ingreso",
+      "categoria": "Recompensas/Cashback",
+      "subcategoria": "Saveback TR",
+      "valor": 10.07,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-01",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 10.07,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-01",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Restaurante",
+      "valor": 23,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-02",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 7,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-04",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 50,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-04",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 6.5,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-05",
+      "tipo": "Ingreso",
+      "categoria": "Recompensas/Cashback",
+      "subcategoria": "Dividendos",
+      "valor": 0.41000000000000003,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-07",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 5.24,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-06",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Fondo indexado",
+      "valor": 100,
+      "metodo_pago": "Cuenta MyInvestor",
+      "banco": "MyInvestor"
+    },
+    {
+      "fecha": "2026-05-07",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Fondo indexado",
+      "valor": 200,
+      "metodo_pago": "Cuenta MyInvestor",
+      "banco": "MyInvestor"
+    },
+    {
+      "fecha": "2026-05-07",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Fondo indexado",
+      "valor": 1000,
+      "metodo_pago": "Cuenta MyInvestor",
+      "banco": "MyInvestor"
+    },
+    {
+      "fecha": "2026-05-08",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Suscripci?n streaming",
+      "valor": 5.99,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-05-08",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Suscripci?n streaming",
+      "valor": 0.99,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-05-09",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Restaurante",
+      "valor": 36.13,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-11",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 3.26,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-18",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 5.2,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-18",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Restaurante",
+      "valor": 12.27,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-18",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 12.06,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-19",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 10.35,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-18",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Suscripci?n streaming",
+      "valor": 10.8,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-05-23",
+      "tipo": "Gasto",
+      "categoria": "Ropa y calzado",
+      "subcategoria": "Ropa",
+      "valor": 238.77,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-24",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 12.3,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-24",
+      "tipo": "Gasto",
+      "categoria": "Transporte",
+      "subcategoria": "Gasolina",
+      "valor": 5,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-25",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 3.45,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-25",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Delivery",
+      "valor": 14.7,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-25",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 5.76,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-29",
+      "tipo": "Gasto",
+      "categoria": "Transporte",
+      "subcategoria": "Mantenimiento coche",
+      "valor": 40,
+      "metodo_pago": "Efectivo",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-05-30",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 15.27,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-31",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 8.22,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-31",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 1.6,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-06-01",
+      "tipo": "Ingreso",
+      "categoria": "Recompensas/Cashback",
+      "subcategoria": "Saveback TR",
+      "valor": 5.6899999999999995,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-06-01",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 5.6899999999999995,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-06-01",
+      "tipo": "Ingreso",
+      "categoria": "Recompensas/Cashback",
+      "subcategoria": "Cuenta remunerada TR",
+      "valor": 20.04,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-06-01",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Supermercado",
+      "valor": 3.5,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-06-02",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 5.69,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-06-02",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 7.6,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-06-02",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "ETFs",
+      "valor": 50,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-06-03",
+      "tipo": "Gasto",
+      "categoria": "Otros",
+      "subcategoria": "",
+      "valor": 10.03,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-06-02",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Criptomonedas",
+      "valor": 250,
+      "metodo_pago": "Transferencia",
+      "banco": "Otro"
+    },
+    {
+      "fecha": "2026-05-29",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Fondo indexado",
+      "valor": 21.81,
+      "metodo_pago": "Cuenta MyInvestor",
+      "banco": "MyInvestor"
+    },
+    {
+      "fecha": "2026-06-04",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Fondo indexado",
+      "valor": 100,
+      "metodo_pago": "Cuenta MyInvestor",
+      "banco": "MyInvestor"
+    },
+    {
+      "fecha": "2026-06-05",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Fondo indexado",
+      "valor": 200,
+      "metodo_pago": "Cuenta MyInvestor",
+      "banco": "MyInvestor"
+    },
+    {
+      "fecha": "2026-06-05",
+      "tipo": "Gasto",
+      "categoria": "Inversi?n y ahorro",
+      "subcategoria": "Fondo indexado",
+      "valor": 1000,
+      "metodo_pago": "Cuenta MyInvestor",
+      "banco": "MyInvestor"
+    },
+    {
+      "fecha": "2026-06-04",
+      "tipo": "Gasto",
+      "categoria": "Regalos y donaciones",
+      "subcategoria": "Cumplea?os",
+      "valor": 2.5,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-06-06",
+      "tipo": "Gasto",
+      "categoria": "Ropa y calzado",
+      "subcategoria": "Ropa",
+      "valor": 73.32,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-06-07",
+      "tipo": "Gasto",
+      "categoria": "Ocio",
+      "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "valor": 3.4,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-06-07",
+      "tipo": "Gasto",
+      "categoria": "Alimentaci?n",
+      "subcategoria": "Panader?a",
+      "valor": 1.3,
+      "metodo_pago": "Tarjeta D?bito - Trade Republic",
+      "banco": "Trade Republic"
+    }
+  ]
+}

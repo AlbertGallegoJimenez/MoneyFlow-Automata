@@ -134,6 +134,12 @@ function processFolderCSVs() {
   const stillPending = getStillPendingRows(sheet);
   logGeminiResult(geminiResult.resolved, geminiResult.failed, stillPending);
 
+  // --- EXPORTACIÓN AL DASHBOARD ---
+  // Solo exportamos si hubo cambios reales en la hoja
+  if (_logSession && _logSession.newRowsTotal > 0) {
+    exportDashboardData();
+  }
+
   // --- CIERRE: LOG + EMAIL (#8 + #10) ---
   resetHistoryCache();
   finalizeLogger(CONFIG.NOTIFICATION_EMAIL);

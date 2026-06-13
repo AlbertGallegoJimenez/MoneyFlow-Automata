@@ -146,7 +146,7 @@ function _pushToGitHub(jsonContent) {
 
   const putBody = {
     message: commitMessage,
-    content: Utilities.base64Encode(jsonContent),
+    content: Utilities.base64Encode(jsonContent, Utilities.Charset.UTF_8),
     branch:  branch
   };
 

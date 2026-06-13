@@ -59,13 +59,14 @@ function exportDashboardData() {
     if (!fechaStr) continue;
 
     transactions.push({
-      fecha:       fechaStr,
-      tipo:        tipo,
-      categoria:   categoria,
+      fecha:        fechaStr,
+      tipo:         tipo,
+      categoria:    categoria,
       subcategoria: subcat,
-      valor:       valor,
-      metodo_pago: metodoPago,
-      banco:       _extractBank(metodoPago)
+      descripcion:  (row[4] ? row[4].toString().trim() : subcat), // col E, fallback a subcategoría
+      valor:        valor,
+      metodo_pago:  metodoPago,
+      banco:        _extractBank(metodoPago)
     });
   }
 

@@ -807,24 +807,22 @@ function renderLineas(year) {
   const labels = MONTHS_ES;
   const series = top5cats.map(cat=>({
     name: cat,
-    type: 'line',
-    smooth: true,
-    symbol: 'circle',
-    symbolSize: 4,
-    lineStyle: { color: catColor(cat), width: 2 },
-    itemStyle: { color: catColor(cat) },
+    type: 'bar',
+    stack: 'gastos',
+    barMaxWidth: 32,
+    itemStyle: { color: catColor(cat), borderRadius: 0 },
+    emphasis: { focus: 'series' },
     data: Array.from({length:12},(_,i)=>+(sumGastosReales(txOfMonth(year,i+1).filter(t=>t.categoria===cat))||0).toFixed(2))
   }));
 
-  // Línea de inversión
+  // Barra de inversión (apilada separada para que destaque)
   series.push({
     name: 'Inversión',
-    type: 'line',
-    smooth: true,
-    symbol: 'circle',
-    symbolSize: 4,
-    lineStyle: { color: '#38BDF8', width: 2, type: 'dashed' },
-    itemStyle: { color: '#38BDF8' },
+    type: 'bar',
+    stack: 'inversion',
+    barMaxWidth: 14,
+    itemStyle: { color: '#38BDF866', borderRadius: [3,3,0,0] },
+    emphasis: { focus: 'series' },
     data: Array.from({length:12},(_,i)=>+sumInversion(txOfMonth(year,i+1)).toFixed(2))
   });
 

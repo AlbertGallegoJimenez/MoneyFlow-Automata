@@ -1,12 +1,13 @@
 {
-  "last_updated": "2026-06-10T14:56:35.408Z",
-  "total_transactions": 244,
+  "last_updated": "2026-06-13T14:10:28.905Z",
+  "total_transactions": 245,
   "transactions": [
     {
       "fecha": "2026-01-01",
       "tipo": "Ingreso",
       "categoria": "Recompensas/Cashback",
       "subcategoria": "Cuenta remunerada TR",
+      "descripcion": "Inter?s 2% anual",
       "valor": 16.18,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -16,6 +17,7 @@
       "tipo": "Gasto",
       "categoria": "Transporte",
       "subcategoria": "Gasolina",
+      "descripcion": "Repostaje coche Reus",
       "valor": 55,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -25,6 +27,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Plan mensual en TR al S&P 500",
       "valor": 50,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -34,6 +37,7 @@
       "tipo": "Ingreso",
       "categoria": "Recompensas/Cashback",
       "subcategoria": "Saveback TR",
+      "descripcion": "Saveback mensual",
       "valor": 11.32,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -43,6 +47,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Saveback mensual",
       "valor": 11.32,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -52,6 +57,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Round up",
       "valor": 7.85,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -61,6 +67,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Delivery",
+      "descripcion": "Cena Just Eat",
       "valor": 28.04,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -70,6 +77,7 @@
       "tipo": "Gasto",
       "categoria": "Vivienda",
       "subcategoria": "Alquiler",
+      "descripcion": "Trasp?s Mama",
       "valor": 200,
       "metodo_pago": "Transferencia",
       "banco": "Otro"
@@ -79,6 +87,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Vermut con Paula",
       "valor": 3.4,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -88,6 +97,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Restaurante",
+      "descripcion": "Comida con Paula y Mike",
       "valor": 18.883333333333333,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -97,6 +107,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Caf? con Paula y Mike",
       "valor": 1.9666666666666668,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -106,6 +117,7 @@
       "tipo": "Gasto",
       "categoria": "Transporte",
       "subcategoria": "Taxi/VTC",
+      "descripcion": "Cabify",
       "valor": 9.55,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -115,6 +127,7 @@
       "tipo": "Gasto",
       "categoria": "Salud",
       "subcategoria": "Gimnasio",
+      "descripcion": "Cuota mensual Fitness Park",
       "valor": 25,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -124,6 +137,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Seguro Unit Linked",
+      "descripcion": "Renta variable",
       "valor": 140,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -133,6 +147,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Suscripci?n streaming",
+      "descripcion": "Apple Cloud y Apple TV+",
       "valor": 7,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -142,6 +157,7 @@
       "tipo": "Gasto",
       "categoria": "Otros",
       "subcategoria": "",
+      "descripcion": "Carnet jove",
       "valor": 8.65,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -151,6 +167,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Supermercado Dia",
       "valor": 17.1,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -160,6 +177,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Supermercado Dia",
       "valor": 19.75,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -169,6 +187,7 @@
       "tipo": "Gasto",
       "categoria": "Regalos y donaciones",
       "subcategoria": "Cumplea?os",
+      "descripcion": "Cumplea?os Sergi",
       "valor": 60,
       "metodo_pago": "Tarjeta D?bito - Imagin",
       "banco": "Otro"
@@ -178,6 +197,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Round up",
       "valor": 4.61,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -187,6 +207,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Suscripci?n streaming",
+      "descripcion": "Trasp?s cuota Spotify a Mar",
       "valor": 10.8,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -196,6 +217,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Acciones",
+      "descripcion": "Orden de compra a ASML",
       "valor": 251,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -205,6 +227,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Ampolla vi blanc",
       "valor": 2.5,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -214,6 +237,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Orden de compra S&P 500",
       "valor": 201,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -223,6 +247,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Tapeo amb Joana",
       "valor": 10,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -232,6 +257,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Desayuno Vivari",
       "valor": 6.5,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -241,6 +267,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Restaurante",
+      "descripcion": "Sopar amb Alba i Mire",
       "valor": 20.2,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -250,6 +277,7 @@
       "tipo": "Ingreso",
       "categoria": "Salario",
       "subcategoria": "N?mina Mensual",
+      "descripcion": "Bono IH 2025",
       "valor": 1503.41,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -259,6 +287,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Round up",
       "valor": 5.4,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -268,6 +297,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Delivery",
+      "descripcion": "Sushi",
       "valor": 29.3,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -277,6 +307,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Supermercado Dia",
       "valor": 11.62,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -286,6 +317,7 @@
       "tipo": "Gasto",
       "categoria": "Transporte",
       "subcategoria": "Aparcamiento",
+      "descripcion": "Zona verde",
       "valor": 3.56,
       "metodo_pago": "Tarjeta D?bito - Imagin",
       "banco": "Otro"
@@ -295,6 +327,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Seguro Unit Linked",
+      "descripcion": "Renta fija",
       "valor": 62.4,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -304,6 +337,7 @@
       "tipo": "Ingreso",
       "categoria": "Salario",
       "subcategoria": "N?mina Mensual",
+      "descripcion": "Atrasos 2025",
       "valor": 622.28,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -313,6 +347,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Cervesa amb Mire, Joana i G?mez",
       "valor": 2.5,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -322,6 +357,7 @@
       "tipo": "Ingreso",
       "categoria": "Salario",
       "subcategoria": "N?mina Mensual",
+      "descripcion": "N?mina enero",
       "valor": 2153.28,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -331,6 +367,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Supermercado Condis",
       "valor": 7.97,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -340,6 +377,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Panader?a",
+      "descripcion": "Forn de pa Garrofers",
       "valor": 2.8,
       "metodo_pago": "Efectivo",
       "banco": "Otro"
@@ -349,6 +387,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Restaurante",
+      "descripcion": "Cena amb Laia (neto tras Bizum)",
       "valor": 11.7,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -358,6 +397,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Cerve amb Laia",
       "valor": 7.7,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -367,6 +407,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Delivery",
+      "descripcion": "Cena Just Eat",
       "valor": 27.24,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -376,6 +417,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Caf? Les Gavarres",
       "valor": 7.4,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -385,6 +427,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Cine",
+      "descripcion": "Cine Marty Supreme (neto tras Bizum de Mar)",
       "valor": 10.3,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -394,6 +437,7 @@
       "tipo": "Gasto",
       "categoria": "Transporte",
       "subcategoria": "Gasolina",
+      "descripcion": "Repostaje coche Reus",
       "valor": 35,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -403,6 +447,7 @@
       "tipo": "Ingreso",
       "categoria": "Recompensas/Cashback",
       "subcategoria": "Cuenta remunerada TR",
+      "descripcion": "Inter?s 2% anual",
       "valor": 17.45,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -412,6 +457,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Round up",
       "valor": 11.28,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -421,6 +467,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Plan mensual en TR al S&P 500",
       "valor": 50,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -430,6 +477,7 @@
       "tipo": "Ingreso",
       "categoria": "Recompensas/Cashback",
       "subcategoria": "Saveback TR",
+      "descripcion": "Saveback mensual",
       "valor": 2.91,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -439,6 +487,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Saveback mensual",
       "valor": 2.91,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -448,6 +497,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Supermercado Dia",
       "valor": 13.33,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -457,6 +507,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Botella agua m?quina vending gym",
       "valor": 1.15,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -466,6 +517,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "M?ster Data Science",
+      "descripcion": "Matr?cula Semestre Ene-Jun 2026",
       "valor": 685.56,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -475,6 +527,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Supermercado Dia",
       "valor": 10.9,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -484,6 +537,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Seguro Unit Linked",
+      "descripcion": "Renta variable",
       "valor": 145.6,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -493,6 +547,7 @@
       "tipo": "Gasto",
       "categoria": "Salud",
       "subcategoria": "Gimnasio",
+      "descripcion": "Cuota mensual Fitness Park",
       "valor": 25,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -502,6 +557,7 @@
       "tipo": "Gasto",
       "categoria": "Vivienda",
       "subcategoria": "Alquiler",
+      "descripcion": "Trasp?s Mama",
       "valor": 200,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -511,6 +567,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Suscripci?n streaming",
+      "descripcion": "Apple TV+",
       "valor": 5.99,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -520,6 +577,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Suscripci?n streaming",
+      "descripcion": "Apple Cloud",
       "valor": 0.99,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -529,6 +587,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Restaurante",
+      "descripcion": "Comida amb Laia (neto tras Bizum)",
       "valor": 22.6,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -538,6 +597,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Vermut amb Laia",
       "valor": 7.8,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -547,6 +607,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Restaurante",
+      "descripcion": "Cal?otada",
       "valor": 44,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -556,6 +617,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Vermut amb Laia",
       "valor": 4.75,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -565,6 +627,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Caf?",
       "valor": 1.55,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -574,6 +637,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Round up",
       "valor": 8.22,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -583,6 +647,7 @@
       "tipo": "Gasto",
       "categoria": "Transporte",
       "subcategoria": "Seguro coche",
+      "descripcion": "Anualidad 2026 Seguro Coche",
       "valor": 238.45,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -592,6 +657,7 @@
       "tipo": "Gasto",
       "categoria": "Salud",
       "subcategoria": "Peluquer?a",
+      "descripcion": "Peluquer?a",
       "valor": 10,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -601,6 +667,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Acciones",
+      "descripcion": "Orden de compra a AST SpaceMobile",
       "valor": 101,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -610,6 +677,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Acciones",
+      "descripcion": "Orden de compra a Viking Therapeutics",
       "valor": 101,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -619,6 +687,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Panader?a",
+      "descripcion": "Barra de pan y boller?a",
       "valor": 2.75,
       "metodo_pago": "Efectivo",
       "banco": "Otro"
@@ -628,6 +697,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Suscripci?n streaming",
+      "descripcion": "Trasp?s cuota Spotify a Mar",
       "valor": 10.8,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -637,6 +707,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Cerveza con Javi",
       "valor": 13.8,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -646,6 +717,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Delivery",
+      "descripcion": "Sushi",
       "valor": 38.65,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -655,6 +727,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Round up",
       "valor": 4.2,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -664,6 +737,7 @@
       "tipo": "Gasto",
       "categoria": "Ropa y calzado",
       "subcategoria": "Ropa",
+      "descripcion": "Pantal?n Cortefiel",
       "valor": 5.95,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -673,6 +747,7 @@
       "tipo": "Ingreso",
       "categoria": "Recompensas/Cashback",
       "subcategoria": "Dividendos",
+      "descripcion": "Dividendos acciones ASML",
       "valor": 0.25,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -682,6 +757,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Comida teletrabajo Consell",
       "valor": 7.71,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -691,6 +767,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Fondo indexado",
+      "descripcion": "Orden de compra Sam Smart Energy",
       "valor": 499.99,
       "metodo_pago": "Cuenta MyInvestor",
       "banco": "MyInvestor"
@@ -700,6 +777,7 @@
       "tipo": "Ingreso",
       "categoria": "Recompensas/Cashback",
       "subcategoria": "Promoci?n amigo",
+      "descripcion": "Promoci?n apertura cuenta MyInvestor",
       "valor": 20.75,
       "metodo_pago": "Cuenta MyInvestor",
       "banco": "MyInvestor"
@@ -709,6 +787,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Fondo indexado",
+      "descripcion": "Orden de compra S&P 500",
       "valor": 720,
       "metodo_pago": "Cuenta MyInvestor",
       "banco": "MyInvestor"
@@ -718,6 +797,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Panader?a",
+      "descripcion": "Barra de pan y boller?a",
       "valor": 0.95,
       "metodo_pago": "Efectivo",
       "banco": "Otro"
@@ -727,6 +807,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Compra Dia",
       "valor": 14.59,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -736,6 +817,7 @@
       "tipo": "Gasto",
       "categoria": "Regalos y donaciones",
       "subcategoria": "Donaci?n",
+      "descripcion": "Donaci?n investigaci?n ELA",
       "valor": 100,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -745,6 +827,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Delivery",
+      "descripcion": "Cena Just Eat",
       "valor": 20.55,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -754,6 +837,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Suplementaci?n",
+      "descripcion": "Compra suplementaci?n",
       "valor": 42.02,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -763,6 +847,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Inversi?n auto (yes)",
       "valor": 4.4,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -772,6 +857,7 @@
       "tipo": "Gasto",
       "categoria": "Otros",
       "subcategoria": "",
+      "descripcion": "Soporte para cables",
       "valor": 4.67,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -781,6 +867,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Seguro Unit Linked",
+      "descripcion": "Renta Fija",
       "valor": 62.4,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -790,6 +877,7 @@
       "tipo": "Ingreso",
       "categoria": "Salario",
       "subcategoria": "N?mina Mensual",
+      "descripcion": "N?mina febrero",
       "valor": 2153.28,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -799,6 +887,7 @@
       "tipo": "Gasto",
       "categoria": "Transporte",
       "subcategoria": "Aparcamiento",
+      "descripcion": "Zona azul",
       "valor": 0.65,
       "metodo_pago": "Tarjeta D?bito - Imagin",
       "banco": "Otro"
@@ -808,6 +897,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Restaurante",
+      "descripcion": "Comida con Mire y Javi",
       "valor": 35,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -817,6 +907,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Vermut en Vila Ol?mpica",
       "valor": 4,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -826,6 +917,7 @@
       "tipo": "Ingreso",
       "categoria": "Recompensas/Cashback",
       "subcategoria": "Cuenta remunerada TR",
+      "descripcion": "Inter?s 2% anual",
       "valor": 16.05,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -835,6 +927,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Plan mensual en TR al S&P 500",
       "valor": 50,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -844,6 +937,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Round up",
       "valor": 6.62,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -853,6 +947,7 @@
       "tipo": "Ingreso",
       "categoria": "Recompensas/Cashback",
       "subcategoria": "Saveback TR",
+      "descripcion": "Saveback mensual",
       "valor": 11.37,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -862,6 +957,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Saveback mensual",
       "valor": 11.37,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -871,6 +967,7 @@
       "tipo": "Gasto",
       "categoria": "Regalos y donaciones",
       "subcategoria": "Cumplea?os",
+      "descripcion": "Regal massatge Mama",
       "valor": 18,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -880,6 +977,7 @@
       "tipo": "Gasto",
       "categoria": "Regalos y donaciones",
       "subcategoria": "Cumplea?os",
+      "descripcion": "Regal polsera Mama",
       "valor": 10,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -889,6 +987,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Compra caf?",
       "valor": 8.97,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -898,6 +997,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Delivery",
+      "descripcion": "Cena Just Eat",
       "valor": 17.31,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -907,6 +1007,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Seguro Unit Linked",
+      "descripcion": "Renta variable",
       "valor": 145.6,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -916,6 +1017,7 @@
       "tipo": "Gasto",
       "categoria": "Salud",
       "subcategoria": "Gimnasio",
+      "descripcion": "Cuota mensual Fitness Park",
       "valor": 25,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -925,6 +1027,7 @@
       "tipo": "Gasto",
       "categoria": "Vivienda",
       "subcategoria": "Alquiler",
+      "descripcion": "Trasp?s Mama",
       "valor": 200,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -934,6 +1037,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Suscripci?n streaming",
+      "descripcion": "Apple TV+",
       "valor": 5.99,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -943,6 +1047,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Suscripci?n streaming",
+      "descripcion": "Apple Cloud",
       "valor": 0.99,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -952,6 +1057,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Round up",
       "valor": 1.46,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -961,6 +1067,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Compra Mercadona",
       "valor": 13.65,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -970,6 +1077,7 @@
       "tipo": "Gasto",
       "categoria": "Ropa y calzado",
       "subcategoria": "Calzado",
+      "descripcion": "Zapatillas casual CK",
       "valor": 86.95,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -979,6 +1087,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Compra comida Caprabo Consell",
       "valor": 11.97,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -988,6 +1097,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Delivery",
+      "descripcion": "Sushi",
       "valor": 38.15,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -997,6 +1107,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Vermut amb Mire",
       "valor": 5.75,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1006,6 +1117,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Round up",
       "valor": 3.06,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1015,6 +1127,7 @@
       "tipo": "Gasto",
       "categoria": "Regalos y donaciones",
       "subcategoria": "Cumplea?os",
+      "descripcion": "Tarta cumplea?os Jon Cake",
       "valor": 66,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1024,6 +1137,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Compra Condis",
       "valor": 3.81,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1033,6 +1147,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Caf?",
       "valor": 4.1,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1042,6 +1157,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Restaurante",
+      "descripcion": "Tapeo Poblenou",
       "valor": 48.5,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1051,6 +1167,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Restaurante",
+      "descripcion": "Dinar cumple Mama",
       "valor": 33,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1060,6 +1177,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Caf?",
       "valor": 6.65,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1069,6 +1187,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Caf?",
       "valor": 5.9,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1078,6 +1197,7 @@
       "tipo": "Gasto",
       "categoria": "Transporte",
       "subcategoria": "Transporte p?blico",
+      "descripcion": "T-10",
       "valor": 14,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1087,6 +1207,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Round up",
       "valor": 10.08,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1096,6 +1217,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Caf?",
       "valor": 3.8,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1105,6 +1227,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Suscripci?n streaming",
+      "descripcion": "Trasp?s cuota Spotify a Mar",
       "valor": 10.8,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1114,6 +1237,7 @@
       "tipo": "Gasto",
       "categoria": "Transporte",
       "subcategoria": "Aparcamiento",
+      "descripcion": "Ampliaci? Zona Verda Residents",
       "valor": 11.8,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1123,6 +1247,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Seguro Unit Linked",
+      "descripcion": "Renta Fija",
       "valor": 62.4,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1132,6 +1257,7 @@
       "tipo": "Ingreso",
       "categoria": "Recompensas/Cashback",
       "subcategoria": "Dividendos",
+      "descripcion": "Dividendos acciones PayPal",
       "valor": 0.07,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1141,6 +1267,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Compra beguda sopar cumple Alba",
       "valor": 19.75,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1150,6 +1277,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Caf?",
       "valor": 1.8,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1159,6 +1287,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Caf?",
       "valor": 3.4,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1168,6 +1297,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Restaurante",
+      "descripcion": "Dinar Laia",
       "valor": 26.5,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1177,6 +1307,7 @@
       "tipo": "Ingreso",
       "categoria": "Salario",
       "subcategoria": "N?mina Mensual",
+      "descripcion": "Atrasos 2026",
       "valor": 45.88,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1186,6 +1317,7 @@
       "tipo": "Ingreso",
       "categoria": "Salario",
       "subcategoria": "N?mina Mensual",
+      "descripcion": "N?mina Marzo 2026 (+complemento)",
       "valor": 3646.38,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1195,6 +1327,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Fondo indexado",
+      "descripcion": "ISHARES US INDEX FUND IE S EUR",
       "valor": 100,
       "metodo_pago": "Cuenta MyInvestor",
       "banco": "MyInvestor"
@@ -1204,6 +1337,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Fondo indexado",
+      "descripcion": "ISHARES DEVELOPED WORLD INDEX",
       "valor": 1000,
       "metodo_pago": "Cuenta MyInvestor",
       "banco": "MyInvestor"
@@ -1213,6 +1347,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Fondo indexado",
+      "descripcion": "ISHARES EMERGING MARKETS INDEX",
       "valor": 200,
       "metodo_pago": "Cuenta MyInvestor",
       "banco": "MyInvestor"
@@ -1222,6 +1357,7 @@
       "tipo": "Ingreso",
       "categoria": "Recompensas/Cashback",
       "subcategoria": "Cuenta remunerada TR",
+      "descripcion": "Remuneraci?n MyInvestor",
       "valor": 0.62,
       "metodo_pago": "Cuenta MyInvestor",
       "banco": "MyInvestor"
@@ -1231,6 +1367,7 @@
       "tipo": "Gasto",
       "categoria": "Salud",
       "subcategoria": "Gimnasio",
+      "descripcion": "Gimnasio",
       "valor": 25,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1240,6 +1377,7 @@
       "tipo": "Gasto",
       "categoria": "Vivienda",
       "subcategoria": "Alquiler",
+      "descripcion": "Alquiler",
       "valor": 200,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1249,6 +1387,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Seguro Unit Linked",
+      "descripcion": "Seguro Unit Linked",
       "valor": 145.6,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1258,6 +1397,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Suscripci?n streaming",
+      "descripcion": "Suscripci?n streaming",
       "valor": 0.99,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1267,6 +1407,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Restaurante",
+      "descripcion": "Sopar tornada Sergi",
       "valor": 21,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1276,6 +1417,7 @@
       "tipo": "Gasto",
       "categoria": "Transporte",
       "subcategoria": "Transporte p?blico",
+      "descripcion": "AVE a Camp de Tarragona",
       "valor": 31.15,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1285,6 +1427,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Caf? con Camilo",
       "valor": 3.8,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1294,6 +1437,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Pa?uelos de limpieza para coche",
       "valor": 4.94,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1303,6 +1447,7 @@
       "tipo": "Gasto",
       "categoria": "Salud",
       "subcategoria": "Peluquer?a",
+      "descripcion": "Peluquer?a",
       "valor": 10,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1312,6 +1457,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Dinar Consell",
       "valor": 9.38,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1321,6 +1467,7 @@
       "tipo": "Ingreso",
       "categoria": "Recompensas/Cashback",
       "subcategoria": "Cuenta remunerada TR",
+      "descripcion": "Inter?s 2% anual",
       "valor": 17.34,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1330,6 +1477,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Plan mensual en TR al S&P 500",
       "valor": 50,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1339,6 +1487,7 @@
       "tipo": "Ingreso",
       "categoria": "Recompensas/Cashback",
       "subcategoria": "Saveback TR",
+      "descripcion": "Saveback mensual",
       "valor": 12.15,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1348,6 +1497,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Saveback mensual",
       "valor": 12.15,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1357,6 +1507,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Round up",
       "valor": 13.98,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1366,6 +1517,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Viaje/Vacaciones",
+      "descripcion": "Balance viaje Donosti 2026",
       "valor": 254.25,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1375,6 +1527,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Restaurante",
+      "descripcion": "Sopar amb Ortiz Uruguayo",
       "valor": 17,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1384,6 +1537,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Fondo indexado",
+      "descripcion": "ISHARES US INDEX FUND IE S EUR",
       "valor": 100,
       "metodo_pago": "Cuenta MyInvestor",
       "banco": "MyInvestor"
@@ -1393,6 +1547,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Fondo indexado",
+      "descripcion": "ISHARES DEVELOPED WORLD INDEX",
       "valor": 1000,
       "metodo_pago": "Cuenta MyInvestor",
       "banco": "MyInvestor"
@@ -1402,6 +1557,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Fondo indexado",
+      "descripcion": "ISHARES EMERGING MARKETS INDEX",
       "valor": 200,
       "metodo_pago": "Cuenta MyInvestor",
       "banco": "MyInvestor"
@@ -1411,6 +1567,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Suscripci?n streaming",
+      "descripcion": "Suscripci?n streaming",
       "valor": 5.99,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1420,6 +1577,7 @@
       "tipo": "Gasto",
       "categoria": "Transporte",
       "subcategoria": "Avi?n",
+      "descripcion": "Avi?n",
       "valor": 11,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1429,6 +1587,7 @@
       "tipo": "Gasto",
       "categoria": "Transporte",
       "subcategoria": "Avi?n",
+      "descripcion": "Avi?n",
       "valor": 207.56,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1438,6 +1597,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Round up",
       "valor": 15.38,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1447,6 +1607,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Supermercado",
       "valor": 11.93,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1456,6 +1617,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Supermercado",
       "valor": 17.53,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1465,6 +1627,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Restaurante",
+      "descripcion": "Restaurante",
       "valor": 14,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1474,6 +1637,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Bar (cervezas, caf?s, etc.)",
       "valor": 3,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1483,6 +1647,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Bar (cervezas, caf?s, etc.)",
       "valor": 16.2,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1492,6 +1657,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Restaurante",
+      "descripcion": "Convido a Mire i Alba",
       "valor": 56.4,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1501,6 +1667,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Super casa Laura",
       "valor": 16.38,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1510,6 +1677,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Comida primer d?a Santander",
       "valor": 6.09,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1519,6 +1687,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Desayuno 100cia",
       "valor": 3.4,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1528,6 +1697,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Caf? m?quina",
       "valor": 0.45,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1537,6 +1707,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Super casa Laura",
       "valor": 18.05,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1546,6 +1717,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Restaurante",
+      "descripcion": "Cena partido Madrid",
       "valor": 14.3,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1555,6 +1727,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Caf? m?quina",
       "valor": 0.45,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1564,6 +1737,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Round up",
       "valor": 16.14,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1573,6 +1747,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Restaurante",
+      "descripcion": "Comida Adarzo",
       "valor": 15.5,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1582,6 +1757,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Desayuno 100cia",
       "valor": 3.4,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1591,6 +1767,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Caf? m?quina",
       "valor": 0.45,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1600,6 +1777,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Desayuno 100cia",
       "valor": 3.4,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1609,6 +1787,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "Caf? m?quina",
       "valor": 0.45,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1618,6 +1797,7 @@
       "tipo": "Gasto",
       "categoria": "Transporte",
       "subcategoria": "Taxi/VTC",
+      "descripcion": "Cabify aeropuerto STD",
       "valor": 11.11,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1627,6 +1807,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Terraza con Lucas y Laura",
       "valor": 10,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1636,6 +1817,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Desayuno con Lucas",
       "valor": 9.2,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1645,6 +1827,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Round up",
       "valor": 10.98,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1654,6 +1837,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Suscripci?n streaming",
+      "descripcion": "PAGAMENT TRASPASSOS",
       "valor": 10.8,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1663,6 +1847,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Seguro Unit Linked",
+      "descripcion": "OCCIDENT GCO S.A.",
       "valor": 62.4,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1672,6 +1857,7 @@
       "tipo": "Ingreso",
       "categoria": "Salario",
       "subcategoria": "N?mina Mensual",
+      "descripcion": "NOMINA (TRF)",
       "valor": 2210.88,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1681,6 +1867,7 @@
       "tipo": "Gasto",
       "categoria": "Salud",
       "subcategoria": "Gimnasio",
+      "descripcion": "ACTIV FITNESS ESP",
       "valor": 25,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1690,6 +1877,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "CAPRABO - 7918 CORSEGA",
       "valor": 13.33,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1699,6 +1887,7 @@
       "tipo": "Ingreso",
       "categoria": "Recompensas/Cashback",
       "subcategoria": "Cuenta remunerada TR",
+      "descripcion": "Inter?s 2% anual",
       "valor": 14.3,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1708,6 +1897,7 @@
       "tipo": "Ingreso",
       "categoria": "Recompensas/Cashback",
       "subcategoria": "Saveback TR",
+      "descripcion": "Saveback TR (Ingreso)",
       "valor": 10.07,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1717,6 +1907,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Saveback TR (Inversi?n)",
       "valor": 10.07,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1726,6 +1917,7 @@
       "tipo": "Gasto",
       "categoria": "Regalos y donaciones",
       "subcategoria": "Cumplea?os",
+      "descripcion": "THE BOJ",
       "valor": 55.26,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1735,6 +1927,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Restaurante",
+      "descripcion": "AUTENTICO",
       "valor": 23,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1744,6 +1937,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "BAR RESTAURANTE DELICIAS",
       "valor": 7.5,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1753,6 +1947,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Delivery",
+      "descripcion": "JustEat",
       "valor": 16,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1762,6 +1957,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "MP**DIA 8103",
       "valor": 9.96,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1771,6 +1967,7 @@
       "tipo": "Gasto",
       "categoria": "Vivienda",
       "subcategoria": "Alquiler",
+      "descripcion": "PAGAMENT TRANSFER.",
       "valor": 200,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1780,6 +1977,7 @@
       "tipo": "Ingreso",
       "categoria": "Recompensas/Cashback",
       "subcategoria": "Saveback TR",
+      "descripcion": "Saveback TR (Ingreso)",
       "valor": 10.07,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1789,6 +1987,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Saveback TR (Inversi?n)",
       "valor": 10.07,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1798,6 +1997,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Restaurante",
+      "descripcion": "AUTENTICO",
       "valor": 23,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1807,6 +2007,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "BAR RESTAURANTE DELICIAS",
       "valor": 7,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1816,6 +2017,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Core S&P 500 USD (Acc)",
       "valor": 50,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1825,6 +2027,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Core S&P 500 USD (Acc)",
       "valor": 6.5,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1834,6 +2037,7 @@
       "tipo": "Ingreso",
       "categoria": "Recompensas/Cashback",
       "subcategoria": "Dividendos",
+      "descripcion": "ASML",
       "valor": 0.41000000000000003,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1843,6 +2047,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "MP**DIA 8103",
       "valor": 5.24,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1852,6 +2057,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Fondo indexado",
+      "descripcion": "ISHARES US INDEX FUND IE S EUR",
       "valor": 100,
       "metodo_pago": "Cuenta MyInvestor",
       "banco": "MyInvestor"
@@ -1861,6 +2067,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Fondo indexado",
+      "descripcion": "ISHARES EMERGING MARKETS INDEX",
       "valor": 200,
       "metodo_pago": "Cuenta MyInvestor",
       "banco": "MyInvestor"
@@ -1870,6 +2077,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Fondo indexado",
+      "descripcion": "ISHARES DEVELOPED WORLD INDEX",
       "valor": 1000,
       "metodo_pago": "Cuenta MyInvestor",
       "banco": "MyInvestor"
@@ -1879,6 +2087,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Suscripci?n streaming",
+      "descripcion": "APPLE.COM/BILL",
       "valor": 5.99,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1888,6 +2097,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Suscripci?n streaming",
+      "descripcion": "APPLE.COM/BILL",
       "valor": 0.99,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1897,6 +2107,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Restaurante",
+      "descripcion": "Sopar amb Mire i G?mez",
       "valor": 36.13,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1906,6 +2117,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Round up",
       "valor": 3.26,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1915,6 +2127,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "YUNLAI",
       "valor": 5.2,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1924,6 +2137,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Restaurante",
+      "descripcion": "COLLONUT OLESA",
       "valor": 12.27,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1933,6 +2147,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Round up",
       "valor": 12.06,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1942,6 +2157,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "VIVARI",
       "valor": 10.35,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1951,6 +2167,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Suscripci?n streaming",
+      "descripcion": "Trasp?s cuota Spotify a Mar",
       "valor": 10.8,
       "metodo_pago": "Domiciliaci?n",
       "banco": "Otro"
@@ -1960,6 +2177,7 @@
       "tipo": "Gasto",
       "categoria": "Ropa y calzado",
       "subcategoria": "Ropa",
+      "descripcion": "CortefielES",
       "valor": 238.77,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1969,6 +2187,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "SQ *SANTET DELI CO S.L.",
       "valor": 12.3,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1978,6 +2197,7 @@
       "tipo": "Gasto",
       "categoria": "Transporte",
       "subcategoria": "Gasolina",
+      "descripcion": "Mire ?",
       "valor": 5,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1987,6 +2207,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "VIVARI",
       "valor": 3.45,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -1996,6 +2217,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Delivery",
+      "descripcion": "JustEat",
       "valor": 14.7,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -2005,15 +2227,27 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Core S&P 500 USD (Acc)",
       "valor": 5.76,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
+    },
+    {
+      "fecha": "2026-05-25",
+      "tipo": "Ingreso",
+      "categoria": "Salario",
+      "subcategoria": "N?mina Mensual",
+      "descripcion": "NOMINA (TRF)",
+      "valor": 2153,
+      "metodo_pago": "Domiciliaci?n",
+      "banco": "Otro"
     },
     {
       "fecha": "2026-05-29",
       "tipo": "Gasto",
       "categoria": "Transporte",
       "subcategoria": "Mantenimiento coche",
+      "descripcion": "Revisi?n aire condicionado",
       "valor": 40,
       "metodo_pago": "Efectivo",
       "banco": "Otro"
@@ -2023,6 +2257,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "MP**DIA 8103",
       "valor": 15.27,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -2032,6 +2267,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "MERCADONA TORDERA",
       "valor": 8.22,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -2041,6 +2277,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "NEW HOLLIDAY SUPERMERCADO",
       "valor": 1.6,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -2050,6 +2287,7 @@
       "tipo": "Ingreso",
       "categoria": "Recompensas/Cashback",
       "subcategoria": "Saveback TR",
+      "descripcion": "Saveback TR (Ingreso)",
       "valor": 5.6899999999999995,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -2059,6 +2297,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Saveback TR (Inversi?n)",
       "valor": 5.6899999999999995,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -2068,6 +2307,7 @@
       "tipo": "Ingreso",
       "categoria": "Recompensas/Cashback",
       "subcategoria": "Cuenta remunerada TR",
+      "descripcion": "Interest payment for payout collection 019e80ac-74c0-7b35-a8c8-66084cc909d1",
       "valor": 20.04,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -2077,6 +2317,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Supermercado",
+      "descripcion": "NEW HOLLIDAY SUPERMERCADO",
       "valor": 3.5,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -2086,6 +2327,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Core S&P 500 USD (Acc)",
       "valor": 5.69,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -2095,6 +2337,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Core S&P 500 USD (Acc)",
       "valor": 7.6,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -2104,6 +2347,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "ETFs",
+      "descripcion": "Core S&P 500 USD (Acc)",
       "valor": 50,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -2113,6 +2357,7 @@
       "tipo": "Gasto",
       "categoria": "Otros",
       "subcategoria": "",
+      "descripcion": "Parabrisas coche",
       "valor": 10.03,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -2122,6 +2367,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Criptomonedas",
+      "descripcion": "Orden de compra BTC",
       "valor": 250,
       "metodo_pago": "Transferencia",
       "banco": "Otro"
@@ -2131,6 +2377,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Fondo indexado",
+      "descripcion": "ISHARES US INDEX FUND IE S EUR",
       "valor": 21.81,
       "metodo_pago": "Cuenta MyInvestor",
       "banco": "MyInvestor"
@@ -2140,6 +2387,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Fondo indexado",
+      "descripcion": "ISHARES US INDEX FUND IE S EUR",
       "valor": 100,
       "metodo_pago": "Cuenta MyInvestor",
       "banco": "MyInvestor"
@@ -2149,6 +2397,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Fondo indexado",
+      "descripcion": "ISHARES EMERGING MARKETS INDEX",
       "valor": 200,
       "metodo_pago": "Cuenta MyInvestor",
       "banco": "MyInvestor"
@@ -2158,6 +2407,7 @@
       "tipo": "Gasto",
       "categoria": "Inversi?n y ahorro",
       "subcategoria": "Fondo indexado",
+      "descripcion": "ISHARES DEVELOPED WORLD INDEX",
       "valor": 1000,
       "metodo_pago": "Cuenta MyInvestor",
       "banco": "MyInvestor"
@@ -2167,6 +2417,7 @@
       "tipo": "Gasto",
       "categoria": "Regalos y donaciones",
       "subcategoria": "Cumplea?os",
+      "descripcion": "Ram flors cumple Mire",
       "valor": 2.5,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -2176,6 +2427,7 @@
       "tipo": "Gasto",
       "categoria": "Ropa y calzado",
       "subcategoria": "Ropa",
+      "descripcion": "Ropa de deporte",
       "valor": 73.32,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -2185,6 +2437,7 @@
       "tipo": "Gasto",
       "categoria": "Ocio",
       "subcategoria": "Bar (cervezas, caf?s, etc.)",
+      "descripcion": "Xiringuito platja amb Laia (descomptat lo seu + parking a mitges)",
       "valor": 3.4,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"
@@ -2194,6 +2447,7 @@
       "tipo": "Gasto",
       "categoria": "Alimentaci?n",
       "subcategoria": "Panader?a",
+      "descripcion": "MACXIPA VERGE MONTSERRAT",
       "valor": 1.3,
       "metodo_pago": "Tarjeta D?bito - Trade Republic",
       "banco": "Trade Republic"

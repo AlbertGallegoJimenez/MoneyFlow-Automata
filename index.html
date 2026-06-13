@@ -185,20 +185,17 @@
 <body>
 <div class="app">
 
-  <!-- HEADER -->
   <header>
     <div class="logo">MoneyFlow <span>/ dashboard</span></div>
-    <div class="last-updated" id="last-updated">Cargando datos...</div>
+    <div class="last-updated" id="last-updated">Cargando datos locales...</div>
   </header>
 
-  <!-- TABS -->
   <div class="tabs-bar">
     <button class="tab-btn active" data-tab="resumen">Resumen</button>
     <button class="tab-btn" data-tab="mensual">Análisis mensual</button>
     <button class="tab-btn" data-tab="historico">Histórico</button>
   </div>
 
-  <!-- FILTERS -->
   <div class="filters-bar">
     <span class="filter-label">Banco</span>
     <select id="filter-bank">
@@ -212,12 +209,7 @@
   </div>
 
   <main>
-
-    <!-- ════════════════════════════════════════
-         TAB 1 — RESUMEN
-    ════════════════════════════════════════ -->
     <div class="tab-panel active" id="tab-resumen">
-
       <div class="section-sep">Este mes</div>
       <div class="grid grid-4" style="margin-bottom:1rem">
         <div class="card">
@@ -265,11 +257,7 @@
       </div>
     </div>
 
-    <!-- ════════════════════════════════════════
-         TAB 2 — ANÁLISIS MENSUAL
-    ════════════════════════════════════════ -->
     <div class="tab-panel" id="tab-mensual">
-
       <div class="filters-bar" style="padding:0.75rem 0; border:none; margin-bottom:0.5rem">
         <span class="filter-label">Mes</span>
         <select id="filter-month-mensual"></select>
@@ -336,14 +324,9 @@
         <div class="card-title">Mes actual vs mes anterior vs media 6 meses</div>
         <div class="chart chart-md" id="chart-comparativa"></div>
       </div>
-
     </div>
 
-    <!-- ════════════════════════════════════════
-         TAB 3 — HISTÓRICO
-    ════════════════════════════════════════ -->
     <div class="tab-panel" id="tab-historico">
-
       <div class="filters-bar" style="padding:0.75rem 0;border:none;margin-bottom:0.5rem">
         <span class="filter-label">Año</span>
         <select id="filter-year-hist"></select>
@@ -391,7 +374,6 @@
           <div class="empty">Selecciona un año para ver la comparativa</div>
         </div>
       </div>
-
     </div>
   </main>
 </div>
@@ -400,15 +382,14 @@
 // ══════════════════════════════════════════════════════
 // ESTADO GLOBAL
 // ══════════════════════════════════════════════════════
-let RAW = [];          // Todas las transacciones del JSON
-let FILTERED = [];     // Transacciones tras aplicar filtro de banco
-let YEARS = [];        // Años disponibles en los datos
+let RAW = [];
+let FILTERED = [];     
+let YEARS = [];        
 let MONTHS_ES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 let MONTHS_FULL = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
-const INV_CAT = "Inversión y ahorro"; // Categoría que separamos del resto de gastos
+const INV_CAT = "Inversión y ahorro"; 
 
-// Paleta fija por categoría de gasto (para consistencia entre gráficos)
 const CAT_COLORS = {
   "Vivienda":             "#60A5FA",
   "Alimentación":         "#34D399",
@@ -423,44 +404,56 @@ const CAT_COLORS = {
 };
 function catColor(cat) { return CAT_COLORS[cat] || "#94A3B8"; }
 
-// ══════════════════════════════════════════════════════
-// CARGA DE DATOS
-// ══════════════════════════════════════════════════════
-async function loadData() {
-  try {
-    const res  = await fetch('data/gastos.json?v=' + Date.now());
-    const json = await res.json();
-    RAW = json.transactions || [];
-
-    // Fecha última actualización
-    if (json.last_updated) {
-      const d = new Date(json.last_updated);
-      const str = d.toLocaleDateString('es-ES', { day:'2-digit', month:'short', year:'numeric' })
-                + ' · ' + d.toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' });
-      document.getElementById('last-updated').textContent = 'Actualizado ' + str;
-    }
-
-    // Años disponibles
-    YEARS = [...new Set(RAW.map(t => t.fecha.substring(0,4)))].sort();
-
-    initFilters();
-    applyBankFilter();
-  } catch(e) {
-    document.getElementById('last-updated').textContent = 'Error al cargar datos';
-    console.error(e);
+function initEchart(domId) {
+  const dom = document.getElementById(domId);
+  let chart = echarts.getInstanceByDom(dom);
+  if (chart) {
+    chart.dispose(); 
   }
+  return echarts.init(dom, null, { renderer: 'svg' });
 }
 
 // ══════════════════════════════════════════════════════
-// FILTROS E INICIALIZACIÓN
+// CARGA ASÍNCRONA DESDE GOOGLE SHEETS
+// ══════════════════════════════════════════════════════
+function loadData() {
+  document.getElementById('last-updated').textContent = 'Conectando con Google Sheets...';
+
+  google.script.run
+    .withSuccessHandler(function(serverData) {
+      RAW = serverData.transactions || [];
+      
+      if (serverData.last_updated) {
+        const d = new Date(serverData.last_updated);
+        const str = d.toLocaleDateString('es-ES', { day:'2-digit', month:'short', year:'numeric' })
+                  + ' · ' + d.toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' });
+        document.getElementById('last-updated').textContent = 'Actualizado ' + str;
+      }
+
+      if (RAW.length === 0) {
+        document.getElementById('last-updated').textContent = 'Hoja encontrada, pero sin datos válidos.';
+        return;
+      }
+
+      YEARS = [...new Set(RAW.map(t => t.fecha.substring(0,4)))].sort();
+      initFilters();
+      applyBankFilter();
+    })
+    .withFailureHandler(function(error) {
+      console.error("Error desde Apps Script:", error);
+      document.getElementById('last-updated').textContent = 'Error: ' + error.message;
+    })
+    .getDashboardData(); // Llama a la función del lado del servidor
+}
+
+// ══════════════════════════════════════════════════════
+// FILTROS
 // ══════════════════════════════════════════════════════
 function initFilters() {
-  // Año histórico
   const selHist = document.getElementById('filter-year-hist');
   YEARS.forEach(y => { const o = document.createElement('option'); o.value=y; o.textContent=y; selHist.appendChild(o); });
   if (YEARS.length) selHist.value = YEARS[YEARS.length-1];
 
-  // Mes/Año análisis mensual
   const selYM = document.getElementById('filter-year-mensual');
   YEARS.forEach(y => { const o = document.createElement('option'); o.value=y; o.textContent=y; selYM.appendChild(o); });
   const now = new Date();
@@ -483,13 +476,12 @@ function applyBankFilter() {
 }
 
 function renderAll() {
-  // Solo renderizamos la pestaña que está activa en este momento
   const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
-  
   if (activeTab === 'resumen') renderResumen();
   if (activeTab === 'mensual') renderMensual();
   if (activeTab === 'historico') renderHistorico();
 }
+
 // ══════════════════════════════════════════════════════
 // HELPERS DE DATOS
 // ══════════════════════════════════════════════════════
@@ -509,16 +501,15 @@ function txOfYear(year) {
   return FILTERED.filter(t => t.fecha.startsWith(year));
 }
 
-function sumIngresos(txs) { return txs.filter(t => t.tipo==='Ingreso').reduce((s,t)=>s+t.valor,0); }
-function sumGastosReales(txs) { return txs.filter(t => t.tipo==='Gasto' && t.categoria!==INV_CAT).reduce((s,t)=>s+t.valor,0); }
-function sumInversion(txs) { return txs.filter(t => t.tipo==='Gasto' && t.categoria===INV_CAT).reduce((s,t)=>s+t.valor,0); }
+function sumIngresos(txs) { return txs.filter(t => t.tipo==='Ingreso').reduce((s,t)=>s+Math.abs(t.valor),0); }
+function sumGastosReales(txs) { return txs.filter(t => t.tipo==='Gasto' && t.categoria!==INV_CAT).reduce((s,t)=>s+Math.abs(t.valor),0); }
+function sumInversion(txs) { return txs.filter(t => t.tipo==='Gasto' && t.categoria===INV_CAT).reduce((s,t)=>s+Math.abs(t.valor),0); }
 
 function currentYM() {
   const now = new Date();
   return { year: now.getFullYear(), month: now.getMonth()+1 };
 }
 
-// Animación de conteo para KPIs
 function animateValue(el, target, isCurrency=true, duration=600) {
   const start = performance.now();
   function step(now) {
@@ -595,7 +586,7 @@ function renderEvolucion() {
 function renderDonut(txM) {
   const bycat = {};
   txM.filter(t => t.tipo==='Gasto').forEach(t => {
-    bycat[t.categoria] = (bycat[t.categoria]||0) + t.valor;
+    bycat[t.categoria] = (bycat[t.categoria]||0) + Math.abs(t.valor);
   });
   const data = Object.entries(bycat).map(([name,value])=>({ name, value:+value.toFixed(2), itemStyle:{color:catColor(name)} }))
     .sort((a,b)=>b.value-a.value);
@@ -635,16 +626,6 @@ function renderRecientes() {
     </tr>`).join('');
 }
 
-// Helper para inicializar Echarts limpiamente y evitar gráficos aplastados
-function initEchart(domId) {
-  const dom = document.getElementById(domId);
-  let chart = echarts.getInstanceByDom(dom);
-  if (chart) {
-    chart.dispose(); // Destruye el gráfico anterior si existe
-  }
-  return echarts.init(dom, null, { renderer: 'svg' });
-}
-
 // ══════════════════════════════════════════════════════
 // TAB 2 — ANÁLISIS MENSUAL
 // ══════════════════════════════════════════════════════
@@ -676,10 +657,9 @@ function renderMensual() {
 }
 
 function renderBreakdown(txM) {
-  // Gastos reales por categoría → barras de progreso
   const byCat = {};
   txM.filter(t=>t.tipo==='Gasto' && t.categoria!==INV_CAT).forEach(t=>{
-    byCat[t.categoria] = (byCat[t.categoria]||0)+t.valor;
+    byCat[t.categoria] = (byCat[t.categoria]||0)+Math.abs(t.valor);
   });
   const total = Object.values(byCat).reduce((s,v)=>s+v,0);
   const sorted = Object.entries(byCat).sort((a,b)=>b[1]-a[1]);
@@ -695,10 +675,9 @@ function renderBreakdown(txM) {
       </div>`).join('');
   }
 
-  // Inversión por subcategoría
   const byInv = {};
   txM.filter(t=>t.tipo==='Gasto' && t.categoria===INV_CAT).forEach(t=>{
-    byInv[t.subcategoria]=(byInv[t.subcategoria]||0)+t.valor;
+    byInv[t.subcategoria]=(byInv[t.subcategoria]||0)+Math.abs(t.valor);
   });
   const totalInv = Object.values(byInv).reduce((s,v)=>s+v,0);
   const sortedInv = Object.entries(byInv).sort((a,b)=>b[1]-a[1]);
@@ -728,7 +707,6 @@ function renderTop5(txM) {
 }
 
 function renderComparativa(year, month) {
-  // Mes actual, mes anterior, media 6 meses
   const prev = month===1 ? {y:parseInt(year)-1,m:12} : {y:parseInt(year),m:month-1};
   const txCurr = txOfMonth(year, month);
   const txPrev = txOfMonth(prev.y, prev.m);
@@ -738,7 +716,7 @@ function renderComparativa(year, month) {
     const d = new Date(parseInt(year), month-1-i, 1);
     const txs = txOfMonth(d.getFullYear(), d.getMonth()+1);
     txs.filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).forEach(t=>{
-      media6[t.categoria]=(media6[t.categoria]||0)+t.valor;
+      media6[t.categoria]=(media6[t.categoria]||0)+Math.abs(t.valor);
     });
   }
   Object.keys(media6).forEach(k=>media6[k]=+(media6[k]/6).toFixed(2));
@@ -750,8 +728,8 @@ function renderComparativa(year, month) {
   ])];
 
   const byCurr={}, byPrev={};
-  txCurr.filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).forEach(t=>byCurr[t.categoria]=(byCurr[t.categoria]||0)+t.valor);
-  txPrev.filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).forEach(t=>byPrev[t.categoria]=(byPrev[t.categoria]||0)+t.valor);
+  txCurr.filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).forEach(t=>byCurr[t.categoria]=(byCurr[t.categoria]||0)+Math.abs(t.valor));
+  txPrev.filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).forEach(t=>byPrev[t.categoria]=(byPrev[t.categoria]||0)+Math.abs(t.valor));
 
   const cats = allCats.sort((a,b)=>(byCurr[b]||0)-(byCurr[a]||0));
   const mnPrev = MONTHS_ES[prev.m-1];
@@ -782,7 +760,6 @@ function renderHistorico() {
   const year = document.getElementById('filter-year-hist').value;
   const txY  = txOfYear(year);
 
-  // KPIs anuales
   const gastosMes = [];
   for(let m=1;m<=12;m++){
     const g = sumGastosReales(txOfMonth(year,m));
@@ -793,7 +770,7 @@ function renderHistorico() {
   const totalInv = sumInversion(txY);
 
   const byCatYear={};
-  txY.filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).forEach(t=>{byCatYear[t.categoria]=(byCatYear[t.categoria]||0)+t.valor;});
+  txY.filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).forEach(t=>{byCatYear[t.categoria]=(byCatYear[t.categoria]||0)+Math.abs(t.valor);});
   const topCat = Object.entries(byCatYear).sort((a,b)=>b[1]-a[1])[0];
 
   document.getElementById('h-gasto-medio').textContent = fmt(mediaG);
@@ -809,10 +786,9 @@ function renderHistorico() {
 }
 
 function renderLineas(year) {
-  // Top 5 categorías de gasto del año + inversión
   const byCat={};
   txOfYear(year).filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).forEach(t=>{
-    byCat[t.categoria]=(byCat[t.categoria]||0)+t.valor;
+    byCat[t.categoria]=(byCat[t.categoria]||0)+Math.abs(t.valor);
   });
   const top5cats = Object.entries(byCat).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([c])=>c);
 
@@ -827,7 +803,6 @@ function renderLineas(year) {
     data: Array.from({length:12},(_,i)=>+(sumGastosReales(txOfMonth(year,i+1).filter(t=>t.categoria===cat))||0).toFixed(2))
   }));
 
-  // Barra de inversión (apilada separada para que destaque)
   series.push({
     name: 'Inversión',
     type: 'bar',
@@ -896,7 +871,6 @@ function renderTasaAhorro(year) {
 }
 
 function renderTablaAnual(selectedYear) {
-  // Comparativa por categoría de todos los años disponibles
   const cats = [...new Set(FILTERED.filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).map(t=>t.categoria))].sort();
   if (!cats.length) { document.getElementById('table-anual-wrap').innerHTML='<div class="empty">Sin datos</div>'; return; }
 
@@ -907,16 +881,15 @@ function renderTablaAnual(selectedYear) {
   cats.forEach(cat=>{
     html+=`<tr><td>${cat}</td>`;
     YEARS.forEach(y=>{
-      const val = FILTERED.filter(t=>t.tipo==='Gasto'&&t.categoria===cat&&t.fecha.startsWith(y)).reduce((s,t)=>s+t.valor,0);
+      const val = FILTERED.filter(t=>t.tipo==='Gasto'&&t.categoria===cat&&t.fecha.startsWith(y)).reduce((s,t)=>s+Math.abs(t.valor),0);
       html+=`<td class="mono text-right" style="${y===selectedYear?'color:var(--text)':'color:var(--muted)'}">${val>0?fmt(val):'—'}</td>`;
     });
     html+='</tr>';
   });
 
-  // Fila total
   html+='<tr style="border-top:1px solid var(--border)"><td style="font-weight:600">Total</td>';
   YEARS.forEach(y=>{
-    const val = FILTERED.filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT&&t.fecha.startsWith(y)).reduce((s,t)=>s+t.valor,0);
+    const val = FILTERED.filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT&&t.fecha.startsWith(y)).reduce((s,t)=>s+Math.abs(t.valor),0);
     html+=`<td class="mono text-right" style="font-weight:600;${y===selectedYear?'color:var(--red)':'color:var(--muted)'}">${val>0?fmt(val):'—'}</td>`;
   });
   html+='</tr></tbody></table></div>';
@@ -933,15 +906,12 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-    // Re-renderizamos el tab activo para que los charts se inicialicen correctamente
-    if(btn.dataset.tab==='resumen') renderResumen();
-    if(btn.dataset.tab==='mensual') renderMensual();
-    if(btn.dataset.tab==='historico') renderHistorico();
+    renderAll();
   });
 });
 
 // ══════════════════════════════════════════════════════
-// ARRANQUE
+// INICIALIZACIÓN DE LA APLICACIÓN
 // ══════════════════════════════════════════════════════
 loadData();
 </script>

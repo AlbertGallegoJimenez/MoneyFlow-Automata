@@ -483,11 +483,13 @@ function applyBankFilter() {
 }
 
 function renderAll() {
-  renderResumen();
-  renderMensual();
-  renderHistorico();
+  // Solo renderizamos la pestaña que está activa en este momento
+  const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
+  
+  if (activeTab === 'resumen') renderResumen();
+  if (activeTab === 'mensual') renderMensual();
+  if (activeTab === 'historico') renderHistorico();
 }
-
 // ══════════════════════════════════════════════════════
 // HELPERS DE DATOS
 // ══════════════════════════════════════════════════════
@@ -569,7 +571,7 @@ function renderEvolucion() {
     invData.push(+sumInversion(txs).toFixed(2));
   }
 
-  const chart = echarts.init(document.getElementById('chart-evolucion'), null, {renderer:'svg'});
+  const chart = initEchart('chart-evolucion');
   chart.setOption({
     backgroundColor: 'transparent',
     tooltip: { trigger:'axis', backgroundColor:'#1E2D40', borderColor:'#1E2D40', textStyle:{color:'#E2E8F0',fontSize:12}, formatter: params => {
@@ -600,7 +602,7 @@ function renderDonut(txM) {
 
   if (!data.length) { document.getElementById('chart-donut').innerHTML = '<div class="empty">Sin datos este mes</div>'; return; }
 
-  const chart = echarts.init(document.getElementById('chart-donut'), null, {renderer:'svg'});
+  const chart = initEchart('chart-donut');
   chart.setOption({
     backgroundColor:'transparent',
     tooltip:{ trigger:'item', backgroundColor:'#1E2D40', borderColor:'#1E2D40', textStyle:{color:'#E2E8F0',fontSize:12},
@@ -631,6 +633,16 @@ function renderRecientes() {
         </span>
       </td>
     </tr>`).join('');
+}
+
+// Helper para inicializar Echarts limpiamente y evitar gráficos aplastados
+function initEchart(domId) {
+  const dom = document.getElementById(domId);
+  let chart = echarts.getInstanceByDom(dom);
+  if (chart) {
+    chart.dispose(); // Destruye el gráfico anterior si existe
+  }
+  return echarts.init(dom, null, { renderer: 'svg' });
 }
 
 // ══════════════════════════════════════════════════════
@@ -745,7 +757,7 @@ function renderComparativa(year, month) {
   const mnPrev = MONTHS_ES[prev.m-1];
   const mnCurr = MONTHS_ES[month-1];
 
-  const chart = echarts.init(document.getElementById('chart-comparativa'), null, {renderer:'svg'});
+  const chart = initEchart('chart-comparativa');
   chart.setOption({
     backgroundColor:'transparent',
     tooltip:{trigger:'axis',backgroundColor:'#1E2D40',borderColor:'#1E2D40',textStyle:{color:'#E2E8F0',fontSize:12},
@@ -826,7 +838,7 @@ function renderLineas(year) {
     data: Array.from({length:12},(_,i)=>+sumInversion(txOfMonth(year,i+1)).toFixed(2))
   });
 
-  const chart = echarts.init(document.getElementById('chart-lineas'), null, {renderer:'svg'});
+  const chart = initEchart('chart-lineas');
   chart.setOption({
     backgroundColor:'transparent',
     tooltip:{trigger:'axis',backgroundColor:'#1E2D40',borderColor:'#1E2D40',textStyle:{color:'#E2E8F0',fontSize:12},
@@ -847,7 +859,7 @@ function renderInvAcum(year) {
     return +acum.toFixed(2);
   });
 
-  const chart = echarts.init(document.getElementById('chart-inv-acum'), null, {renderer:'svg'});
+  const chart = initEchart('chart-inv-acum');
   chart.setOption({
     backgroundColor:'transparent',
     tooltip:{trigger:'axis',backgroundColor:'#1E2D40',borderColor:'#1E2D40',textStyle:{color:'#E2E8F0',fontSize:12},
@@ -869,7 +881,7 @@ function renderTasaAhorro(year) {
     return ing>0 ? +(inv/ing*100).toFixed(1) : 0;
   });
 
-  const chart = echarts.init(document.getElementById('chart-tasa-ahorro'), null, {renderer:'svg'});
+  const chart = initEchart('chart-tasa-ahorro');
   chart.setOption({
     backgroundColor:'transparent',
     tooltip:{trigger:'axis',backgroundColor:'#1E2D40',borderColor:'#1E2D40',textStyle:{color:'#E2E8F0',fontSize:12},

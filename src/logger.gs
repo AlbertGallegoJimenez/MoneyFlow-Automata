@@ -140,7 +140,7 @@ function _buildEmailSubject() {
   if (s.newRowsTotal === 0 && s.filesProcessed.length === 0) {
     return `MoneyFlow-Automata — Sin novedades`;
   }
-  const pendingStr = s.geminiFailed > 0 ? ` · ${s.geminiFailed} pendientes` : "";
+  const pendingStr = s.pendingRows.length > 0 ? ` · ${s.pendingRows.length} pendiente(s)` : "";
   return `✅ MoneyFlow-Automata — ${s.newRowsTotal} transacciones nuevas${pendingStr}`;
 }
 
@@ -170,22 +170,16 @@ function _buildEmailBody(dateStr, duration) {
     body += "\n";
   }
 
-  // --- CATEGORIZACIÓN GEMINI ---
-  if (s.geminiResolved > 0 || s.geminiFailed > 0) {
-    body += `CATEGORIZACIÓN AUTOMÁTICA (Gemini)\n${"─".repeat(30)}\n`;
-    body += `Resueltos:   ${s.geminiResolved}\n`;
-    body += `Sin resolver: ${s.geminiFailed}\n\n`;
-  }
-
   // --- PENDIENTES QUE REQUIEREN ATENCIÓN MANUAL ---
   if (s.pendingRows.length > 0) {
+    const ssUrl = SpreadsheetApp.getActiveSpreadsheet().getUrl();
     body += `PENDIENTES — REQUIEREN CATEGORIZACIÓN MANUAL\n${"─".repeat(30)}\n`;
-    body += `Las siguientes ${s.pendingRows.length} transacciones no pudieron categorizarse automáticamente.\n`;
-    body += `Encuéntralas en la hoja "Gastos" (columna C = "Pendiente Categorizar"):\n\n`;
+    body += `${s.pendingRows.length} transacción(es) sin categoría en la hoja "Gastos" (columna C = "Pendiente Categorizar").\n`;
+    body += `Una vez categorizadas a mano, el sistema las reconocerá automáticamente en el futuro.\n\n`;
     s.pendingRows.forEach((row, i) => {
       body += `  ${i + 1}. Fila ${row.sheetRow} — "${row.concepto}"\n`;
     });
-    body += "\n";
+    body += `\nAcceder a la hoja: ${ssUrl}\n\n`;
   }
 
   // --- ARCHIVOS CON FORMATO DESCONOCIDO ---

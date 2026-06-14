@@ -37,16 +37,27 @@ const BANK_SIGNATURES = {
  * @returns {string|null} - Nombre del banco o null si no se reconoce
  */
 function detectBank(csvContent) {
+  // Guarda defensiva: csvContent puede ser undefined si getDataAsString() falla
+  // (archivo vacío, encoding no soportado, o blob corrupto)
+  if (!csvContent || typeof csvContent !== 'string' || csvContent.trim().length === 0) {
+    Logger.log("⚠️ detectBank: csvContent vacío o inválido.");
+    return null;
+  }
+
   const firstLine = csvContent.split('\n')[0]
-    .replace(/\r/g, '')       // saltos de línea Windows
-    .replace(/"/g, '')        // comillas
-    .replace(/\s+/g, ' ')     // espacios múltiples
+    .replace(/\r/g, '')    // saltos de línea Windows
+    .replace(/"/g, '')      // comillas
+    .replace(/\s+/g, ' ')  // espacios múltiples
     .trim()
     .toLowerCase();
 
+  if (!firstLine) {
+    Logger.log("⚠️ detectBank: primera línea vacía tras normalizar.");
+    return null;
+  }
+
   for (const [bankName, signatures] of Object.entries(BANK_SIGNATURES)) {
     for (const sig of signatures) {
-      // Comprobamos si la primera línea EMPIEZA por la firma (tolerante a columnas extra al final)
       if (firstLine.startsWith(sig.toLowerCase())) {
         return bankName;
       }
@@ -72,9 +83,37 @@ function processFolderCSVs() {
 
   while (files.hasNext()) {
     const file = files.next();
-    const csvContent = file.getBlob().getDataAsString().replace(/^\ufeff/, "");
+
+    // getDataAsString puede fallar con archivos corruptos o encodings no soportados,
+    // o devolver cadena vacía sin lanzar excepción (archivo vacío o ilegible)
+    let csvContent;
+    try {
+      csvContent = file.getBlob().getDataAsString('UTF-8').replace(/^\ufeff/, "");
+
+      // Si UTF-8 devuelve vacío, reintentamos con ISO-8859-1 antes de rendirse
+      if (!csvContent || csvContent.trim().length === 0) {
+        logEvent("INFO", `Archivo "${file.getName()}" vacío en UTF-8, reintentando con ISO-8859-1...`);
+        csvContent = file.getBlob().getDataAsString('ISO-8859-1').replace(/^\ufeff/, "");
+      }
+    } catch (e) {
+      // Fallback explícito a ISO-8859-1 si UTF-8 lanza excepción
+      try {
+        csvContent = file.getBlob().getDataAsString('ISO-8859-1').replace(/^\ufeff/, "");
+        logEvent("INFO", `Archivo "${file.getName()}" leído con encoding ISO-8859-1 (fallback por excepción)`);
+      } catch (e2) {
+        logError(`Lectura de archivo "${file.getName()}"`, e2.toString());
+        logSkippedFile(file.getName(), "(no se pudo leer el contenido)");
+        continue;
+      }
+    }
+
+    if (!csvContent || csvContent.trim().length === 0) {
+      logSkippedFile(file.getName(), "(archivo vacío tras intentar UTF-8 e ISO-8859-1)");
+      continue;
+    }
 
     // --- DETECTOR DE BANCOS (#1) ---
+    logEvent("INFO", `Procesando archivo: "${file.getName()}" | Tamaño: ${file.getSize()} bytes | Primeros 80 chars: ${csvContent.substring(0, 80).replace(/\n/g, "↵")}`);
     const detectedBank = detectBank(csvContent);
     if (!detectedBank) {
       logSkippedFile(file.getName(), csvContent.split('\n')[0]);
@@ -127,12 +166,9 @@ function processFolderCSVs() {
     `${bizumResult.bizumRowsRemoved} fila(s) eliminada(s).`
   );
 
-  // --- CATEGORIZACIÓN CON GEMINI (#9) ---
-  const geminiResult = categorizePendingWithGemini();
-
-  // Recogemos las filas que siguen pendientes para incluirlas en el email
+  // --- PENDIENTES: recogemos las filas sin categoría para incluirlas en el email ---
   const stillPending = getStillPendingRows(sheet);
-  logGeminiResult(geminiResult.resolved, geminiResult.failed, stillPending);
+  logGeminiResult(0, stillPending.length, stillPending);
 
   // --- EXPORTACIÓN AL DASHBOARD ---
   // Solo exportamos si hubo cambios reales en la hoja
@@ -143,6 +179,32 @@ function processFolderCSVs() {
   // --- CIERRE: LOG + EMAIL (#8 + #10) ---
   resetHistoryCache();
   finalizeLogger(CONFIG.NOTIFICATION_EMAIL);
+}
+
+// ==========================================
+// HELPER: DETECCIÓN DE DELIMITADOR
+// ==========================================
+
+/**
+ * Detecta el delimitador real de un CSV analizando la primera línea.
+ * Cuenta ocurrencias de cada candidato y devuelve el más frecuente.
+ * @param {string} csvContent
+ * @returns {string} - ',' | ';' | '\t'
+ */
+function detectDelimiter(csvContent) {
+  const firstLine = csvContent.split('\n')[0].replace(/\r/g, '');
+  const candidates = [';', ',', '\t'];
+  let best = ';'; // fallback por defecto para Caixabank/MyInvestor
+  let bestCount = 0;
+  for (const delim of candidates) {
+    const count = firstLine.split(delim).length - 1;
+    if (count > bestCount) {
+      bestCount = count;
+      best = delim;
+    }
+  }
+  Logger.log(`🔍 Delimitador detectado: "${best === '\t' ? 'TAB' : best}" (${bestCount} ocurrencias en primera línea)`);
+  return best;
 }
 
 // ==========================================
@@ -253,7 +315,7 @@ function parseTradeRepublicCSV(csvString) {
 // PARSER 2: CAIXABANK (#3: Por nombre de header, no posición)
 // ==========================================
 function parseCaixabankCSV(rawString) {
-  const delimiter = rawString.indexOf('\t') !== -1 ? '\t' : ';';
+  const delimiter = detectDelimiter(rawString);
   const csvData = Utilities.parseCsv(rawString, delimiter);
 
   if (csvData.length < 2) {
@@ -336,7 +398,7 @@ function parseCaixabankCSV(rawString) {
 // PARSER 3: MYINVESTOR
 // ==========================================
 function parseMyInvestorCSV(rawString) {
-  const delimiter = rawString.indexOf('\t') !== -1 ? '\t' : ';';
+  const delimiter = detectDelimiter(rawString);
   const csvData = Utilities.parseCsv(rawString, delimiter);
 
   if (csvData.length < 2) {

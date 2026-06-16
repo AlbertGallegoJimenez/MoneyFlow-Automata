@@ -742,7 +742,7 @@ function renderComparativa(year, month) {
       formatter:params=>{let s='<b>'+params[0].axisValue+'</b><br>';params.forEach(p=>{s+=p.marker+' '+p.seriesName+': <b>'+fmt(p.value)+'</b><br>';});return s;}},
     legend:{data:[mnCurr,mnPrev,'Media 6m'],bottom:0,textStyle:{color:'#94A3B8',fontSize:11},itemWidth:10,itemHeight:10},
     grid:{top:10,left:55,right:10,bottom:40},
-    xAxis:{type:'category',data:cats,axisLabel:{color:'#94A3B8',fontSize:10,rotate:cats.length>5?30:0},axisLine:{lineStyle:{color:'#1E2D40'}},splitLine:{show:false}},
+    xAxis:{type:'category',data:cats,axisLabel:{color:'#94A3B8',fontSize:10},axisLine:{lineStyle:{color:'#1E2D40'}},splitLine:{show:false}},
     yAxis:{type:'value',axisLabel:{color:'#94A3B8',fontSize:10,formatter:v=>fmtShort(v)},splitLine:{lineStyle:{color:'#1E2D4033'}}},
     series:[
       {name:mnCurr,type:'bar',data:cats.map(c=>+(byCurr[c]||0).toFixed(2)),barMaxWidth:16,itemStyle:{color:'#38BDF8',borderRadius:[3,3,0,0]}},
@@ -805,9 +805,9 @@ function renderLineas(year) {
 
   series.push({
     name: 'Inversión',
-    type: 'bar',
+    type: 'line',
     stack: 'inversion',
-    barMaxWidth: 14,
+    //barMaxWidth: 14,
     itemStyle: { color: '#38BDF866', borderRadius: [3,3,0,0] },
     emphasis: { focus: 'series' },
     data: Array.from({length:12},(_,i)=>+sumInversion(txOfMonth(year,i+1)).toFixed(2))

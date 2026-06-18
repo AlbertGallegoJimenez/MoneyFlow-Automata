@@ -29,46 +29,43 @@
 
   html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 14px; line-height: 1.5; }
 
-  /* ── LAYOUT ── */
   .app { display: flex; flex-direction: column; min-height: 100vh; }
 
   header {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 0 2rem; height: 56px;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface);
-    position: sticky; top: 0; z-index: 100;
+    padding: 0 2rem; height: 56px; border-bottom: 1px solid var(--border);
+    background: var(--surface); position: sticky; top: 0; z-index: 100;
   }
   .logo { font-family: var(--font-mono); font-weight: 700; font-size: 1rem; color: var(--accent); letter-spacing: -0.02em; }
   .logo span { color: var(--muted); font-weight: 400; }
+  
+  .macro-nav { display: flex; gap: 1rem; }
+  .btn-macro {
+    background: transparent; color: var(--muted); border: 1px solid transparent;
+    padding: 0.35rem 0.8rem; border-radius: 6px; font-size: 0.85rem; font-weight: 500;
+    cursor: pointer; transition: all 0.2s; font-family: var(--font-body);
+  }
+  .btn-macro.active { background: var(--surface2); color: var(--accent); border-color: var(--border); }
+  .btn-macro:hover:not(.active) { color: var(--text); }
+
   .last-updated { font-size: 0.75rem; color: var(--muted); font-family: var(--font-mono); }
 
-  .tabs-bar {
-    display: flex; gap: 0; padding: 0 2rem;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface);
-  }
+  .app-module { display: none; flex-direction: column; flex: 1; }
+  .app-module.active { display: flex; }
+
+  .tabs-bar { display: flex; gap: 0; padding: 0 2rem; border-bottom: 1px solid var(--border); background: var(--surface); }
   .tab-btn {
-    padding: 0.85rem 1.25rem; font-size: 0.8rem; font-weight: 500;
-    color: var(--muted); background: none; border: none; cursor: pointer;
-    border-bottom: 2px solid transparent; margin-bottom: -1px;
-    transition: color 0.15s, border-color 0.15s;
-    letter-spacing: 0.03em; text-transform: uppercase;
+    padding: 0.85rem 1.25rem; font-size: 0.8rem; font-weight: 500; color: var(--muted); background: none; border: none; cursor: pointer;
+    border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 0.15s, border-color 0.15s; text-transform: uppercase; letter-spacing: 0.03em;
   }
   .tab-btn:hover { color: var(--text); }
   .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
 
-  .filters-bar {
-    display: flex; align-items: center; gap: 1rem; padding: 0.75rem 2rem;
-    border-bottom: 1px solid var(--border);
-    background: var(--bg);
-  }
+  .filters-bar { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 2rem; border-bottom: 1px solid var(--border); background: var(--bg); }
   .filter-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
   select, .btn-filter {
     background: var(--surface); border: 1px solid var(--border); color: var(--text);
-    padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.8rem;
-    font-family: var(--font-body); cursor: pointer;
-    transition: border-color 0.15s;
+    padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.8rem; font-family: var(--font-body); cursor: pointer; transition: border-color 0.15s;
   }
   select:hover, .btn-filter:hover { border-color: var(--accent); }
   select:focus { outline: none; border-color: var(--accent); }
@@ -78,107 +75,66 @@
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
 
-  /* ── CARDS & GRID ── */
   .grid { display: grid; gap: 1rem; }
   .grid-4 { grid-template-columns: repeat(4, 1fr); }
   .grid-2 { grid-template-columns: repeat(2, 1fr); }
-  .grid-3 { grid-template-columns: repeat(3, 1fr); }
   .grid-6040 { grid-template-columns: 3fr 2fr; }
-  .grid-4060 { grid-template-columns: 2fr 3fr; }
 
-  .card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 10px; padding: 1.25rem;
-  }
-  .card-title {
-    font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em;
-    color: var(--muted); margin-bottom: 1rem; font-weight: 600;
-  }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; }
+  .card-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1rem; font-weight: 600; display:flex; justify-content: space-between; align-items: center;}
 
-  /* ── KPI CARDS ── */
-  .kpi-value {
-    font-family: var(--font-mono); font-size: 1.75rem; font-weight: 700;
-    line-height: 1; margin-bottom: 0.35rem; letter-spacing: -0.03em;
-  }
+  .kpi-value { font-family: var(--font-mono); font-size: 1.75rem; font-weight: 700; line-height: 1; margin-bottom: 0.35rem; letter-spacing: -0.03em; }
   .kpi-label { font-size: 0.75rem; color: var(--muted); }
   .kpi-delta { font-size: 0.7rem; font-family: var(--font-mono); margin-top: 0.5rem; }
-  .up   { color: var(--green); }
-  .down { color: var(--red); }
-  .neu  { color: var(--muted); }
-  .accent-val { color: var(--accent); }
-  .green-val  { color: var(--green); }
-  .red-val    { color: var(--red); }
-  .amber-val  { color: var(--amber); }
+  .up   { color: var(--green); } .down { color: var(--red); } .neu  { color: var(--muted); }
+  .accent-val { color: var(--accent); } .green-val  { color: var(--green); } .red-val    { color: var(--red); } .amber-val  { color: var(--amber); }
 
-  /* ── CHART CONTAINERS ── */
   .chart { width: 100%; }
-  .chart-sm { height: 220px; }
   .chart-md { height: 300px; }
   .chart-lg { height: 360px; }
   .chart-xl { height: 420px; }
 
-  /* ── TABLES ── */
   .data-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-  .data-table th {
-    text-align: left; padding: 0.5rem 0.75rem;
-    font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em;
-    color: var(--muted); border-bottom: 1px solid var(--border);
-    font-weight: 600;
-  }
-  .data-table td { padding: 0.55rem 0.75rem; border-bottom: 1px solid var(--border); }
+  .data-table th { text-align: left; padding: 0.5rem 0.75rem; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); border-bottom: 1px solid var(--border); font-weight: 600; }
+  .data-table td { padding: 0.55rem 0.75rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
   .data-table tr:last-child td { border-bottom: none; }
   .data-table tr:hover td { background: var(--surface2); }
   .mono { font-family: var(--font-mono); font-size: 0.8rem; }
   .text-right { text-align: right; }
   .text-center { text-align: center; }
 
-  /* ── PILL BADGES ── */
-  .pill {
-    display: inline-block; padding: 0.15rem 0.5rem; border-radius: 999px;
-    font-size: 0.65rem; font-weight: 600; letter-spacing: 0.04em;
-  }
+  .broker-logo { width: 32px; height: 32px; border-radius: 50%; vertical-align: middle; margin-right: 8px; object-fit: contain; background: #fff; padding: 2px;}
+  .pill-return { display: inline-block; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.7rem; font-family: var(--font-mono); font-weight: 600; }
+  .pill-pos { background: #10B98122; color: var(--green); }
+  .pill-neg { background: #F8717122; color: var(--red); }
+
+  .pill { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 999px; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.04em; }
   .pill-ingreso  { background: #10B98122; color: var(--green); }
   .pill-gasto    { background: #F8717122; color: var(--red); }
   .pill-inversion{ background: #38BDF822; color: var(--accent); }
 
-  /* ── SECTION HEADERS ── */
-  .section-sep {
-    font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em;
-    color: var(--muted2); padding: 1.25rem 0 0.5rem;
-    display: flex; align-items: center; gap: 0.75rem;
-  }
+  .section-sep { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted2); padding: 1.25rem 0 0.5rem; display: flex; align-items: center; gap: 0.75rem; }
   .section-sep::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-  /* ── PROGRESS BAR ── */
   .progress-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.6rem; }
   .progress-label { font-size: 0.75rem; width: 130px; flex-shrink: 0; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .progress-track { flex: 1; height: 5px; background: var(--border); border-radius: 999px; overflow: hidden; }
   .progress-fill  { height: 100%; border-radius: 999px; transition: width 0.6s ease; }
   .progress-val   { font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); width: 70px; text-align: right; flex-shrink: 0; }
+  
+  .p-track { width: 100%; height: 6px; background: var(--border); border-radius: 999px; overflow: hidden; margin: 0.5rem 0; }
+  .p-fill  { height: 100%; border-radius: 999px; background: var(--accent); transition: width 1s ease; }
 
-  /* ── SPLIT METRIC ── */
   .split-block { display: flex; flex-direction: column; gap: 0.25rem; }
   .split-main  { font-family: var(--font-mono); font-size: 2.2rem; font-weight: 700; letter-spacing: -0.04em; line-height: 1; }
   .split-sub   { font-size: 0.75rem; color: var(--muted); }
   .split-pct   { font-family: var(--font-mono); font-size: 0.85rem; margin-top: 0.4rem; }
-
-  /* ── EMPTY STATE ── */
   .empty { padding: 3rem 1rem; text-align: center; color: var(--muted); font-size: 0.85rem; }
 
-  /* ── RESPONSIVE ── */
   @media (max-width: 900px) {
     .grid-4 { grid-template-columns: repeat(2, 1fr); }
-    .grid-6040, .grid-4060, .grid-2 { grid-template-columns: 1fr; }
+    .grid-6040, .grid-2 { grid-template-columns: 1fr; }
     header, .tabs-bar, .filters-bar, main { padding-left: 1rem; padding-right: 1rem; }
-  }
-  @media (max-width: 480px) {
-    .grid-4 { grid-template-columns: 1fr 1fr; }
-    .kpi-value { font-size: 1.35rem; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .kpi-value { transition: none; }
-    .progress-fill { transition: none; }
   }
 </style>
 </head>
@@ -186,230 +142,219 @@
 <div class="app">
 
   <header>
-    <div class="logo">MoneyFlow <span>/ dashboard</span></div>
+    <div class="logo">MoneyFlow <span>/</span></div>
+    <div class="macro-nav">
+      <button class="btn-macro active" onclick="switchModule(event, 'cashflow')">Flujo de Caja</button>
+      <button class="btn-macro" onclick="switchModule(event, 'portfolio')">Patrimonio e Inversión</button>
+    </div>
     <div class="last-updated" id="last-updated">Cargando datos locales...</div>
   </header>
 
-  <div class="tabs-bar">
-    <button class="tab-btn active" data-tab="resumen">Resumen</button>
-    <button class="tab-btn" data-tab="mensual">Análisis mensual</button>
-    <button class="tab-btn" data-tab="historico">Histórico</button>
-  </div>
-
-  <div class="filters-bar">
-    <span class="filter-label">Banco</span>
-    <select id="filter-bank">
-      <option value="all">Todos los bancos</option>
-      <option value="Trade Republic">Trade Republic</option>
-      <option value="Caixabank">Caixabank</option>
-      <option value="MyInvestor">MyInvestor</option>
-    </select>
-    <div class="filters-sep"></div>
-    <div id="last-updated-mobile" style="font-size:0.72rem;color:var(--muted);font-family:var(--font-mono);display:none"></div>
-  </div>
-
-  <main>
-    <div class="tab-panel active" id="tab-resumen">
-      <div class="section-sep">Este mes</div>
-      <div class="grid grid-4" style="margin-bottom:1rem">
-        <div class="card">
-          <div class="card-title">Ingresos</div>
-          <div class="kpi-value green-val" id="kpi-ingresos">—</div>
-          <div class="kpi-label">mes actual</div>
-        </div>
-        <div class="card">
-          <div class="card-title">Gastos reales</div>
-          <div class="kpi-value red-val" id="kpi-gastos">—</div>
-          <div class="kpi-label">sin inversión</div>
-        </div>
-        <div class="card">
-          <div class="card-title">Invertido</div>
-          <div class="kpi-value accent-val" id="kpi-inversion">—</div>
-          <div class="kpi-label">este mes</div>
-        </div>
-        <div class="card">
-          <div class="card-title">Tasa de ahorro</div>
-          <div class="kpi-value green-val" id="kpi-tasa">—</div>
-          <div class="kpi-label">inversión / ingresos</div>
-          <div class="kpi-delta neu" id="kpi-balance">Balance neto: —</div>
-        </div>
-      </div>
-
-      <div class="grid grid-6040" style="margin-bottom:1rem">
-        <div class="card">
-          <div class="card-title">Evolución mensual — últimos 12 meses</div>
-          <div class="chart chart-lg" id="chart-evolucion"></div>
-        </div>
-        <div class="card">
-          <div class="card-title">Distribución este mes</div>
-          <div class="chart chart-lg" id="chart-donut"></div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">Últimas 10 transacciones</div>
-        <table class="data-table" id="table-recientes">
-          <thead><tr>
-            <th>Fecha</th><th>Descripción</th><th>Categoría</th><th>Subcategoría</th><th>Banco</th><th class="text-right">Valor</th><th class="text-center">Tipo</th>
-          </tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
+  <div class="app-module active" id="module-cashflow">
+    <div class="tabs-bar">
+      <button class="tab-btn active" data-tab="resumen">Resumen</button>
+      <button class="tab-btn" data-tab="mensual">Análisis mensual</button>
+      <button class="tab-btn" data-tab="historico">Histórico</button>
     </div>
 
-    <div class="tab-panel" id="tab-mensual">
-      <div class="filters-bar" style="padding:0.75rem 0; border:none; margin-bottom:0.5rem">
-        <span class="filter-label">Mes</span>
-        <select id="filter-month-mensual"></select>
-        <span class="filter-label" style="margin-left:0.5rem">Año</span>
-        <select id="filter-year-mensual"></select>
+    <div class="filters-bar">
+      <span class="filter-label">Banco</span>
+      <select id="filter-bank">
+        <option value="all">Todos los bancos</option>
+        <option value="Trade Republic">Trade Republic</option>
+        <option value="Caixabank">Caixabank</option>
+        <option value="MyInvestor">MyInvestor</option>
+      </select>
+    </div>
+
+    <main>
+      <div class="tab-panel active" id="tab-resumen">
+        <div class="section-sep">Este mes</div>
+        <div class="grid grid-4" style="margin-bottom:1rem">
+          <div class="card"><div class="card-title">Ingresos</div><div class="kpi-value green-val" id="kpi-ingresos">—</div><div class="kpi-label">mes actual</div></div>
+          <div class="card"><div class="card-title">Gastos reales</div><div class="kpi-value red-val" id="kpi-gastos">—</div><div class="kpi-label">sin inversión</div></div>
+          <div class="card"><div class="card-title">Invertido</div><div class="kpi-value accent-val" id="kpi-inversion">—</div><div class="kpi-label">este mes</div></div>
+          <div class="card"><div class="card-title">Tasa de ahorro</div><div class="kpi-value green-val" id="kpi-tasa">—</div><div class="kpi-label">inversión / ingresos</div><div class="kpi-delta neu" id="kpi-balance">Balance neto: —</div></div>
+        </div>
+        <div class="grid grid-6040" style="margin-bottom:1rem">
+          <div class="card"><div class="card-title">Evolución mensual — últimos 12 meses</div><div class="chart chart-lg" id="chart-evolucion"></div></div>
+          <div class="card"><div class="card-title">Distribución este mes</div><div class="chart chart-lg" id="chart-donut"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Últimas 10 transacciones</div>
+          <table class="data-table" id="table-recientes">
+            <thead><tr><th>Fecha</th><th>Descripción</th><th>Categoría</th><th>Subcategoría</th><th>Banco</th><th class="text-right">Valor</th><th class="text-center">Tipo</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </div>
 
-      <div class="grid grid-4" style="margin-bottom:1rem">
-        <div class="card">
-          <div class="card-title">Ingresos</div>
-          <div class="kpi-value green-val" id="m-ingresos">—</div>
+      <div class="tab-panel" id="tab-mensual">
+        <div class="filters-bar" style="padding:0.75rem 0; border:none; margin-bottom:0.5rem">
+          <span class="filter-label">Mes</span><select id="filter-month-mensual"></select>
+          <span class="filter-label" style="margin-left:0.5rem">Año</span><select id="filter-year-mensual"></select>
         </div>
-        <div class="card">
-          <div class="card-title">Gastos reales</div>
-          <div class="kpi-value red-val" id="m-gastos">—</div>
+        <div class="grid grid-4" style="margin-bottom:1rem">
+          <div class="card"><div class="card-title">Ingresos</div><div class="kpi-value green-val" id="m-ingresos">—</div></div>
+          <div class="card"><div class="card-title">Gastos reales</div><div class="kpi-value red-val" id="m-gastos">—</div></div>
+          <div class="card"><div class="card-title">Invertido</div><div class="kpi-value accent-val" id="m-inversion">—</div></div>
+          <div class="card"><div class="card-title">Balance neto</div><div class="kpi-value" id="m-balance">—</div></div>
         </div>
-        <div class="card">
-          <div class="card-title">Invertido</div>
-          <div class="kpi-value accent-val" id="m-inversion">—</div>
-        </div>
-        <div class="card">
-          <div class="card-title">Balance neto</div>
-          <div class="kpi-value" id="m-balance">—</div>
-        </div>
-      </div>
-
-      <div class="grid grid-6040" style="margin-bottom:1rem">
-        <div class="card">
-          <div class="card-title">Desglose por categoría</div>
-          <div id="breakdown-gastos"></div>
-          <div style="margin-top:1.25rem">
-            <div class="card-title" style="color:var(--accent)">Inversión</div>
-            <div id="breakdown-inversion"></div>
-          </div>
-        </div>
-        <div class="card" style="display:flex;flex-direction:column;gap:1.25rem">
-          <div>
-            <div class="card-title">Top 5 gastos del mes</div>
-            <table class="data-table" id="table-top5">
-              <thead><tr><th>Descripción</th><th>Categoría</th><th class="text-right">Valor</th></tr></thead>
-              <tbody></tbody>
-            </table>
-          </div>
-          <div>
-            <div class="card-title">Consumo vs Inversión</div>
-            <div style="display:flex;gap:1.5rem;margin-top:0.25rem">
-              <div class="split-block">
-                <div class="split-main red-val" id="m-consumo-abs">—</div>
-                <div class="split-sub">Consumo real</div>
-                <div class="split-pct red-val" id="m-consumo-pct">—% ingresos</div>
-              </div>
-              <div style="width:1px;background:var(--border)"></div>
-              <div class="split-block">
-                <div class="split-main accent-val" id="m-inv-abs">—</div>
-                <div class="split-sub">Inversión</div>
-                <div class="split-pct accent-val" id="m-inv-pct">—% ingresos</div>
+        <div class="grid grid-6040" style="margin-bottom:1rem">
+          <div class="card"><div class="card-title">Desglose por categoría</div><div id="breakdown-gastos"></div><div style="margin-top:1.25rem"><div class="card-title" style="color:var(--accent)">Inversión</div><div id="breakdown-inversion"></div></div></div>
+          <div class="card" style="display:flex;flex-direction:column;gap:1.25rem">
+            <div>
+              <div class="card-title">Top 5 gastos del mes</div>
+              <table class="data-table" id="table-top5"><thead><tr><th>Descripción</th><th>Categoría</th><th class="text-right">Valor</th></tr></thead><tbody></tbody></table>
+            </div>
+            <div>
+              <div class="card-title">Consumo vs Inversión</div>
+              <div style="display:flex;gap:1.5rem;margin-top:0.25rem">
+                <div class="split-block"><div class="split-main red-val" id="m-consumo-abs">—</div><div class="split-sub">Consumo real</div><div class="split-pct red-val" id="m-consumo-pct">—% ingresos</div></div>
+                <div style="width:1px;background:var(--border)"></div>
+                <div class="split-block"><div class="split-main accent-val" id="m-inv-abs">—</div><div class="split-sub">Inversión</div><div class="split-pct accent-val" id="m-inv-pct">—% ingresos</div></div>
               </div>
             </div>
           </div>
         </div>
+        <div class="card"><div class="card-title">Mes actual vs mes anterior vs media 6 meses</div><div class="chart chart-md" id="chart-comparativa"></div></div>
       </div>
 
-      <div class="card">
-        <div class="card-title">Mes actual vs mes anterior vs media 6 meses</div>
-        <div class="chart chart-md" id="chart-comparativa"></div>
+      <div class="tab-panel" id="tab-historico">
+        <div class="filters-bar" style="padding:0.75rem 0;border:none;margin-bottom:0.5rem"><span class="filter-label">Año</span><select id="filter-year-hist"></select></div>
+        <div class="grid grid-4" style="margin-bottom:1rem">
+          <div class="card"><div class="card-title">Gasto medio mensual</div><div class="kpi-value red-val" id="h-gasto-medio">—</div></div>
+          <div class="card"><div class="card-title">Mes más caro</div><div class="kpi-value" id="h-mes-caro">—</div><div class="kpi-label" id="h-mes-caro-label"></div></div>
+          <div class="card"><div class="card-title">Total invertido</div><div class="kpi-value accent-val" id="h-total-inv">—</div></div>
+          <div class="card"><div class="card-title">Cat. con más gasto</div><div class="kpi-value" id="h-top-cat" style="font-size:1.1rem">—</div></div>
+        </div>
+        <div class="card" style="margin-bottom:1rem"><div class="card-title">Evolución por categoría — año completo</div><div class="chart chart-xl" id="chart-lineas"></div></div>
+        <div class="grid grid-2" style="margin-bottom:1rem">
+          <div class="card"><div class="card-title">Inversión acumulada mensual</div><div class="chart chart-md" id="chart-inv-acum"></div></div>
+          <div class="card"><div class="card-title">Tasa de ahorro mensual</div><div class="chart chart-md" id="chart-tasa-ahorro"></div></div>
+        </div>
+        <div class="card"><div class="card-title">Comparativa anual por categoría</div><div id="table-anual-wrap"><div class="empty">Selecciona un año para ver la comparativa</div></div></div>
       </div>
+    </main>
+  </div>
+
+  <div class="app-module" id="module-portfolio">
+    <div class="tabs-bar">
+      <button class="tab-btn active" data-tab="port-actual">Estado Actual</button>
+      <button class="tab-btn" data-tab="port-historico">Evolución Histórica</button>
     </div>
 
-    <div class="tab-panel" id="tab-historico">
-      <div class="filters-bar" style="padding:0.75rem 0;border:none;margin-bottom:0.5rem">
-        <span class="filter-label">Año</span>
-        <select id="filter-year-hist"></select>
-      </div>
+    <main>
+      <div class="tab-panel active" id="tab-port-actual">
+        <div class="grid grid-4" style="margin-bottom:1rem">
+          <div class="card"><div class="card-title">Patrimonio Total</div><div class="kpi-value accent-val" id="p-total">—</div><div class="kpi-label" id="p-fecha">Última foto: —</div></div>
+          <div class="card"><div class="card-title">Capital Invertido</div><div class="kpi-value" id="p-capital">—</div><div class="kpi-label">Dinero aportado</div></div>
+          <div class="card"><div class="card-title">Plusvalía Global</div><div class="kpi-value" id="p-plusvalia">—</div><div class="kpi-label" id="p-rentabilidad">Rentabilidad: —</div></div>
+          <div class="card">
+          <div class="card-title">Objetivo: Entrada Vivienda <span style="font-size: 1.5rem; margin-top: -4px;">🏡</span></div>
+            <div class="kpi-value" id="p-obj-pct">—</div>
+            <div class="p-track"><div class="p-fill" id="p-obj-bar" style="width:0%"></div></div>
+            <div class="kpi-label" style="text-align:right" id="p-obj-text">0 / 0 €</div>
+          </div>
+        </div>
 
-      <div class="grid grid-4" style="margin-bottom:1rem">
-        <div class="card">
-          <div class="card-title">Gasto medio mensual</div>
-          <div class="kpi-value red-val" id="h-gasto-medio">—</div>
-        </div>
-        <div class="card">
-          <div class="card-title">Mes más caro</div>
-          <div class="kpi-value" id="h-mes-caro">—</div>
-          <div class="kpi-label" id="h-mes-caro-label"></div>
-        </div>
-        <div class="card">
-          <div class="card-title">Total invertido</div>
-          <div class="kpi-value accent-val" id="h-total-inv">—</div>
-        </div>
-        <div class="card">
-          <div class="card-title">Cat. con más gasto</div>
-          <div class="kpi-value" id="h-top-cat" style="font-size:1.1rem">—</div>
-        </div>
-      </div>
-
-      <div class="card" style="margin-bottom:1rem">
-        <div class="card-title">Evolución por categoría — año completo</div>
-        <div class="chart chart-xl" id="chart-lineas"></div>
-      </div>
-
-      <div class="grid grid-2" style="margin-bottom:1rem">
-        <div class="card">
-          <div class="card-title">Inversión acumulada mensual</div>
-          <div class="chart chart-md" id="chart-inv-acum"></div>
-        </div>
-        <div class="card">
-          <div class="card-title">Tasa de ahorro mensual</div>
-          <div class="chart chart-md" id="chart-tasa-ahorro"></div>
+        <div class="grid grid-6040">
+          <div class="card">
+            <div class="card-title">Posiciones Vivas</div>
+            <div style="overflow-x:auto">
+              <table class="data-table" id="table-portfolio">
+                <thead><tr><th>Activo</th><th>Clase</th><th class="text-right">Capital</th><th class="text-right">Valor actual</th><th class="text-right">Rent.</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title" style="align-items:center;">
+              <span>Distribución</span>
+              <select id="filter-donut-port" style="margin-left:auto; width: auto; max-width: 150px;">
+                <option value="broker">Por Bróker</option>
+                <option value="clase">Por Clase</option>
+              </select>
+            </div>
+            <div class="chart chart-lg" id="chart-port-donut"></div>
+          </div>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-title">Comparativa anual por categoría</div>
-        <div id="table-anual-wrap">
-          <div class="empty">Selecciona un año para ver la comparativa</div>
+      <div class="tab-panel" id="tab-port-historico">
+        <div class="card" style="margin-bottom:1rem">
+          <div class="card-title">La Bola de Nieve (Capital vs Mercado)</div>
+          <div class="chart chart-xl" id="chart-port-area"></div>
+        </div>
+        
+        <div class="card">
+          <div class="card-title" style="align-items:center;">
+            <span>Evolución de Rentabilidad (%)</span>
+            <select id="filter-activo-port" style="margin-left:auto; width: auto; max-width: 250px;">
+              <option value="all">Todos los activos</option>
+            </select>
+          </div>
+          <div class="chart chart-md" id="chart-port-lines"></div>
         </div>
       </div>
-    </div>
-  </main>
+    </main>
+  </div>
+
 </div>
 
 <script>
 // ══════════════════════════════════════════════════════
-// ESTADO GLOBAL
+// CONFIGURACIÓN PERSONALIZADA
+// ══════════════════════════════════════════════════════
+const META_VIVIENDA = 100000; 
+
+const COLOR_BROKER = {
+  "Trade Republic": "#000000",  
+  "MyInvestor":     "#d42776",  
+  "Caixabank":      "#0099E5",  
+  "Binance":        "#F0B90A",
+  "Occident":       "#DC0028",
+  "Otros":          "#94A3B8" 
+};
+
+const COLOR_CLASE = {
+  "Fondo indexado": "#d42776", 
+  "ETF":            "#000000",
+  "Efectivo":       "#34D399",
+  "Crypto":         "#F0B90A",
+  "Acciones":       "#0099E5",
+  "Seguro de ahorro": "#DC0028"
+};
+
+const CAT_COLORS = {
+  "Vivienda":             "#60A5FA", "Alimentación":         "#34D399",
+  "Transporte":           "#FBBF24", "Ocio":                 "#A78BFA",
+  "Salud":                "#F472B6", "Ropa y calzado":       "#FB923C",
+  "Impuestos y multas":   "#94A3B8", "Regalos y donaciones": "#E879F9",
+  "Otros":                "#64748B", "Inversión y ahorro":   "#38BDF8",
+};
+
+// ══════════════════════════════════════════════════════
+// ESTADO GLOBAL ÚNICO
 // ══════════════════════════════════════════════════════
 let RAW = [];
 let FILTERED = [];     
 let YEARS = [];        
 let MONTHS_ES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 let MONTHS_FULL = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-
 const INV_CAT = "Inversión y ahorro"; 
 
-const CAT_COLORS = {
-  "Vivienda":             "#60A5FA",
-  "Alimentación":         "#34D399",
-  "Transporte":           "#FBBF24",
-  "Ocio":                 "#A78BFA",
-  "Salud":                "#F472B6",
-  "Ropa y calzado":       "#FB923C",
-  "Impuestos y multas":   "#94A3B8",
-  "Regalos y donaciones": "#E879F9",
-  "Otros":                "#64748B",
-  "Inversión y ahorro":   "#38BDF8",
-};
+let RAW_PORTFOLIO = []; 
+let SNAPSHOTS = {};     
+let FECHAS_PORT = [];   
+
 function catColor(cat) { return CAT_COLORS[cat] || "#94A3B8"; }
 
 function initEchart(domId) {
   const dom = document.getElementById(domId);
+  if (!dom) return null;
   let chart = echarts.getInstanceByDom(dom);
-  if (chart) {
-    chart.dispose(); 
-  }
+  if (chart) chart.dispose(); 
   return echarts.init(dom, null, { renderer: 'svg' });
 }
 
@@ -422,6 +367,7 @@ function loadData() {
   google.script.run
     .withSuccessHandler(function(serverData) {
       RAW = serverData.transactions || [];
+      RAW_PORTFOLIO = serverData.portfolio_records || [];
       
       if (serverData.last_updated) {
         const d = new Date(serverData.last_updated);
@@ -430,36 +376,82 @@ function loadData() {
         document.getElementById('last-updated').textContent = 'Actualizado ' + str;
       }
 
-      if (RAW.length === 0) {
-        document.getElementById('last-updated').textContent = 'Hoja encontrada, pero sin datos válidos.';
-        return;
-      }
-
       YEARS = [...new Set(RAW.map(t => t.fecha.substring(0,4)))].sort();
       initFilters();
       applyBankFilter();
+      processPortfolio();
+
+      renderAll(); 
     })
     .withFailureHandler(function(error) {
       console.error("Error desde Apps Script:", error);
-      document.getElementById('last-updated').textContent = 'Error: ' + error.message;
+      document.getElementById('last-updated').textContent = 'Error al cargar: ' + error.message;
     })
-    .getDashboardData(); // Llama a la función del lado del servidor
+    .getDashboardData();
 }
 
 // ══════════════════════════════════════════════════════
-// FILTROS
+// MACRO NAVEGACIÓN Y TABS
+// ══════════════════════════════════════════════════════
+function switchModule(event, mod) {
+  document.querySelectorAll('.btn-macro').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.app-module').forEach(m => m.classList.remove('active'));
+  
+  if(event && event.currentTarget) {
+    event.currentTarget.classList.add('active');
+  }
+  document.getElementById(`module-${mod}`).classList.add('active');
+  
+  // Delay para que el DOM esté visible antes de que ECharts calcule dimensiones
+  setTimeout(renderAll, 80);
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', (e)=>{
+    const parent = e.target.closest('.app-module');
+    parent.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    parent.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    
+    e.target.classList.add('active');
+    document.getElementById('tab-' + e.target.dataset.tab).classList.add('active');
+    
+    // Delay para que el tab sea visible antes de inicializar gráficos
+    setTimeout(renderAll, 80);
+  });
+});
+
+function renderAll() {
+  const activeModule = document.querySelector('.app-module.active');
+  if(!activeModule) return;
+  const activeTabBtn = activeModule.querySelector('.tab-btn.active');
+  if(!activeTabBtn) return;
+  
+  const activeTab = activeTabBtn.dataset.tab;
+  
+  if (activeTab === 'resumen') renderResumen();
+  if (activeTab === 'mensual') renderMensual();
+  if (activeTab === 'historico') renderHistorico();
+  if (activeTab === 'port-actual') renderPortfolioActual();
+  if (activeTab === 'port-historico') renderPortfolioHistorico();
+}
+
+// ══════════════════════════════════════════════════════
+// LÓGICA DE GASTOS (FLujo de Caja)
 // ══════════════════════════════════════════════════════
 function initFilters() {
   const selHist = document.getElementById('filter-year-hist');
+  selHist.innerHTML = '';
   YEARS.forEach(y => { const o = document.createElement('option'); o.value=y; o.textContent=y; selHist.appendChild(o); });
   if (YEARS.length) selHist.value = YEARS[YEARS.length-1];
 
   const selYM = document.getElementById('filter-year-mensual');
+  selYM.innerHTML = '';
   YEARS.forEach(y => { const o = document.createElement('option'); o.value=y; o.textContent=y; selYM.appendChild(o); });
   const now = new Date();
   selYM.value = YEARS.includes(String(now.getFullYear())) ? String(now.getFullYear()) : YEARS[YEARS.length-1];
 
   const selMM = document.getElementById('filter-month-mensual');
+  selMM.innerHTML = '';
   MONTHS_FULL.forEach((m,i) => { const o = document.createElement('option'); o.value=String(i+1).padStart(2,'0'); o.textContent=m; selMM.appendChild(o); });
   selMM.value = String(now.getMonth()+1).padStart(2,'0');
 
@@ -475,42 +467,17 @@ function applyBankFilter() {
   renderAll();
 }
 
-function renderAll() {
-  const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
-  if (activeTab === 'resumen') renderResumen();
-  if (activeTab === 'mensual') renderMensual();
-  if (activeTab === 'historico') renderHistorico();
-}
+function fmt(n) { return (n < 0 ? '-' : '') + Math.abs(n).toLocaleString('es-ES', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' €'; }
+function fmtShort(n) { return Math.abs(n) >= 1000 ? (n/1000).toFixed(1) + 'k' : n; }
 
-// ══════════════════════════════════════════════════════
-// HELPERS DE DATOS
-// ══════════════════════════════════════════════════════
-function fmt(n) {
-  return (n < 0 ? '-' : '') + Math.abs(n).toLocaleString('es-ES', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' €';
-}
-function fmtShort(n) {
-  if (Math.abs(n) >= 1000) return (n/1000).toFixed(1) + 'k €';
-  return fmt(n);
-}
-
-function txOfMonth(year, month) {
-  const ym = year + '-' + String(month).padStart(2,'0');
-  return FILTERED.filter(t => t.fecha.startsWith(ym));
-}
-function txOfYear(year) {
-  return FILTERED.filter(t => t.fecha.startsWith(year));
-}
-
+function txOfMonth(year, month) { return FILTERED.filter(t => t.fecha.startsWith(year + '-' + String(month).padStart(2,'0'))); }
+function txOfYear(year) { return FILTERED.filter(t => t.fecha.startsWith(year)); }
 function sumIngresos(txs) { return txs.filter(t => t.tipo==='Ingreso').reduce((s,t)=>s+Math.abs(t.valor),0); }
 function sumGastosReales(txs) { return txs.filter(t => t.tipo==='Gasto' && t.categoria!==INV_CAT).reduce((s,t)=>s+Math.abs(t.valor),0); }
 function sumInversion(txs) { return txs.filter(t => t.tipo==='Gasto' && t.categoria===INV_CAT).reduce((s,t)=>s+Math.abs(t.valor),0); }
 
-function currentYM() {
-  const now = new Date();
-  return { year: now.getFullYear(), month: now.getMonth()+1 };
-}
-
 function animateValue(el, target, isCurrency=true, duration=600) {
+  if(!el) return;
   const start = performance.now();
   function step(now) {
     const p = Math.min((now-start)/duration, 1);
@@ -523,17 +490,13 @@ function animateValue(el, target, isCurrency=true, duration=600) {
   requestAnimationFrame(step);
 }
 
-// ══════════════════════════════════════════════════════
-// TAB 1 — RESUMEN
-// ══════════════════════════════════════════════════════
+// -- TABS GASTOS --
 function renderResumen() {
-  const now = currentYM();
+  const now = { year: new Date().getFullYear(), month: new Date().getMonth()+1 };
   const txM = txOfMonth(now.year, now.month);
 
-  const ing  = sumIngresos(txM);
-  const gas  = sumGastosReales(txM);
-  const inv  = sumInversion(txM);
-  const bal  = ing - gas - inv;
+  const ing = sumIngresos(txM), gas = sumGastosReales(txM), inv = sumInversion(txM);
+  const bal = ing - gas - inv;
   const tasa = ing > 0 ? inv / ing : 0;
 
   animateValue(document.getElementById('kpi-ingresos'), ing);
@@ -543,92 +506,60 @@ function renderResumen() {
   document.getElementById('kpi-balance').textContent = 'Balance neto: ' + fmt(bal);
   document.getElementById('kpi-balance').className = 'kpi-delta ' + (bal>=0?'up':'down');
 
-  renderEvolucion();
-  renderDonut(txM);
-  renderRecientes();
+  renderEvolucion(); renderDonut(txM); renderRecientes();
 }
 
 function renderEvolucion() {
   const now = new Date();
   const labels=[], ingData=[], gasData=[], invData=[];
-
   for (let i=11; i>=0; i--) {
     const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
     const y = d.getFullYear(), m = d.getMonth()+1;
     const txs = txOfMonth(y, m);
     labels.push(MONTHS_ES[m-1] + ' ' + String(y).slice(2));
-    ingData.push(+sumIngresos(txs).toFixed(2));
-    gasData.push(+sumGastosReales(txs).toFixed(2));
-    invData.push(+sumInversion(txs).toFixed(2));
+    ingData.push(+sumIngresos(txs).toFixed(2)); gasData.push(+sumGastosReales(txs).toFixed(2)); invData.push(+sumInversion(txs).toFixed(2));
   }
-
   const chart = initEchart('chart-evolucion');
+  if(!chart) return;
   chart.setOption({
     backgroundColor: 'transparent',
-    tooltip: { trigger:'axis', backgroundColor:'#1E2D40', borderColor:'#1E2D40', textStyle:{color:'#E2E8F0',fontSize:12}, formatter: params => {
-      let s = '<b>' + params[0].axisValue + '</b><br>';
-      params.forEach(p => { s += p.marker + ' ' + p.seriesName + ': <b>' + fmt(p.value) + '</b><br>'; });
-      return s;
-    }},
-    legend: { data:['Ingresos','Gastos','Inversión'], bottom:0, textStyle:{color:'#94A3B8',fontSize:11}, itemWidth:10, itemHeight:10 },
+    tooltip: { trigger:'axis', backgroundColor:'#1E2D40', textStyle:{color:'#E2E8F0',fontSize:12} },
+    legend: { data:['Ingresos','Gastos','Inversión'], bottom:0, textStyle:{color:'#94A3B8',fontSize:11} },
     grid: { top:10, left:55, right:10, bottom:40 },
-    xAxis: { type:'category', data:labels, axisLine:{lineStyle:{color:'#1E2D40'}}, axisLabel:{color:'#94A3B8',fontSize:10}, splitLine:{show:false} },
+    xAxis: { type:'category', data:labels, axisLabel:{color:'#94A3B8',fontSize:10} },
     yAxis: { type:'value', axisLabel:{color:'#94A3B8',fontSize:10,formatter:v=>fmtShort(v)}, splitLine:{lineStyle:{color:'#1E2D401A'}} },
     series: [
-      { name:'Ingresos', type:'line', data:ingData, smooth:true, symbol:'none', lineStyle:{color:'#10B981',width:2}, areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'#10B98133'},{offset:1,color:'#10B98100'}]}} },
+      { name:'Ingresos', type:'line', data:ingData, smooth:true, symbol:'none', lineStyle:{color:'#10B981',width:2}, areaStyle:{color:'#10B98133'} },
       { name:'Gastos', type:'bar', data:gasData, barMaxWidth:18, itemStyle:{color:'#F8717166',borderRadius:[3,3,0,0]} },
       { name:'Inversión', type:'bar', data:invData, barMaxWidth:18, itemStyle:{color:'#38BDF866',borderRadius:[3,3,0,0]} },
     ]
   });
-  window.addEventListener('resize', ()=>chart.resize());
 }
 
 function renderDonut(txM) {
   const bycat = {};
-  txM.filter(t => t.tipo==='Gasto').forEach(t => {
-    bycat[t.categoria] = (bycat[t.categoria]||0) + Math.abs(t.valor);
-  });
-  const data = Object.entries(bycat).map(([name,value])=>({ name, value:+value.toFixed(2), itemStyle:{color:catColor(name)} }))
-    .sort((a,b)=>b.value-a.value);
-
+  txM.filter(t => t.tipo==='Gasto').forEach(t => bycat[t.categoria] = (bycat[t.categoria]||0) + Math.abs(t.valor));
+  const data = Object.entries(bycat).map(([name,value])=>({ name, value:+value.toFixed(2), itemStyle:{color:catColor(name)} })).sort((a,b)=>b.value-a.value);
   if (!data.length) { document.getElementById('chart-donut').innerHTML = '<div class="empty">Sin datos este mes</div>'; return; }
-
   const chart = initEchart('chart-donut');
   chart.setOption({
-    backgroundColor:'transparent',
-    tooltip:{ trigger:'item', backgroundColor:'#1E2D40', borderColor:'#1E2D40', textStyle:{color:'#E2E8F0',fontSize:12},
-      formatter: p => p.name + '<br><b>' + fmt(p.value) + '</b> (' + p.percent + '%)' },
-    legend:{ orient:'vertical', right:0, top:'center', textStyle:{color:'#94A3B8',fontSize:10}, itemWidth:8, itemHeight:8 },
-    series:[{ type:'pie', radius:['45%','70%'], center:['38%','50%'], data,
-      label:{show:false}, emphasis:{scaleSize:4}, itemStyle:{borderColor:'#111827',borderWidth:2} }]
+    tooltip:{ trigger:'item', backgroundColor:'#1E2D40', textStyle:{color:'#E2E8F0'} },
+    legend:{ orient:'vertical', right:0, top:'center', textStyle:{color:'#94A3B8',fontSize:10} },
+    series:[{ type:'pie', radius:['45%','70%'], center:['38%','50%'], data, label:{show:false}, itemStyle:{borderColor:'#111827',borderWidth:2} }]
   });
-  window.addEventListener('resize', ()=>chart.resize());
 }
 
 function renderRecientes() {
   const sorted = [...FILTERED].sort((a,b)=>b.fecha.localeCompare(a.fecha)).slice(0,10);
-  const tbody = document.querySelector('#table-recientes tbody');
-  tbody.innerHTML = sorted.map(t => `
+  document.querySelector('#table-recientes tbody').innerHTML = sorted.map(t => `
     <tr>
-      <td class="mono">${t.fecha}</td>
-      <td>${t.descripcion || t.subcategoria}</td>
-      <td>${t.categoria}</td>
-      <td style="color:var(--muted)">${t.subcategoria}</td>
-      <td style="color:var(--muted)">${t.banco}</td>
-      <td class="mono text-right" style="color:${t.tipo==='Ingreso'?'var(--green)':'var(--red)'}">
-        ${t.tipo==='Ingreso'?'+':'−'}${fmt(t.valor)}
-      </td>
-      <td class="text-center">
-        <span class="pill ${t.tipo==='Ingreso'?'pill-ingreso':t.categoria===INV_CAT?'pill-inversion':'pill-gasto'}">
-          ${t.tipo==='Ingreso'?'Ingreso':t.categoria===INV_CAT?'Inversión':'Gasto'}
-        </span>
-      </td>
+      <td class="mono">${t.fecha}</td><td>${t.descripcion || t.subcategoria}</td><td>${t.categoria}</td>
+      <td style="color:var(--muted)">${t.subcategoria}</td><td style="color:var(--muted)">${t.banco}</td>
+      <td class="mono text-right" style="color:${t.tipo==='Ingreso'?'var(--green)':'var(--red)'}">${t.tipo==='Ingreso'?'+':'−'}${fmt(t.valor)}</td>
+      <td class="text-center"><span class="pill ${t.tipo==='Ingreso'?'pill-ingreso':t.categoria===INV_CAT?'pill-inversion':'pill-gasto'}">${t.tipo==='Ingreso'?'Ingreso':t.categoria===INV_CAT?'Inversión':'Gasto'}</span></td>
     </tr>`).join('');
 }
 
-// ══════════════════════════════════════════════════════
-// TAB 2 — ANÁLISIS MENSUAL
-// ══════════════════════════════════════════════════════
 function renderMensual() {
   const year  = document.getElementById('filter-year-mensual').value;
   const month = document.getElementById('filter-month-mensual').value;
@@ -639,28 +570,24 @@ function renderMensual() {
   const inv = sumInversion(txM);
   const bal = ing - gas - inv;
 
-  document.getElementById('m-ingresos').textContent  = fmt(ing);
-  document.getElementById('m-gastos').textContent    = fmt(gas);
-  document.getElementById('m-inversion').textContent = fmt(inv);
+  animateValue(document.getElementById('m-ingresos'), ing);
+  animateValue(document.getElementById('m-gastos'), gas);
+  animateValue(document.getElementById('m-inversion'), inv);
   const balEl = document.getElementById('m-balance');
-  balEl.textContent = fmt(bal);
+  animateValue(balEl, bal);
   balEl.className = 'kpi-value ' + (bal>=0?'green-val':'red-val');
 
-  document.getElementById('m-consumo-abs').textContent = fmt(gas);
-  document.getElementById('m-inv-abs').textContent     = fmt(inv);
+  animateValue(document.getElementById('m-consumo-abs'), gas);
+  animateValue(document.getElementById('m-inv-abs'), inv);
   document.getElementById('m-consumo-pct').textContent = ing>0 ? (gas/ing*100).toFixed(1)+'% ingresos' : '—';
   document.getElementById('m-inv-pct').textContent     = ing>0 ? (inv/ing*100).toFixed(1)+'% ingresos' : '—';
 
-  renderBreakdown(txM);
-  renderTop5(txM);
-  renderComparativa(year, parseInt(month));
+  renderBreakdown(txM); renderTop5(txM); renderComparativa(year, parseInt(month));
 }
 
 function renderBreakdown(txM) {
   const byCat = {};
-  txM.filter(t=>t.tipo==='Gasto' && t.categoria!==INV_CAT).forEach(t=>{
-    byCat[t.categoria] = (byCat[t.categoria]||0)+Math.abs(t.valor);
-  });
+  txM.filter(t=>t.tipo==='Gasto' && t.categoria!==INV_CAT).forEach(t=>byCat[t.categoria]=(byCat[t.categoria]||0)+Math.abs(t.valor));
   const total = Object.values(byCat).reduce((s,v)=>s+v,0);
   const sorted = Object.entries(byCat).sort((a,b)=>b[1]-a[1]);
 
@@ -676,9 +603,7 @@ function renderBreakdown(txM) {
   }
 
   const byInv = {};
-  txM.filter(t=>t.tipo==='Gasto' && t.categoria===INV_CAT).forEach(t=>{
-    byInv[t.subcategoria]=(byInv[t.subcategoria]||0)+Math.abs(t.valor);
-  });
+  txM.filter(t=>t.tipo==='Gasto' && t.categoria===INV_CAT).forEach(t=>byInv[t.subcategoria]=(byInv[t.subcategoria]||0)+Math.abs(t.valor));
   const totalInv = Object.values(byInv).reduce((s,v)=>s+v,0);
   const sortedInv = Object.entries(byInv).sort((a,b)=>b[1]-a[1]);
 
@@ -695,10 +620,8 @@ function renderBreakdown(txM) {
 }
 
 function renderTop5(txM) {
-  const top = txM.filter(t=>t.tipo==='Gasto' && t.categoria!==INV_CAT)
-    .sort((a,b)=>b.valor-a.valor).slice(0,5);
-  const tbody = document.querySelector('#table-top5 tbody');
-  tbody.innerHTML = top.map(t=>`
+  const top = txM.filter(t=>t.tipo==='Gasto' && t.categoria!==INV_CAT).sort((a,b)=>b.valor-a.valor).slice(0,5);
+  document.querySelector('#table-top5 tbody').innerHTML = top.map(t=>`
     <tr>
       <td>${t.descripcion || t.subcategoria}</td>
       <td style="color:var(--muted)">${t.categoria}</td>
@@ -708,39 +631,31 @@ function renderTop5(txM) {
 
 function renderComparativa(year, month) {
   const prev = month===1 ? {y:parseInt(year)-1,m:12} : {y:parseInt(year),m:month-1};
-  const txCurr = txOfMonth(year, month);
-  const txPrev = txOfMonth(prev.y, prev.m);
+  const txCurr = txOfMonth(year, month), txPrev = txOfMonth(prev.y, prev.m);
 
   const media6 = {};
   for (let i=1;i<=6;i++){
     const d = new Date(parseInt(year), month-1-i, 1);
     const txs = txOfMonth(d.getFullYear(), d.getMonth()+1);
-    txs.filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).forEach(t=>{
-      media6[t.categoria]=(media6[t.categoria]||0)+Math.abs(t.valor);
-    });
+    txs.filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).forEach(t=>media6[t.categoria]=(media6[t.categoria]||0)+Math.abs(t.valor));
   }
   Object.keys(media6).forEach(k=>media6[k]=+(media6[k]/6).toFixed(2));
 
-  const allCats = [...new Set([
-    ...txCurr.filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).map(t=>t.categoria),
-    ...txPrev.filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).map(t=>t.categoria),
-    ...Object.keys(media6)
-  ])];
+  const allCats = [...new Set([...txCurr.filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).map(t=>t.categoria),
+    ...txPrev.filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).map(t=>t.categoria), ...Object.keys(media6)])];
 
   const byCurr={}, byPrev={};
   txCurr.filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).forEach(t=>byCurr[t.categoria]=(byCurr[t.categoria]||0)+Math.abs(t.valor));
   txPrev.filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).forEach(t=>byPrev[t.categoria]=(byPrev[t.categoria]||0)+Math.abs(t.valor));
 
   const cats = allCats.sort((a,b)=>(byCurr[b]||0)-(byCurr[a]||0));
-  const mnPrev = MONTHS_ES[prev.m-1];
-  const mnCurr = MONTHS_ES[month-1];
+  const mnPrev = MONTHS_ES[prev.m-1], mnCurr = MONTHS_ES[month-1];
 
   const chart = initEchart('chart-comparativa');
   chart.setOption({
     backgroundColor:'transparent',
-    tooltip:{trigger:'axis',backgroundColor:'#1E2D40',borderColor:'#1E2D40',textStyle:{color:'#E2E8F0',fontSize:12},
-      formatter:params=>{let s='<b>'+params[0].axisValue+'</b><br>';params.forEach(p=>{s+=p.marker+' '+p.seriesName+': <b>'+fmt(p.value)+'</b><br>';});return s;}},
-    legend:{data:[mnCurr,mnPrev,'Media 6m'],bottom:0,textStyle:{color:'#94A3B8',fontSize:11},itemWidth:10,itemHeight:10},
+    tooltip:{trigger:'axis',backgroundColor:'#1E2D40',textStyle:{color:'#E2E8F0',fontSize:12}},
+    legend:{data:[mnCurr,mnPrev,'Media 6m'],bottom:0,textStyle:{color:'#94A3B8',fontSize:11}},
     grid:{top:10,left:55,right:10,bottom:40},
     xAxis:{type:'category',data:cats,axisLabel:{color:'#94A3B8',fontSize:10},axisLine:{lineStyle:{color:'#1E2D40'}},splitLine:{show:false}},
     yAxis:{type:'value',axisLabel:{color:'#94A3B8',fontSize:10,formatter:v=>fmtShort(v)},splitLine:{lineStyle:{color:'#1E2D4033'}}},
@@ -750,12 +665,8 @@ function renderComparativa(year, month) {
       {name:'Media 6m',type:'line',data:cats.map(c=>+(media6[c]||0).toFixed(2)),symbol:'circle',symbolSize:5,lineStyle:{color:'#FBBF24',width:1.5,type:'dashed'},itemStyle:{color:'#FBBF24'}},
     ]
   });
-  window.addEventListener('resize', ()=>chart.resize());
 }
 
-// ══════════════════════════════════════════════════════
-// TAB 3 — HISTÓRICO
-// ══════════════════════════════════════════════════════
 function renderHistorico() {
   const year = document.getElementById('filter-year-hist').value;
   const txY  = txOfYear(year);
@@ -773,101 +684,75 @@ function renderHistorico() {
   txY.filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).forEach(t=>{byCatYear[t.categoria]=(byCatYear[t.categoria]||0)+Math.abs(t.valor);});
   const topCat = Object.entries(byCatYear).sort((a,b)=>b[1]-a[1])[0];
 
-  document.getElementById('h-gasto-medio').textContent = fmt(mediaG);
-  document.getElementById('h-mes-caro').textContent    = mesCaro ? fmt(mesCaro.g) : '—';
-  document.getElementById('h-mes-caro-label').textContent = mesCaro ? MONTHS_FULL[mesCaro.m-1] : '';
-  document.getElementById('h-total-inv').textContent   = fmt(totalInv);
+  animateValue(document.getElementById('h-gasto-medio'), mediaG);
+  if (mesCaro) {
+    animateValue(document.getElementById('h-mes-caro'), mesCaro.g);
+    document.getElementById('h-mes-caro-label').textContent = MONTHS_FULL[mesCaro.m-1];
+  } else {
+    document.getElementById('h-mes-caro').textContent = '—';
+    document.getElementById('h-mes-caro-label').textContent = '';
+  }
+  animateValue(document.getElementById('h-total-inv'), totalInv);
   document.getElementById('h-top-cat').textContent     = topCat ? topCat[0] : '—';
 
-  renderLineas(year);
-  renderInvAcum(year);
-  renderTasaAhorro(year);
-  renderTablaAnual(year);
+  renderLineas(year); renderInvAcum(year); renderTasaAhorro(year); renderTablaAnual(year);
 }
 
 function renderLineas(year) {
   const byCat={};
-  txOfYear(year).filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).forEach(t=>{
-    byCat[t.categoria]=(byCat[t.categoria]||0)+Math.abs(t.valor);
-  });
+  txOfYear(year).filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).forEach(t=>byCat[t.categoria]=(byCat[t.categoria]||0)+Math.abs(t.valor));
   const top5cats = Object.entries(byCat).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([c])=>c);
 
-  const labels = MONTHS_ES;
   const series = top5cats.map(cat=>({
-    name: cat,
-    type: 'bar',
-    stack: 'gastos',
-    barMaxWidth: 32,
-    itemStyle: { color: catColor(cat), borderRadius: 0 },
-    emphasis: { focus: 'series' },
+    name: cat, type: 'bar', stack: 'gastos', barMaxWidth: 32, itemStyle: { color: catColor(cat), borderRadius: 0 },
     data: Array.from({length:12},(_,i)=>+(sumGastosReales(txOfMonth(year,i+1).filter(t=>t.categoria===cat))||0).toFixed(2))
   }));
 
   series.push({
-    name: 'Inversión',
-    type: 'line',
-    stack: 'inversion',
-    //barMaxWidth: 14,
-    itemStyle: { color: '#38BDF866', borderRadius: [3,3,0,0] },
-    emphasis: { focus: 'series' },
+    name: 'Inversión', type: 'line', stack: 'inversion', itemStyle: { color: '#38BDF866', borderRadius: [3,3,0,0] },
     data: Array.from({length:12},(_,i)=>+sumInversion(txOfMonth(year,i+1)).toFixed(2))
   });
 
   const chart = initEchart('chart-lineas');
   chart.setOption({
     backgroundColor:'transparent',
-    tooltip:{trigger:'axis',backgroundColor:'#1E2D40',borderColor:'#1E2D40',textStyle:{color:'#E2E8F0',fontSize:12},
-      formatter:params=>{let s='<b>'+params[0].axisValue+'</b><br>';params.forEach(p=>{if(p.value>0)s+=p.marker+' '+p.seriesName+': <b>'+fmt(p.value)+'</b><br>';});return s;}},
-    legend:{bottom:0,textStyle:{color:'#94A3B8',fontSize:11},itemWidth:10,itemHeight:10},
+    tooltip:{trigger:'axis',backgroundColor:'#1E2D40',textStyle:{color:'#E2E8F0',fontSize:12}},
+    legend:{bottom:0,textStyle:{color:'#94A3B8',fontSize:11}},
     grid:{top:10,left:55,right:10,bottom:50},
-    xAxis:{type:'category',data:labels,axisLine:{lineStyle:{color:'#1E2D40'}},axisLabel:{color:'#94A3B8',fontSize:11},splitLine:{show:false}},
+    xAxis:{type:'category',data:MONTHS_ES,axisLine:{lineStyle:{color:'#1E2D40'}},axisLabel:{color:'#94A3B8',fontSize:11},splitLine:{show:false}},
     yAxis:{type:'value',axisLabel:{color:'#94A3B8',fontSize:10,formatter:v=>fmtShort(v)},splitLine:{lineStyle:{color:'#1E2D4033'}}},
     series
   });
-  window.addEventListener('resize', ()=>chart.resize());
 }
 
 function renderInvAcum(year) {
   let acum=0;
-  const data = Array.from({length:12},(_,i)=>{
-    acum += sumInversion(txOfMonth(year,i+1));
-    return +acum.toFixed(2);
-  });
-
+  const data = Array.from({length:12},(_,i)=>{ acum += sumInversion(txOfMonth(year,i+1)); return +acum.toFixed(2); });
   const chart = initEchart('chart-inv-acum');
   chart.setOption({
     backgroundColor:'transparent',
-    tooltip:{trigger:'axis',backgroundColor:'#1E2D40',borderColor:'#1E2D40',textStyle:{color:'#E2E8F0',fontSize:12},
-      formatter:params=>'<b>'+params[0].axisValue+'</b><br>Acumulado: <b>'+fmt(params[0].value)+'</b>'},
+    tooltip:{trigger:'axis',backgroundColor:'#1E2D40',textStyle:{color:'#E2E8F0',fontSize:12}},
     grid:{top:10,left:55,right:10,bottom:30},
     xAxis:{type:'category',data:MONTHS_ES,axisLine:{lineStyle:{color:'#1E2D40'}},axisLabel:{color:'#94A3B8',fontSize:10},splitLine:{show:false}},
     yAxis:{type:'value',axisLabel:{color:'#94A3B8',fontSize:10,formatter:v=>fmtShort(v)},splitLine:{lineStyle:{color:'#1E2D4033'}}},
-    series:[{type:'line',data,smooth:true,symbol:'none',lineStyle:{color:'#38BDF8',width:2},
-      areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'#38BDF833'},{offset:1,color:'#38BDF800'}]}}}]
+    series:[{type:'line',data,smooth:true,symbol:'none',lineStyle:{color:'#38BDF8',width:2},areaStyle:{color:'#38BDF833'}}]
   });
-  window.addEventListener('resize', ()=>chart.resize());
 }
 
 function renderTasaAhorro(year) {
   const data = Array.from({length:12},(_,i)=>{
-    const txs = txOfMonth(year,i+1);
-    const ing = sumIngresos(txs);
-    const inv = sumInversion(txs);
+    const txs = txOfMonth(year,i+1); const ing = sumIngresos(txs); const inv = sumInversion(txs);
     return ing>0 ? +(inv/ing*100).toFixed(1) : 0;
   });
-
   const chart = initEchart('chart-tasa-ahorro');
   chart.setOption({
     backgroundColor:'transparent',
-    tooltip:{trigger:'axis',backgroundColor:'#1E2D40',borderColor:'#1E2D40',textStyle:{color:'#E2E8F0',fontSize:12},
-      formatter:params=>'<b>'+params[0].axisValue+'</b><br>Tasa de ahorro: <b>'+params[0].value+'%</b>'},
+    tooltip:{trigger:'axis',backgroundColor:'#1E2D40',textStyle:{color:'#E2E8F0',fontSize:12}},
     grid:{top:10,left:45,right:10,bottom:30},
     xAxis:{type:'category',data:MONTHS_ES,axisLine:{lineStyle:{color:'#1E2D40'}},axisLabel:{color:'#94A3B8',fontSize:10},splitLine:{show:false}},
     yAxis:{type:'value',axisLabel:{color:'#94A3B8',fontSize:10,formatter:v=>v+'%'},splitLine:{lineStyle:{color:'#1E2D4033'}},max:100},
-    series:[{type:'bar',data,barMaxWidth:20,
-      itemStyle:{color:p=>p.value>=30?'#10B981':p.value>=15?'#FBBF24':'#F87171',borderRadius:[3,3,0,0]}}]
+    series:[{type:'bar',data,barMaxWidth:20,itemStyle:{color:p=>p.value>=30?'#10B981':p.value>=15?'#FBBF24':'#F87171',borderRadius:[3,3,0,0]}}]
   });
-  window.addEventListener('resize', ()=>chart.resize());
 }
 
 function renderTablaAnual(selectedYear) {
@@ -893,23 +778,185 @@ function renderTablaAnual(selectedYear) {
     html+=`<td class="mono text-right" style="font-weight:600;${y===selectedYear?'color:var(--red)':'color:var(--muted)'}">${val>0?fmt(val):'—'}</td>`;
   });
   html+='</tr></tbody></table></div>';
-
   document.getElementById('table-anual-wrap').innerHTML=html;
 }
 
 // ══════════════════════════════════════════════════════
-// NAVEGACIÓN POR TABS
+// LÓGICA DE PORTFOLIO (Patrimonio e Inversión)
 // ══════════════════════════════════════════════════════
-document.querySelectorAll('.tab-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-    renderAll();
+function processPortfolio() {
+  SNAPSHOTS = {};
+  RAW_PORTFOLIO.forEach(r => {
+    if (!SNAPSHOTS[r.fecha_captura]) SNAPSHOTS[r.fecha_captura] = [];
+    SNAPSHOTS[r.fecha_captura].push(r);
   });
-});
+  FECHAS_PORT = Object.keys(SNAPSHOTS).sort(); 
+  
+  const activos = new Set();
+  RAW_PORTFOLIO.forEach(r => activos.add(r.activo));
+  const sel = document.getElementById('filter-activo-port');
+  if(sel) {
+    sel.innerHTML = '<option value="all">Todos los activos</option>';
+    Array.from(activos).sort().forEach(a => {
+      if(a) sel.innerHTML += `<option value="${a}">${a}</option>`;
+    });
+    sel.addEventListener('change', renderPortfolioHistorico);
+  }
+}
+ 
+function renderPortfolioActual() {
+  if (!FECHAS_PORT.length) {
+    document.getElementById('tab-port-actual').innerHTML = '<div class="empty">No hay datos de Patrimonio</div>';
+    return;
+  }
+  const lastDate = FECHAS_PORT[FECHAS_PORT.length - 1];
+  const currentData = SNAPSHOTS[lastDate];
+ 
+  let capTotal = 0, valTotal = 0, capEfectivo = 0;
+  const brokerTot = {};
+  const claseTot = {}; // Añadimos el agrupador por clase
+  
+  currentData.forEach(r => {
+    capTotal += r.capital;
+    valTotal += r.valor;
+    if (r.clase === "Efectivo") capEfectivo += r.capital;
+    
+    brokerTot[r.broker] = (brokerTot[r.broker] || 0) + r.valor;
+    claseTot[r.clase] = (claseTot[r.clase] || 0) + r.valor; // Contabilizamos la clase
+  });
+  
+  const plusvalia = valTotal - capTotal;
+  const capInvertidoReal = capTotal - capEfectivo; // Restamos el efectivo
+  
+  // Calculamos la rentabilidad relativa solo sobre el capital expuesto al mercado
+  const rentPct = capInvertidoReal > 0 ? (plusvalia / capInvertidoReal) * 100 : 0;
+  const pctVivienda = (valTotal / META_VIVIENDA) * 100;
 
+  animateValue(document.getElementById('p-total'), valTotal);
+  document.getElementById('p-fecha').textContent = 'Captura: ' + lastDate;
+  animateValue(document.getElementById('p-capital'), capInvertidoReal);
+  
+  const pEl = document.getElementById('p-plusvalia');
+  pEl.className = 'kpi-value ' + (plusvalia>=0?'green-val':'red-val');
+  animateValue(pEl, plusvalia); // Anima la plusvalía (el color ya marca si es positiva o negativa)
+  
+  document.getElementById('p-rentabilidad').textContent = 'Rentabilidad: ' + (plusvalia>=0?'+':'') + rentPct.toFixed(2) + '%';
+  
+  // Usamos el modo porcentaje de la función animateValue (pasando false y el ratio)
+  animateValue(document.getElementById('p-obj-pct'), Math.min(pctVivienda / 100, 1), false);
+  document.getElementById('p-obj-bar').style.width = Math.min(pctVivienda, 100) + '%';
+  document.getElementById('p-obj-text').textContent = `${fmt(valTotal)} / ${fmt(META_VIVIENDA)}`;
+ 
+  // Preparamos ambos conjuntos de datos aplicando tus paletas cromáticas
+  const dataBroker = Object.entries(brokerTot).map(([b, v]) => ({
+    name: b, value: +v.toFixed(2), itemStyle: { color: COLOR_BROKER[b] || COLOR_BROKER["Otros"] }
+  })).sort((a,b)=>b.value-a.value);
+
+  const dataClase = Object.entries(claseTot).map(([c, v]) => ({
+    name: c, value: +v.toFixed(2), itemStyle: { color: COLOR_CLASE[c] || COLOR_BROKER["Otros"] }
+  })).sort((a,b)=>b.value-a.value);
+
+  setTimeout(() => {
+    const chartDonut = initEchart('chart-port-donut');
+    if(chartDonut) {
+      // Función para redibujar según lo elegido en el selector
+      const updateDonut = () => {
+        const seleccion = document.getElementById('filter-donut-port').value;
+        const datosParaPintar = seleccion === 'broker' ? dataBroker : dataClase;
+        
+        chartDonut.setOption({
+          backgroundColor:'transparent',
+          tooltip: { trigger: 'item', backgroundColor:'#1E2D40', borderColor:'#1E2D40', textStyle:{color:'#E2E8F0',fontSize:12}, formatter: '{b}<br/><b>{c} €</b> ({d}%)' },
+          legend: { bottom: 0, textStyle:{color:'#94A3B8',fontSize:11} },
+          series: [{ type: 'pie', radius: ['45%', '70%'], center: ['50%', '45%'], data: datosParaPintar, label:{show:false}, itemStyle:{borderColor:'#111827',borderWidth:2} }]
+        });
+      };
+
+      updateDonut(); // Pintamos la primera vez
+      
+      // Conectamos el selector al gráfico
+      document.getElementById('filter-donut-port').addEventListener('change', updateDonut);
+      window.addEventListener('resize', ()=>chartDonut.resize());
+    }
+  }, 50);
+ 
+  const tbody = document.querySelector('#table-portfolio tbody');
+  const trs = [...currentData].sort((a,b)=>b.valor-a.valor).map(r => {
+    const rPct = r.capital > 0 ? ((r.valor-r.capital)/r.capital)*100 : 0;
+    const imgHtml = r.logo && r.logo.startsWith('http') ? `<img src="${r.logo}" class="broker-logo" title="${r.broker}">` : `<span title="${r.broker}">🏦 </span>`;
+    return `<tr>
+      <td>${imgHtml} <strong>${r.activo}</strong></td>
+      <td style="color:var(--muted)">${r.clase}</td>
+      <td class="mono text-right">${fmt(r.capital)}</td>
+      <td class="mono text-right" style="color:var(--text)">${fmt(r.valor)}</td>
+      <td class="text-right"><span class="pill-return ${rPct>=0?'pill-pos':'pill-neg'}">${rPct>0?'+':''}${rPct.toFixed(1)}%</span></td>
+    </tr>`;
+  });
+  tbody.innerHTML = trs.join('');
+}
+ 
+function renderPortfolioHistorico() {
+  if (!FECHAS_PORT.length) return;
+  
+  const capData = [], valData = [];
+  FECHAS_PORT.forEach(f => {
+    let c=0, v=0;
+    SNAPSHOTS[f].forEach(r => { c+=r.capital; v+=r.valor; });
+    capData.push(+c.toFixed(2)); valData.push(+v.toFixed(2));
+  });
+ 
+  const chartArea = initEchart('chart-port-area');
+    if(chartArea) {
+      chartArea.setOption({
+        backgroundColor:'transparent',
+        tooltip: { trigger:'axis', backgroundColor:'#1E2D40', borderColor:'#1E2D40', textStyle:{color:'#E2E8F0',fontSize:12},
+          formatter: p => `<b>${p[0].axisValue}</b><br/>${p[1].marker} Valor: <b>${fmt(p[1].value)}</b><br/>${p[0].marker} Invertido: <b>${fmt(p[0].value)}</b>`
+        },
+        legend: { data:['Invertido','Mercado'], bottom:0, textStyle:{color:'#94A3B8',fontSize:11}, itemWidth:10, itemHeight:10 },
+        grid: { top: 20, left: 60, right: 20, bottom: 40 },
+        xAxis: { type: 'category', data: FECHAS_PORT.map(f=>f.substring(0,7)), axisLine:{lineStyle:{color:'#1E2D40'}}, axisLabel:{color:'#94A3B8',fontSize:10}, splitLine:{show:false} },
+        yAxis: { type: 'value', axisLabel:{color:'#94A3B8',fontSize:10,formatter:v=>fmtShort(v)}, splitLine:{lineStyle:{color:'#1E2D401A'}} },
+        series: [
+          { name: 'Invertido', type: 'line', data: capData, smooth: true, symbol: 'none', lineStyle:{color:'#94A3B8'}, areaStyle:{color:'#162032'} },
+          { name: 'Mercado', type: 'line', data: valData, smooth: true, symbol: 'none', lineStyle:{color:'#10B981'}, areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'#10B98166'},{offset:1,color:'#10B98100'}]}} }
+        ]
+      });
+    }
+ 
+    const filterActivo = document.getElementById('filter-activo-port').value;
+    const seriesDict = {};
+    
+    FECHAS_PORT.forEach((f, idx) => {
+      SNAPSHOTS[f].forEach(r => {
+        if (filterActivo !== 'all' && r.activo !== filterActivo) return;
+        if (!seriesDict[r.activo]) {
+          seriesDict[r.activo] = { 
+            name: r.activo, type: 'line', smooth: true, symbolSize: 6,
+            data: new Array(FECHAS_PORT.length).fill(null), 
+            // Magia cromática: Pinta la línea del activo con el color exacto de su Bróker
+            itemStyle: { color: COLOR_BROKER[r.broker] || COLOR_BROKER["Otros"] } 
+          };
+        }
+        const pct = r.capital > 0 ? ((r.valor-r.capital)/r.capital)*100 : 0;
+        seriesDict[r.activo].data[idx] = +pct.toFixed(2);
+      });
+    });
+ 
+    const chartLines = initEchart('chart-port-lines');
+    if(chartLines) {
+      chartLines.setOption({
+        backgroundColor:'transparent',
+        tooltip: { trigger:'axis', backgroundColor:'#1E2D40', borderColor:'#1E2D40', textStyle:{color:'#E2E8F0',fontSize:12}, valueFormatter: v => v !== null ? v+'%' : '-' },
+        legend: { type:'scroll', bottom: 0, textStyle:{color:'#94A3B8',fontSize:11} },
+        grid: { top: 20, left: 40, right: 20, bottom: 50 },
+        xAxis: { type: 'category', data: FECHAS_PORT.map(f=>f.substring(5)), axisLine:{lineStyle:{color:'#1E2D40'}}, axisLabel:{color:'#94A3B8',fontSize:10}, splitLine:{show:false} },
+        yAxis: { type: 'value', axisLabel:{color:'#94A3B8',fontSize:10,formatter:'{value}%'}, splitLine:{lineStyle:{color:'#1E2D401A'}} },
+        series: Object.values(seriesDict)
+      });
+      window.addEventListener('resize', ()=>{ if(chartArea) chartArea.resize(); if(chartLines) chartLines.resize(); });
+    }
+}
+ 
 // ══════════════════════════════════════════════════════
 // INICIALIZACIÓN DE LA APLICACIÓN
 // ══════════════════════════════════════════════════════

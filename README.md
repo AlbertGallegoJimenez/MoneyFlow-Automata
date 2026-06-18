@@ -1,12 +1,12 @@
 # 💸 MoneyFlow-Automata: Personal FinOps Pipeline
 > **Sistema automatizado de ingeniería de datos para finanzas personales.**
-> Ingesta, limpieza, normalización y categorización inteligente de transacciones bancarias (Caixabank, Trade Republic & MyInvestor).
+> Ingesta, limpieza, normalización y categorización inteligente de transacciones bancarias (Caixabank, Trade Republic & MyInvestor), con dashboard web integrado.
 
 ## Resumen del Proyecto
 
 Este repositorio contiene el código fuente (Google Apps Script) para transformar una hoja de cálculo de Google en un **Data Warehouse personal**. El sistema está diseñado bajo una arquitectura de "Dropzone" en Google Drive, permitiendo la carga asíncrona de extractos bancarios en formato CSV.
 
-El objetivo es eliminar la entrada manual de datos y alimentar un Dashboard de **Power BI** con datos financieros limpios, categorizados y conciliados.
+El objetivo es eliminar la entrada manual de datos y centralizar toda la información financiera en un **dashboard web propio**, servido directamente desde Google Apps Script sin dependencias externas.
 
 ![alt text](diagrama_moneyflow-automata.drawio.png)
 
@@ -43,20 +43,12 @@ Cada transacción se categoriza siguiendo una cadena de prioridad de tres nivele
 2. Historial parcial  → Busca palabras significativas del concepto en el historial
                         (stop words filtradas; desempate por categoría más frecuente)
 3. Keywords           → Diccionario hardcodeado como último recurso
-4. Pendiente          → Si ningún nivel resuelve → pasa a Gemini
+4. Pendiente          → Se notifica por email para categorización manual
 ```
 
-El historial se carga en memoria una sola vez por ejecución (`getHistoryCache`) para minimizar llamadas a la API de Sheets.
+El historial se carga en memoria una sola vez por ejecución (`getHistoryCache`) para minimizar llamadas a la API de Sheets. Con el tiempo, a medida que el historial crece, cada vez menos transacciones llegan al nivel 4.
 
-### 5. Categorización Asistida por IA (Gemini)
-Las transacciones que ningún nivel del sistema resuelve se envían automáticamente a la **API de Gemini** (Google AI Studio — tier gratuito) al final de cada ejecución.
-
-- Se procesan en lotes de 20 para respetar el rate limit del tier gratuito (15 RPM).
-- El prompt incluye la taxonomía completa de categorías y subcategorías para que Gemini devuelva siempre valores válidos.
-- Un validador (`validateAndFallback`) protege contra alucinaciones: si Gemini devuelve una categoría desconocida, cae a `Otros / N/A` en vez de escribir basura en la hoja.
-- Las filas que Gemini tampoco resuelve se reportan en el email de resumen para revisión manual.
-
-### 6. Reconciliación Automática de Bizums (`bizum_reconciler.gs`)
+### 5. Reconciliación Automática de Bizums (`bizum_reconciler.gs`)
 Resuelve automáticamente el problema de gastos compartidos pagados con Bizum:
 
 **Flujo:**
@@ -71,7 +63,7 @@ Resuelve automáticamente el problema de gastos compartidos pagados con Bizum:
 
 Los Bizums salientes (`TRANSFER_INSTANT_OUTBOUND`) se marcan como `Pendiente Categorizar` para asignación manual de categoría.
 
-### 7. Descripción Limpia Automática
+### 6. Descripción Limpia Automática
 El campo Descripción (col E) se genera a partir del concepto bancario bruto aplicando:
 - Eliminación de códigos numéricos de 4+ dígitos
 - Eliminación de sufijos geográficos y societarios (`BCN`, `SL`, `SA`, `ES`…)
@@ -81,35 +73,37 @@ El concepto original del banco se preserva intacto en la columna K.
 
 Ejemplo: `"MERCADONA 0234 BARCELONA"` → `"Mercadona"`
 
-### 8. Log Persistente + Notificación por Email
+### 7. Log Persistente + Notificación por Email
 Al final de cada ejecución el sistema genera automáticamente:
 
 **Archivo `.log` en Google Drive** — guardado en la carpeta raíz del libro de cálculo con nombre `moneyflow_YYYY-MM-DD_HH-MM.log`. Contiene el log completo con timestamps de todos los eventos, errores, resultados del reconciliador de Bizums y de Gemini.
 
-**Email de resumen** — enviado a `CONFIG.NOTIFICATION_EMAIL` con:
+**Email de resumen** — enviado a `CONFIG.NOTIFICATION_EMAIL` **únicamente cuando hay novedades** (nuevas filas, errores o transacciones pendientes). Si no hay CSVs nuevos, no se envía ningún email.
+
+Contenido del email:
 - Archivos procesados y filas insertadas, desglosadas por banco
 - Resultado de la reconciliación de Bizums
-- Resultado de la categorización Gemini
-- Lista de transacciones que siguen "Pendiente Categorizar" con número de fila y concepto original (workflow de resolución manual)
+- Lista de transacciones "Pendiente Categorizar" con número de fila y concepto original para categorización manual rápida — con enlace directo a la hoja
 - Archivos ignorados por formato desconocido
 - Errores críticos si los hubiera
 
 ---
 
-## 📊 Dashboard de Power BI
-El dashboard integra los datos procesados desde Google Sheets para ofrecer visualizaciones en tiempo real de las finanzas personales:
+## 📊 Dashboard Web
+El dashboard está construido en HTML/JS puro con **Apache ECharts** y se sirve directamente desde Google Apps Script como Web App, sin necesidad de servidores externos ni despliegues.
 
-![MoneyFlow Dashboard](powerbi/screens/overview.jpeg)
-
-**Archivo incluido:** [MoneyFlow_Dashboard.pbix](powerbi/MoneyFlow_Dashboard.pbix)
+**Tres vistas principales:**
+- **Resumen** — KPIs del mes actual, evolución 12 meses, distribución de gastos y últimas transacciones
+- **Análisis mensual** — desglose por categoría con barras de progreso, top 5 gastos, comparativa mes actual vs anterior vs media 6 meses, y split consumo/inversión
+- **Histórico** — evolución anual por categoría, inversión acumulada, tasa de ahorro mensual y comparativa año a año
+- **Patrimonio e Inversión** — snapshot actual de cartera por broker/clase de activo, evolución histórica de rentabilidad por activo
 
 ---
 
 ## Stack Tecnológico
 - **ETL / Backend:** Google Apps Script (JavaScript)
-- **Categorización IA:** Google Gemini API (tier gratuito — Google AI Studio)
 - **Almacenamiento:** Google Sheets & Google Drive
-- **Visualización:** Power BI Desktop
+- **Visualización:** HTML + Apache ECharts (servido como Google Apps Script Web App)
 - **Fuentes de Datos:** CSVs planos (exportación web)
 
 ---
@@ -118,18 +112,14 @@ El dashboard integra los datos procesados desde Google Sheets para ofrecer visua
 
 ```text
 /src
-├── config.gs               # (Ignorado por git) IDs de carpetas y claves.
+├── config.gs               # (Ignorado por git) IDs de carpetas, claves y parámetros.
 ├── config.example.gs       # Plantilla de configuración.
 ├── file_processor.gs       # Orquestador: detecta banco, parsea CSVs, coordina el pipeline.
 ├── utils.gs                # Lógica de negocio: categorización, generación de filas, helpers.
-├── gemini_categorizer.gs   # Categorización IA de transacciones "Pendiente Categorizar".
 ├── bizum_reconciler.gs     # Reconciliación automática de gastos compartidos vía Bizum.
-└── logger.gs               # Log persistente en Drive + notificación por email.
-
-/powerbi
-├── MoneyFlow_Dashboard.pbix  # Dashboard interactivo de Power BI.
-└── screens/
-    └── overview.jpeg         # Captura del dashboard.
+├── dashboard_exporter.gs   # Exporta Gastos e Historico_Portfolio a JSON para el dashboard.
+├── logger.gs               # Log persistente en Drive + notificación por email condicional.
+└── index.html              # Dashboard web (servido como Apps Script Web App).
 ```
 
 ---
@@ -141,7 +131,7 @@ const CONFIG = {
   FOLDER_ID:            "ID_de_tu_carpeta_Finanzas_Dropzone",
   PROCESSED_FOLDER_ID:  "ID_de_tu_carpeta_de_archivos_procesados",
   SHEET_NAME:           "Gastos",
-  GOOGLE_API_KEY:       "tu_clave_de_Google_AI_Studio",   // Gemini
+  SPREADSHEET_ID:       "ID_del_libro_de_calculo",        // Para getDashboardData()
   NOTIFICATION_EMAIL:   "tu_email@gmail.com",
   BIZUM_TIME_SPAN_DAYS: 3   // Ventana temporal para matching de Bizums (días)
 };
@@ -156,12 +146,16 @@ processFolderCSVs()
 │
 ├── initLogger()
 ├── Para cada CSV en Dropzone:
-│   ├── detectBank()              → Firma de headers
-│   ├── parseXXXCSV()             → Normalización por banco
+│   ├── detectBank()              → Firma de headers (detección robusta multi-banco)
+│   ├── parseXXXCSV()             → Normalización por banco + detección de delimitador
 │   └── processTransactionLogic() → Categorización en cascada + descripción limpia
 │
 ├── reconcileBizums()             → Matching y ajuste de gastos compartidos
-├── categorizePendingWithGemini() → IA para transacciones sin categoría
-├── getStillPendingRows()         → Recoge pendientes para el email
-└── finalizeLogger()              → Escribe .log en Drive + envía email
+├── logPendingRows()              → Recoge pendientes para el email
+└── finalizeLogger()              → Escribe .log en Drive + envía email (solo si hay novedades)
+
+getDashboardData()  ← llamada desde el dashboard web (Apps Script Web App)
+│
+├── Lee hoja "Gastos"              → transacciones históricas
+└── Lee hoja "Historico_Portfolio" → snapshots de cartera
 ```

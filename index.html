@@ -136,6 +136,22 @@
     .grid-6040, .grid-2 { grid-template-columns: 1fr; }
     header, .tabs-bar, .filters-bar, main { padding-left: 1rem; padding-right: 1rem; }
   }
+  /* ── MODO PRIVACIDAD ── */
+  .blur-sensitive {
+    filter: blur(8px);
+    user-select: none;
+    transition: filter 0.2s ease;
+  }
+  .btn-privacy {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    background: var(--surface2); border: 1px solid var(--border); color: var(--muted);
+    padding: 0.35rem 0.7rem; border-radius: 6px; font-size: 0.75rem;
+    font-family: var(--font-body); cursor: pointer; margin-left: 0.75rem;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .btn-privacy:hover { border-color: var(--accent); color: var(--text); }
+  .btn-privacy.active { border-color: var(--accent); color: var(--accent); background: #38BDF81A; }
+  .btn-privacy svg { width: 14px; height: 14px; flex-shrink: 0; }
 </style>
 </head>
 <body>
@@ -217,7 +233,10 @@
             </div>
           </div>
         </div>
-        <div class="card"><div class="card-title">Mes actual vs mes anterior vs media 6 meses</div><div class="chart chart-md" id="chart-comparativa"></div></div>
+        <div class="grid grid-2" style="margin-bottom:1rem">
+          <div class="card"><div class="card-title">Mes actual vs mes anterior vs media 6 meses</div><div class="chart chart-md" id="chart-comparativa"></div></div>
+          <div class="card"><div class="card-title">Top 8 Subcategorías</div><div class="chart chart-md" id="chart-top-subcategorias"></div></div>
+        </div>
       </div>
 
       <div class="tab-panel" id="tab-historico">
@@ -260,7 +279,14 @@
 
         <div class="grid grid-6040">
           <div class="card">
-            <div class="card-title">Posiciones Vivas</div>
+            <div class="card-title" style="align-items:center">
+              <span>Posiciones Vivas</span>
+              <button class="btn-privacy" id="btn-privacy-toggle" onclick="togglePrivacyMode()" style="margin-left:auto">
+                <svg id="privacy-icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg id="privacy-icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M17.94 17.94A10.94 10.94 0 0112 19c-7 0-11-7-11-7a18.5 18.5 0 015.06-5.94M9.9 4.24A10.94 10.94 0 0112 4c7 0 11 7 11 7a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                <span id="privacy-label">Ocultar valores</span>
+              </button>
+            </div>
             <div style="overflow-x:auto">
               <table class="data-table" id="table-portfolio">
                 <thead><tr><th>Activo</th><th>Clase</th><th class="text-right">Capital</th><th class="text-right">Valor actual</th><th class="text-right">Rent.</th></tr></thead>
@@ -359,6 +385,52 @@ function initEchart(domId) {
 }
 
 // ══════════════════════════════════════════════════════
+// MODO PRIVACIDAD (blur de datos sensibles de Patrimonio)
+// ══════════════════════════════════════════════════════
+let PRIVACY_MODE = false;
+const PRIVACY_STORAGE_KEY = 'moneyflow_privacy_mode';
+
+async function togglePrivacyMode() {
+  PRIVACY_MODE = !PRIVACY_MODE;
+  applyPrivacyMode();
+
+  try {
+    await window.storage.set(PRIVACY_STORAGE_KEY, JSON.stringify({ enabled: PRIVACY_MODE }), false);
+  } catch (e) {
+    console.warn('No se pudo guardar la preferencia de privacidad:', e);
+  }
+}
+
+function applyPrivacyMode() {
+  const targets = document.querySelectorAll('#p-total, #p-obj-text, .blur-target');
+  targets.forEach(el => el.classList.toggle('blur-sensitive', PRIVACY_MODE));
+
+  const btn   = document.getElementById('btn-privacy-toggle');
+  const eyeOn = document.getElementById('privacy-icon-eye');
+  const eyeOff= document.getElementById('privacy-icon-eye-off');
+  const label = document.getElementById('privacy-label');
+  if (btn) {
+    btn.classList.toggle('active', PRIVACY_MODE);
+    eyeOn.style.display  = PRIVACY_MODE ? 'none' : 'block';
+    eyeOff.style.display = PRIVACY_MODE ? 'block' : 'none';
+    label.textContent = PRIVACY_MODE ? 'Mostrar valores' : 'Ocultar valores';
+  }
+}
+
+async function loadPrivacyMode() {
+  try {
+    const result = await window.storage.get(PRIVACY_STORAGE_KEY, false);
+    if (result && result.value) {
+      const parsed = JSON.parse(result.value);
+      PRIVACY_MODE = !!parsed.enabled;
+    }
+  } catch (e) {
+    PRIVACY_MODE = false;
+  }
+  applyPrivacyMode();
+}
+
+// ══════════════════════════════════════════════════════
 // CARGA ASÍNCRONA DESDE GOOGLE SHEETS
 // ══════════════════════════════════════════════════════
 function loadData() {
@@ -381,7 +453,8 @@ function loadData() {
       applyBankFilter();
       processPortfolio();
 
-      renderAll(); 
+      renderAll();
+      loadPrivacyMode();
     })
     .withFailureHandler(function(error) {
       console.error("Error desde Apps Script:", error);
@@ -402,7 +475,6 @@ function switchModule(event, mod) {
   }
   document.getElementById(`module-${mod}`).classList.add('active');
   
-  // Delay para que el DOM esté visible antes de que ECharts calcule dimensiones
   setTimeout(renderAll, 80);
 }
 
@@ -415,7 +487,6 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     e.target.classList.add('active');
     document.getElementById('tab-' + e.target.dataset.tab).classList.add('active');
     
-    // Delay para que el tab sea visible antes de inicializar gráficos
     setTimeout(renderAll, 80);
   });
 });
@@ -582,7 +653,7 @@ function renderMensual() {
   document.getElementById('m-consumo-pct').textContent = ing>0 ? (gas/ing*100).toFixed(1)+'% ingresos' : '—';
   document.getElementById('m-inv-pct').textContent     = ing>0 ? (inv/ing*100).toFixed(1)+'% ingresos' : '—';
 
-  renderBreakdown(txM); renderTop5(txM); renderComparativa(year, parseInt(month));
+  renderBreakdown(txM); renderTop5(txM); renderComparativa(year, parseInt(month)); renderTopSubcategorias(year, parseInt(month));
 }
 
 function renderBreakdown(txM) {
@@ -665,6 +736,45 @@ function renderComparativa(year, month) {
       {name:'Media 6m',type:'line',data:cats.map(c=>+(media6[c]||0).toFixed(2)),symbol:'circle',symbolSize:5,lineStyle:{color:'#FBBF24',width:1.5,type:'dashed'},itemStyle:{color:'#FBBF24'}},
     ]
   });
+}
+
+function renderTopSubcategorias(year, month) {
+  const txM = txOfMonth(year, month);
+
+  const bySubcat = {};
+  txM.filter(t => t.tipo === 'Gasto' && t.categoria !== INV_CAT).forEach(t => {
+    const key = t.subcategoria || '(Sin subcategoría)';
+    if (!bySubcat[key]) bySubcat[key] = { total: 0, categoria: t.categoria };
+    bySubcat[key].total += Math.abs(t.valor);
+  });
+
+  const top8 = Object.entries(bySubcat)
+    .map(([subcat, v]) => ({ subcat, total: +v.total.toFixed(2), categoria: v.categoria }))
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 8)
+    .reverse(); // mayor importe arriba en barras horizontales
+
+  const chart = initEchart('chart-top-subcategorias');
+  if(!chart) return;
+
+  chart.setOption({
+    backgroundColor: 'transparent',
+    tooltip: {
+      trigger: 'axis', axisPointer: { type: 'shadow' },
+      backgroundColor: '#1E2D40', textStyle: { color: '#E2E8F0', fontSize: 12 },
+      formatter: params => `<b>${params[0].name}</b><br/>${fmt(params[0].value)}`
+    },
+    grid: { top: 10, left: 10, right: 30, bottom: 10, containLabel: true },
+    xAxis: { type: 'value', axisLabel: { color: '#94A3B8', fontSize: 10, formatter: v => fmtShort(v) }, splitLine: { lineStyle: { color: '#1E2D4033' } } },
+    yAxis: { type: 'category', data: top8.map(s => s.subcat), axisLabel: { color: '#E2E8F0', fontSize: 11 }, axisLine: { lineStyle: { color: '#1E2D40' } } },
+    series: [{
+      type: 'bar',
+      data: top8.map(s => ({ value: s.total, itemStyle: { color: catColor(s.categoria) } })),
+      barMaxWidth: 18,
+      label: { show: true, position: 'right', color: '#94A3B8', fontSize: 10, formatter: p => fmtShort(p.value) }
+    }]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
 }
 
 function renderHistorico() {
@@ -814,7 +924,7 @@ function renderPortfolioActual() {
  
   let capTotal = 0, valTotal = 0, capEfectivo = 0;
   const brokerTot = {};
-  const claseTot = {}; // Añadimos el agrupador por clase
+  const claseTot = {}; 
   
   currentData.forEach(r => {
     capTotal += r.capital;
@@ -822,13 +932,12 @@ function renderPortfolioActual() {
     if (r.clase === "Efectivo") capEfectivo += r.capital;
     
     brokerTot[r.broker] = (brokerTot[r.broker] || 0) + r.valor;
-    claseTot[r.clase] = (claseTot[r.clase] || 0) + r.valor; // Contabilizamos la clase
+    claseTot[r.clase] = (claseTot[r.clase] || 0) + r.valor;
   });
   
   const plusvalia = valTotal - capTotal;
-  const capInvertidoReal = capTotal - capEfectivo; // Restamos el efectivo
+  const capInvertidoReal = capTotal - capEfectivo; 
   
-  // Calculamos la rentabilidad relativa solo sobre el capital expuesto al mercado
   const rentPct = capInvertidoReal > 0 ? (plusvalia / capInvertidoReal) * 100 : 0;
   const pctVivienda = (valTotal / META_VIVIENDA) * 100;
 
@@ -838,16 +947,14 @@ function renderPortfolioActual() {
   
   const pEl = document.getElementById('p-plusvalia');
   pEl.className = 'kpi-value ' + (plusvalia>=0?'green-val':'red-val');
-  animateValue(pEl, plusvalia); // Anima la plusvalía (el color ya marca si es positiva o negativa)
+  animateValue(pEl, plusvalia); 
   
   document.getElementById('p-rentabilidad').textContent = 'Rentabilidad: ' + (plusvalia>=0?'+':'') + rentPct.toFixed(2) + '%';
   
-  // Usamos el modo porcentaje de la función animateValue (pasando false y el ratio)
   animateValue(document.getElementById('p-obj-pct'), Math.min(pctVivienda / 100, 1), false);
   document.getElementById('p-obj-bar').style.width = Math.min(pctVivienda, 100) + '%';
   document.getElementById('p-obj-text').textContent = `${fmt(valTotal)} / ${fmt(META_VIVIENDA)}`;
  
-  // Preparamos ambos conjuntos de datos aplicando tus paletas cromáticas
   const dataBroker = Object.entries(brokerTot).map(([b, v]) => ({
     name: b, value: +v.toFixed(2), itemStyle: { color: COLOR_BROKER[b] || COLOR_BROKER["Otros"] }
   })).sort((a,b)=>b.value-a.value);
@@ -859,7 +966,6 @@ function renderPortfolioActual() {
   setTimeout(() => {
     const chartDonut = initEchart('chart-port-donut');
     if(chartDonut) {
-      // Función para redibujar según lo elegido en el selector
       const updateDonut = () => {
         const seleccion = document.getElementById('filter-donut-port').value;
         const datosParaPintar = seleccion === 'broker' ? dataBroker : dataClase;
@@ -872,9 +978,8 @@ function renderPortfolioActual() {
         });
       };
 
-      updateDonut(); // Pintamos la primera vez
+      updateDonut(); 
       
-      // Conectamos el selector al gráfico
       document.getElementById('filter-donut-port').addEventListener('change', updateDonut);
       window.addEventListener('resize', ()=>chartDonut.resize());
     }
@@ -887,12 +992,14 @@ function renderPortfolioActual() {
     return `<tr>
       <td>${imgHtml} <strong>${r.activo}</strong></td>
       <td style="color:var(--muted)">${r.clase}</td>
-      <td class="mono text-right">${fmt(r.capital)}</td>
-      <td class="mono text-right" style="color:var(--text)">${fmt(r.valor)}</td>
+      <td class="mono text-right blur-target">${fmt(r.capital)}</td>
+      <td class="mono text-right blur-target" style="color:var(--text)">${fmt(r.valor)}</td>
       <td class="text-right"><span class="pill-return ${rPct>=0?'pill-pos':'pill-neg'}">${rPct>0?'+':''}${rPct.toFixed(1)}%</span></td>
     </tr>`;
   });
   tbody.innerHTML = trs.join('');
+
+  applyPrivacyMode();
 }
  
 function renderPortfolioHistorico() {
@@ -901,11 +1008,15 @@ function renderPortfolioHistorico() {
   const capData = [], valData = [];
   FECHAS_PORT.forEach(f => {
     let c=0, v=0;
-    SNAPSHOTS[f].forEach(r => { c+=r.capital; v+=r.valor; });
+    SNAPSHOTS[f].forEach(r => {
+      if (r.clase === "Efectivo") return; 
+      c+=r.capital; v+=r.valor;
+    });
     capData.push(+c.toFixed(2)); valData.push(+v.toFixed(2));
   });
  
-  const chartArea = initEchart('chart-port-area');
+  setTimeout(() => {
+    const chartArea = initEchart('chart-port-area');
     if(chartArea) {
       chartArea.setOption({
         backgroundColor:'transparent',
@@ -922,18 +1033,18 @@ function renderPortfolioHistorico() {
         ]
       });
     }
- 
+
     const filterActivo = document.getElementById('filter-activo-port').value;
     const seriesDict = {};
     
     FECHAS_PORT.forEach((f, idx) => {
       SNAPSHOTS[f].forEach(r => {
         if (filterActivo !== 'all' && r.activo !== filterActivo) return;
+        if (r.clase === "Efectivo") return;
         if (!seriesDict[r.activo]) {
           seriesDict[r.activo] = { 
             name: r.activo, type: 'line', smooth: true, symbolSize: 6,
             data: new Array(FECHAS_PORT.length).fill(null), 
-            // Magia cromática: Pinta la línea del activo con el color exacto de su Bróker
             itemStyle: { color: COLOR_BROKER[r.broker] || COLOR_BROKER["Otros"] } 
           };
         }
@@ -941,7 +1052,7 @@ function renderPortfolioHistorico() {
         seriesDict[r.activo].data[idx] = +pct.toFixed(2);
       });
     });
- 
+
     const chartLines = initEchart('chart-port-lines');
     if(chartLines) {
       chartLines.setOption({
@@ -955,6 +1066,7 @@ function renderPortfolioHistorico() {
       });
       window.addEventListener('resize', ()=>{ if(chartArea) chartArea.resize(); if(chartLines) chartLines.resize(); });
     }
+  }, 50);
 }
  
 // ══════════════════════════════════════════════════════

@@ -105,11 +105,42 @@ function getDashboardData() {
     }
   }
 
+  // --- HOJA PRESUPUESTO ---
+  const sheetPresupuesto = ss.getSheetByName("Presupuesto");
+  const dataPresupuesto = [];
+  if (sheetPresupuesto) {
+    const lastRowPres = sheetPresupuesto.getLastRow();
+    if (lastRowPres >= 2) {
+      const rawPres = sheetPresupuesto.getRange(2, 1, lastRowPres - 1, 7).getValues();
+      for (const row of rawPres) {
+
+        // Conversor seguro de números (evita que un texto o coma rompa la gráfica)
+        const parseNum = (val) => {
+          const n = parseFloat(String(val).replace(/,/g, '').replace(/€/g, '').replace(/,/g, ''));
+          return isNaN(n) ? 0 : n;
+        };
+
+        const anyo      = row[0] ? row[0].toString().trim() : "";
+        const tipo      = row[1] ? row[1].toString().trim() : "";
+        const categoria = row[2] ? row[2].toString().trim() : "";
+        const subcat    = row[3] ? row[3].toString().trim() : "";
+        const previsto  = parseNum(row[4]);
+        const real      = parseNum(row[5]);
+        const diferencia = parseNum(row[6]);
+
+        if (!categoria || !subcat) continue;
+
+        dataPresupuesto.push({ anyo, tipo, categoria, subcategoria: subcat, previsto, real, diferencia });
+      }
+    }
+  }
+
   return {
     last_updated: new Date().toISOString(),
     total_transactions: transactions.length,
     transactions: transactions,
-    portfolio_records: dataPort
+    portfolio_records: dataPort,
+    presupuesto: dataPresupuesto
   };
 }
 

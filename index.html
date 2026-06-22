@@ -77,6 +77,7 @@
 
   .grid { display: grid; gap: 1rem; }
   .grid-4 { grid-template-columns: repeat(4, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
   .grid-2 { grid-template-columns: repeat(2, 1fr); }
   .grid-6040 { grid-template-columns: 3fr 2fr; }
 
@@ -132,7 +133,7 @@
   .empty { padding: 3rem 1rem; text-align: center; color: var(--muted); font-size: 0.85rem; }
 
   @media (max-width: 900px) {
-    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .grid-4, .grid-3 { grid-template-columns: repeat(2, 1fr); }
     .grid-6040, .grid-2 { grid-template-columns: 1fr; }
     header, .tabs-bar, .filters-bar, main { padding-left: 1rem; padding-right: 1rem; }
   }
@@ -171,6 +172,7 @@
       <button class="tab-btn active" data-tab="resumen">Resumen</button>
       <button class="tab-btn" data-tab="mensual">Análisis mensual</button>
       <button class="tab-btn" data-tab="historico">Histórico</button>
+      <button class="tab-btn" data-tab="presupuesto">Presupuesto</button>
     </div>
 
     <div class="filters-bar">
@@ -253,6 +255,67 @@
           <div class="card"><div class="card-title">Tasa de ahorro mensual</div><div class="chart chart-md" id="chart-tasa-ahorro"></div></div>
         </div>
         <div class="card"><div class="card-title">Comparativa anual por categoría</div><div id="table-anual-wrap"><div class="empty">Selecciona un año para ver la comparativa</div></div></div>
+      </div>
+
+      <div class="tab-panel" id="tab-presupuesto">
+        <!-- KPIs globales -->
+        <div class="section-sep">Resumen anual</div>
+        <div class="grid grid-3" style="margin-bottom:1rem">
+          <div class="card">
+            <div class="card-title">Ingresos previstos vs reales</div>
+            <div style="display:flex;align-items:baseline;gap:0.5rem">
+              <div class="kpi-value green-val" id="pres-ing-real">—</div>
+              <div class="kpi-label">real</div>
+            </div>
+            <div class="kpi-delta" id="pres-ing-delta">vs previsto —</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Gastos previstos vs reales (sin inversión)</div>
+            <div style="display:flex;align-items:baseline;gap:0.5rem">
+              <div class="kpi-value red-val" id="pres-gas-real">—</div>
+              <div class="kpi-label">real</div>
+            </div>
+            <div class="kpi-delta" id="pres-gas-delta">vs previsto —</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Balance neto previsto vs real (sin inversión)</div>
+            <div style="display:flex;align-items:baseline;gap:0.5rem">
+              <div class="kpi-value" id="pres-bal-real">—</div>
+              <div class="kpi-label">real</div>
+            </div>
+            <div class="kpi-delta" id="pres-bal-delta">vs previsto —</div>
+          </div>
+        </div>
+
+        <!-- Gráfico, Tabla y Subcategorías en la misma fila -->
+        <div class="grid grid-3" style="margin-bottom:1rem">
+          <div class="card">
+            <div class="card-title">Previsto vs Real (Categorías)</div>
+            <div class="chart chart-lg" id="chart-pres-categorias"></div>
+          </div>
+          
+          <div class="card" style="overflow-x:auto;">
+            <div class="card-title">Desviación por categoría</div>
+            <table class="data-table" id="table-pres-categorias">
+              <thead><tr>
+                <th>Categoría</th>
+                <th class="text-right">Previsto</th>
+                <th class="text-right">Real</th>
+                <th class="text-right">Desviación</th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="card">
+            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem">
+              <div class="card-title" style="margin-bottom:0">Subcategorías</div>
+              <select id="filter-pres-categoria" style="margin-left:auto;width:auto"></select>
+            </div>
+            <div id="pres-subcat-container" style="max-height:360px; overflow-y:auto; padding-right:5px;"></div>
+          </div>
+        </div>
+
       </div>
     </main>
   </div>
@@ -369,6 +432,7 @@ let YEARS = [];
 let MONTHS_ES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 let MONTHS_FULL = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const INV_CAT = "Inversión y ahorro"; 
+let RAW_PRESUPUESTO = [];
 
 let RAW_PORTFOLIO = []; 
 let SNAPSHOTS = {};     
@@ -440,6 +504,7 @@ function loadData() {
     .withSuccessHandler(function(serverData) {
       RAW = serverData.transactions || [];
       RAW_PORTFOLIO = serverData.portfolio_records || [];
+      RAW_PRESUPUESTO = serverData.presupuesto || [];
       
       if (serverData.last_updated) {
         const d = new Date(serverData.last_updated);
@@ -502,6 +567,7 @@ function renderAll() {
   if (activeTab === 'resumen') renderResumen();
   if (activeTab === 'mensual') renderMensual();
   if (activeTab === 'historico') renderHistorico();
+  if (activeTab === 'presupuesto') renderPresupuesto();
   if (activeTab === 'port-actual') renderPortfolioActual();
   if (activeTab === 'port-historico') renderPortfolioHistorico();
 }
@@ -889,6 +955,172 @@ function renderTablaAnual(selectedYear) {
   });
   html+='</tr></tbody></table></div>';
   document.getElementById('table-anual-wrap').innerHTML=html;
+}
+
+// ══════════════════════════════════════════════════════
+// TAB — PRESUPUESTO
+// ══════════════════════════════════════════════════════
+
+function renderPresupuesto() {
+  if (!RAW_PRESUPUESTO || RAW_PRESUPUESTO.length === 0) {
+    document.getElementById('tab-presupuesto').innerHTML = '<div class="empty">No hay datos de presupuesto disponibles.</div>';
+    return;
+  }
+
+  const gastos   = RAW_PRESUPUESTO.filter(r => r.tipo === 'Gasto');
+  const ingresos = RAW_PRESUPUESTO.filter(r => r.tipo === 'Ingreso');
+
+  // ── KPIs globales ────────────────────────────────────────────────────────
+  const ingReal  = ingresos.reduce((s, r) => s + r.real, 0);
+  const ingPrev  = ingresos.reduce((s, r) => s + r.previsto, 0);
+  
+  // Aislamos los gastos de consumo (excluyendo la categoría de Inversión)
+  const consumos = gastos.filter(r => r.categoria !== INV_CAT);
+  const consumoReal = consumos.reduce((s, r) => s + r.real, 0);
+  const consumoPrev = consumos.reduce((s, r) => s + r.previsto, 0);
+
+  // Ahora el balance excluye la inversión en ambas partes
+  const balReal  = ingReal - consumoReal;
+  const balPrev  = ingPrev - consumoPrev;
+
+  // Animamos los KPIs
+  animateValue(document.getElementById('pres-ing-real'), ingReal);
+  animateValue(document.getElementById('pres-gas-real'), consumoReal); 
+  
+  const balEl = document.getElementById('pres-bal-real');
+  animateValue(balEl, balReal);
+  balEl.className = 'kpi-value ' + (balReal >= 0 ? 'green-val' : 'red-val');
+
+  const ingDelta  = ingReal - ingPrev;
+  const gasDelta  = consumoReal - consumoPrev; 
+  const balDelta  = balReal - balPrev;
+
+  // Para ingresos: positivo = bien (ingresaste más). Para gastos: positivo = mal (gastaste más)
+  const _deltaEl = (id, delta, invertSign) => {
+    const el = document.getElementById(id);
+    const good = invertSign ? delta < 0 : delta > 0;
+    el.textContent = `vs previsto ${delta >= 0 ? '+' : ''}${fmt(delta)}`;
+    el.className   = 'kpi-delta ' + (delta === 0 ? 'neu' : good ? 'up' : 'down');
+  };
+  _deltaEl('pres-ing-delta', ingDelta, false);
+  _deltaEl('pres-gas-delta', gasDelta, true);
+  _deltaEl('pres-bal-delta', balDelta, false);
+
+  // ── Gráfico y tabla por categoría (solo gastos) ──────────────────────────
+  const byCat = {};
+  gastos.forEach(r => {
+    if (!byCat[r.categoria]) byCat[r.categoria] = { previsto: 0, real: 0 };
+    byCat[r.categoria].previsto += r.previsto;
+    byCat[r.categoria].real     += r.real;
+  });
+
+  // Ordenar por desviación absoluta descendente
+  const catEntries = Object.entries(byCat)
+    .map(([cat, v]) => ({ cat, ...v, desviacion: v.real - v.previsto }))
+    .sort((a, b) => Math.abs(b.desviacion) - Math.abs(a.desviacion));
+
+  // Gráfico barras horizontales agrupadas previsto vs real
+  const chart = initEchart('chart-pres-categorias');
+  if (chart) {
+    const labels = catEntries.map(e => e.cat).reverse();
+    chart.setOption({
+      backgroundColor: 'transparent',
+      tooltip: {
+        trigger: 'axis', axisPointer: { type: 'shadow' },
+        backgroundColor: '#1E2D40', textStyle: { color: '#E2E8F0', fontSize: 12 },
+        formatter: params => {
+          let s = `<b>${params[0].axisValue}</b><br/>`;
+          params.forEach(p => { s += `${p.marker} ${p.seriesName}: <b>${fmt(p.value)}</b><br/>`; });
+          return s;
+        }
+      },
+      legend: { bottom: 0, textStyle: { color: '#94A3B8', fontSize: 11 } },
+      grid: { top: 10, left: 10, right: 20, bottom: 35, containLabel: true },
+      xAxis: { type: 'value', axisLabel: { color: '#94A3B8', fontSize: 10, formatter: v => fmtShort(v) }, splitLine: { lineStyle: { color: '#1E2D4033' } } },
+      yAxis: { type: 'category', data: labels, axisLabel: { color: '#E2E8F0', fontSize: 11 }, axisLine: { lineStyle: { color: '#1E2D40' } } },
+      series: [
+        { name: 'Previsto',  type: 'bar', data: catEntries.map(e => +e.previsto.toFixed(2)).reverse(), barMaxWidth: 12, itemStyle: { color: '#94A3B844', borderRadius: [0, 3, 3, 0] } },
+        { name: 'Real',      type: 'bar', data: catEntries.map(e => +e.real.toFixed(2)).reverse(),     barMaxWidth: 12,
+          itemStyle: { borderRadius: [0, 3, 3, 0],
+            color: p => {
+              const entry = catEntries[catEntries.length - 1 - p.dataIndex];
+              return entry.desviacion > 0 ? '#F87171' : '#10B981';
+            }
+          }
+        }
+      ]
+    });
+    window.addEventListener('resize', () => chart.resize());
+  }
+
+  // Tabla de desviaciones
+  const tbody = document.querySelector('#table-pres-categorias tbody');
+  tbody.innerHTML = catEntries.map(e => `
+    <tr>
+      <td>${e.cat}</td>
+      <td class="mono text-right" style="color:var(--muted)">${fmt(e.previsto)}</td>
+      <td class="mono text-right">${fmt(e.real)}</td>
+      <td class="mono text-right">
+        <span style="color:${e.desviacion > 0 ? 'var(--red)' : e.desviacion < 0 ? 'var(--green)' : 'var(--muted)'}">
+          ${e.desviacion > 0 ? '+' : ''}${fmt(e.desviacion)}
+        </span>
+      </td>
+    </tr>`).join('');
+
+  // ── Selector de categorías para el detalle de subcategorías ─────────────
+  const cats = [...new Set(gastos.map(r => r.categoria))].sort();
+  const sel  = document.getElementById('filter-pres-categoria');
+  if (sel && sel.options.length <= 1) {
+    // Solo inicializamos el select la primera vez
+    sel.innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
+    sel.addEventListener('change', renderPresupuestoSubcat);
+  }
+  renderPresupuestoSubcat();
+}
+
+function renderPresupuestoSubcat() {
+  const sel      = document.getElementById('filter-pres-categoria');
+  const catSel   = sel ? sel.value : null;
+  if (!catSel) return;
+
+  const subcats  = RAW_PRESUPUESTO.filter(r => r.tipo === 'Gasto' && r.categoria === catSel)
+    .sort((a, b) => Math.abs(b.diferencia) - Math.abs(a.diferencia));
+
+  const container = document.getElementById('pres-subcat-container');
+  if (!subcats.length) {
+    container.innerHTML = '<div class="empty">Sin datos para esta categoría.</div>';
+    return;
+  }
+
+  // Barras de progreso con % de ejecución + desviación para cada subcategoría
+  container.innerHTML = subcats.map(r => {
+    const pct        = r.previsto > 0 ? Math.min((r.real / r.previsto) * 100, 150) : 0;
+    const pctDisplay = r.previsto > 0 ? ((r.real / r.previsto) * 100).toFixed(0) : '—';
+    const desviacion = r.diferencia; // ya viene calculado como real - previsto
+    const barColor   = pct > 100 ? 'var(--red)' : pct > 80 ? 'var(--amber)' : 'var(--green)';
+    const devColor   = desviacion > 0 ? 'var(--red)' : desviacion < 0 ? 'var(--green)' : 'var(--muted)';
+
+    return `
+      <div style="margin-bottom:1rem">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.35rem">
+          <span style="font-size:0.8rem;color:var(--text)">${r.subcategoria}</span>
+          <div style="display:flex;gap:1.5rem;align-items:center">
+            <span style="font-size:0.72rem;color:var(--muted)">
+              ${fmt(r.real)} <span style="color:var(--muted2)">/ ${fmt(r.previsto)}</span>
+            </span>
+            <span style="font-size:0.72rem;font-family:var(--font-mono);color:${devColor}">
+              ${desviacion > 0 ? '+' : ''}${fmt(desviacion)}
+            </span>
+            <span style="font-size:0.72rem;font-family:var(--font-mono);color:${barColor};width:38px;text-align:right">
+              ${pctDisplay}%
+            </span>
+          </div>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width:${Math.min(pct, 100)}%;background:${barColor}"></div>
+        </div>
+      </div>`;
+  }).join('');
 }
 
 // ══════════════════════════════════════════════════════

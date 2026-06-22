@@ -26,7 +26,9 @@ function initLogger() {
     filesProcessed:   [],          // Nombres de archivos procesados
     newRowsTotal:     0,           // Total de filas insertadas
     rowsByBank:       {},          // { "Caixabank": 3, "Trade Republic": 5, ... }
-    pendingRows:      [],          // { sheetRow, concepto } — filas sin categorizar
+    geminiResolved:   0,           // Pendientes resueltos por Gemini
+    geminiFailed:     0,           // Pendientes que Gemini no pudo resolver
+    pendingRows:      [],          // { sheetRow, concepto } — los que siguen pendientes al final
     errors:           [],          // Errores críticos
     skippedFiles:     []           // Archivos con formato desconocido
   };
@@ -39,7 +41,7 @@ function initLogger() {
 
 /**
  * Registra un evento genérico.
- * @param {"INFO"|"WARN"|"ERROR"|"SKIP"} level
+ * @param {"INFO"|"WARN"|"ERROR"|"GEMINI"|"SKIP"} level
  * @param {string} message
  */
 function logEvent(level, message) {
@@ -63,13 +65,13 @@ function logSkippedFile(fileName, firstLine) {
   _log("SKIP", `Formato desconocido: "${fileName}" | Primera línea: ${firstLine.substring(0, 100)}`);
 }
 
-/** Registra las filas que quedan sin categorizar para incluirlas en el email. */
-function logPendingRows(pendingRows) {
+/** Registra el resultado de Gemini. */
+function logGeminiResult(resolved, failed, pendingRows) {
   if (!_logSession) initLogger();
-  _logSession.pendingRows = pendingRows || [];
-  if (pendingRows && pendingRows.length > 0) {
-    _log("INFO", `Pendientes de categorizar: ${pendingRows.length} fila(s)`);
-  }
+  _logSession.geminiResolved = resolved;
+  _logSession.geminiFailed   = failed;
+  _logSession.pendingRows    = pendingRows || [];
+  _log("GEMINI", `Categorización Gemini: ${resolved} resueltos, ${failed} sin resolver`);
 }
 
 /** Registra un error crítico. */
@@ -114,7 +116,7 @@ function finalizeLogger(recipientEmail) {
   }
 
   // --- 2. ENVIAR EMAIL DE RESUMEN ---
-  // Solo enviamos si hay novedades reales: filas nuevas, errores, archivos ignorados o pendientes
+  // Solo enviamos si hay novedades: filas nuevas, errores, archivos ignorados o pendientes
   const hayNovedades = _logSession.newRowsTotal > 0
     || _logSession.errors.length > 0
     || _logSession.skippedFiles.length > 0

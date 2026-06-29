@@ -12,14 +12,14 @@ function guardarFotoPortfolio() {
     throw new Error("No se ha encontrado la pestaña 'Portfolio'. Revisa el nombre.");
   }
   
-  let hojaHistorico = ss.getSheetByName("Historico_Portfolio");
+  let hojaHistorico = ss.getSheetByName(CONFIG.PORTFOLIO_SHEET_NAME);
   
-  // 1. Si no existe, creamos la hoja con la nueva estructura de columnas
+  // 1. Creación de hoja y cabeceras si no existe
   if (!hojaHistorico) {
-    hojaHistorico = ss.insertSheet("Historico_Portfolio");
+    hojaHistorico = ss.insertSheet(CONFIG.PORTFOLIO_SHEET_NAME);
     const cabecerasOriginales = hojaPortfolio.getRange(1, 1, 1, 9).getValues()[0];
     
-    // Añadimos Fecha Captura al principio y URL Logo al final
+    // Inserción de nuevas cabeceras
     const nuevasCabeceras = ["Fecha de Captura"].concat(cabecerasOriginales).concat(["URL Logo"]);
     hojaHistorico.appendRow(nuevasCabeceras);
   } else {
@@ -29,12 +29,11 @@ function guardarFotoPortfolio() {
   const ultimaFila = hojaPortfolio.getLastRow();
   if (ultimaFila < 2) return; 
   
-  // 2. Extraer los datos brutos Y LAS FÓRMULAS
+  // 2. Extracción directa de valores
   const rangoDatos = hojaPortfolio.getRange(2, 1, ultimaFila - 1, 9);
   const datosBrutos = rangoDatos.getValues();
-  const formulasBrutas = rangoDatos.getFormulas();
   
-  // 3. FILTRO Y DESDOBLAMIENTO DE IMAGEN A TEXTO + URL
+  // 3. Limpieza de datos y mapeo del logo mediante diccionario
   const datosLimpios = [];
   
   for (let i = 0; i < datosBrutos.length; i++) {
@@ -43,28 +42,12 @@ function guardarFotoPortfolio() {
     
     if (activo !== null && activo !== undefined && String(activo).trim() !== "") {
       
-      let broker = fila[3]; 
-      let formulaBroker = formulasBrutas[i][3];
-      let urlLogo = "";
+      const broker = String(fila[3] || "").trim(); // Columna D
+      const urlLogo = _mapBrokerLogo(broker);
       
-      if (String(broker) === "CellImage" || (formulaBroker && formulaBroker.toUpperCase().includes("IMAGE"))) {
-        // Extraemos la URL de dentro de =IMAGE("url")
-        const match = formulaBroker.match(/IMAGE\(\s*["']([^"']+)["']/i);
-        if (match && match[1]) {
-          urlLogo = match[1];
-          broker = _obtenerNombreBroker(urlLogo);
-        } else {
-          broker = "Bróker desconocido";
-        }
-      } else {
-        // Si ya era un texto manual, lo dejamos como está sin URL
-        broker = String(broker).trim();
-      }
-      
-      // Construimos la nueva fila: actualizamos el bróker y añadimos la URL al final
       const filaCorregida = [...fila];
       filaCorregida[3] = broker;
-      filaCorregida.push(urlLogo); // Esto se convertirá en la columna K
+      filaCorregida.push(urlLogo);
       
       datosLimpios.push(filaCorregida);
     }
@@ -75,7 +58,7 @@ function guardarFotoPortfolio() {
     return;
   }
 
-  // --- SISTEMA ANTI-DUPLICADOS ---
+  // 4. Sistema anti-duplicados por firma (Capital_Valor)
   const capitalActual = datosLimpios.reduce((acc, fila) => acc + (Number(fila[4]) || 0), 0);
   const valorActual = datosLimpios.reduce((acc, fila) => acc + (Number(fila[5]) || 0), 0);
   const firmaActual = `${capitalActual.toFixed(2)}_${valorActual.toFixed(2)}`;
@@ -86,7 +69,6 @@ function guardarFotoPortfolio() {
     const numActivos = datosLimpios.length;
     const filaInicioHist = Math.max(2, ultimaFilaHist - numActivos + 1);
     
-    // Ahora leemos 10 columnas de ancho (de la B a la K) para cuadrar con la nueva estructura
     const datosUltimaFoto = hojaHistorico.getRange(filaInicioHist, 2, numActivos, 10).getValues();
     
     const capitalHist = datosUltimaFoto.reduce((acc, fila) => acc + (Number(fila[4]) || 0), 0);
@@ -101,7 +83,7 @@ function guardarFotoPortfolio() {
   
   const fechaCaptura = new Date();
   
-  // 4. SANEAMIENTO EXTREMO
+  // 5. Saneamiento de tipos de datos antes del volcado
   const datosParaGuardar = datosLimpios.map(fila => {
     const filaSaneada = fila.map(celda => {
       if (typeof celda === 'number') return isFinite(celda) ? celda : "";
@@ -112,7 +94,7 @@ function guardarFotoPortfolio() {
     return [fechaCaptura].concat(filaSaneada);
   });
   
-  // 5. PREPARAR EL TERRENO PARA PEGAR
+  // 6. Preparación de filas e inserción masiva
   const primeraFilaVacia = hojaHistorico.getLastRow() + 1;
   const filasNecesarias = primeraFilaVacia + datosParaGuardar.length - 1;
   const filasTotales = hojaHistorico.getMaxRows();
@@ -121,28 +103,33 @@ function guardarFotoPortfolio() {
     hojaHistorico.insertRowsAfter(filasTotales, (filasNecesarias - filasTotales) + 10);
   }
   
-  // 6. PEGAR LOS DATOS
   const rangoDestino = hojaHistorico.getRange(primeraFilaVacia, 1, datosParaGuardar.length, datosParaGuardar[0].length);
   rangoDestino.setValues(datosParaGuardar);
   
-  // Forzar el formato visual Día/Mes/Año en la columna A y B
   hojaHistorico.getRange(primeraFilaVacia, 1, datosParaGuardar.length, 2).setNumberFormat("dd/MM/yyyy");
   
   ss.toast(`Se han guardado ${datosParaGuardar.length} activos en el histórico.`, "Guardado Exitoso", 4);
 }
 
 /**
- * Función auxiliar para extraer el nombre del bróker a partir de la URL de la imagen
+ * Función auxiliar para asignar el logo directamente desde el nombre en texto de la plataforma
  */
-function _obtenerNombreBroker(url) {
-  const u = url.toLowerCase();
-  if (u.includes("trade_republic")) return "Trade Republic";
-  if (u.includes("myinvestor")) return "MyInvestor";
-  if (u.includes("caixabank")) return "Caixabank";
-  if (u.includes("indexa")) return "Indexa Capital";
-  if (u.includes("occident")) return "Occident";
-  if (u.includes("binance")) return "Binance";
+function _mapBrokerLogo(broker_name) {
+  const broker = String(broker_name).trim();
   
-  // Si no lo reconoce, devuelve la propia URL como nombre provisional
-  return url;
+  if (broker === "Trade Republic") return "https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/trade-republic/default.svg";
+  if (broker === "MyInvestor") return "https://cdn.brandfetch.io/idn8tOHll6/w/400/h/400/theme/dark/icon.jpeg?c=1bxid64Mup7aczewSAYMX&t=1743680844760";
+  if (broker === "Caixabank") return "https://companieslogo.com/img/orig/CABK.MC-581477ce.png?t=1720244491";
+  if (broker === "Indexa Capital") return "https://cdn.brandfetch.io/idFrtHnS3B/w/256/h/256/theme/dark/icon.jpeg?c=1dxbfHSJFAPEGdCLU4o5B";
+  if (broker === "Binance") return "https://images.seeklogo.com/logo-png/59/1/binance-icon-logo-png_seeklogo-598330.png";
+  if (broker === "Banco Santander") return "https://companieslogo.com/img/orig/SAN-8a4d0f73.png?t=1720244493";
+  if (broker === "BBVA") return "https://companieslogo.com/img/orig/BBVA-55b94247.png?t=1720244490";
+  if (broker === "Banco Sabadell") return "https://companieslogo.com/img/orig/SAB.MC-c833cad0.png?t=1720244493";
+  if (broker === "Bankinter") return "https://companieslogo.com/img/orig/BKT.MC-125e2416.png?t=1746968371";
+  if (broker === "Revolut") return "https://cdn.brandfetch.io/idkTaHd18D/w/400/h/400/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B";
+  if (broker === "Freedom 24") return "https://cdn.brandfetch.io/idiZHZSXhU/w/48/h/48/theme/dark/logo.png?c=1dxbfHSJFAPEGdCLU4o5B";
+  if (broker === "EToro") return "https://cdn.brandfetch.io/idCL5_YhIb/w/400/h/400/theme/dark/icon.jpeg?c=1dxbfHSJFAPEGdCLU4o5B";
+  if (broker === "Occident") return "https://upload.wikimedia.org/wikipedia/commons/e/eb/Logo_occident.svg";
+  
+  return ""; 
 }

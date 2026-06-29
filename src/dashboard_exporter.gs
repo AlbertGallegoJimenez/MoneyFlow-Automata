@@ -10,12 +10,7 @@ function doGet() {
 }
 
 function getDashboardData() {
-  let sheetName = "Gastos";
-  try {
-    if (typeof CONFIG !== 'undefined' && CONFIG.SHEET_NAME) {
-      sheetName = CONFIG.SHEET_NAME;
-    }
-  } catch(e) {}
+  let sheetName = CONFIG.CASH_FLOW_SHEET_NAME;
 
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName(sheetName);
@@ -67,7 +62,7 @@ function getDashboardData() {
   // ==========================================
   // 2. EXTRACCIÓN DE DATOS DEL PORTFOLIO
   // ==========================================
-  const sheetPort = ss.getSheetByName("Historico_Portfolio");
+  const sheetPort = ss.getSheetByName(CONFIG.PORTFOLIO_SHEET_NAME);
   const dataPort = [];
   
   if (sheetPort) {
@@ -106,7 +101,7 @@ function getDashboardData() {
   }
 
   // --- HOJA PRESUPUESTO ---
-  const sheetPresupuesto = ss.getSheetByName("Presupuesto");
+  const sheetPresupuesto = ss.getSheetByName(CONFIG.BUDGET_SHEET_NAME);
   const dataPresupuesto = [];
   if (sheetPresupuesto) {
     const lastRowPres = sheetPresupuesto.getLastRow();

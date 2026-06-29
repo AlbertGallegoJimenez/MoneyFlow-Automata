@@ -77,7 +77,7 @@ function processFolderCSVs() {
   const processedFolder = DriveApp.getFolderById(CONFIG.PROCESSED_FOLDER_ID);
   const files = folder.getFilesByType(MimeType.CSV);
 
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CONFIG.SHEET_NAME);
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CONFIG.CASH_FLOW_SHEET_NAME);
   const existingHashes = getExistingHashes(sheet);
   let nextSequenceNum = getNextTrnNumber(sheet);
 
@@ -157,6 +157,8 @@ function processFolderCSVs() {
   }
 
   // --- RECONCILIACIÓN DE BIZUMS ---
+  // Debe ejecutarse antes de Gemini para que los Bizums convertidos a ingreso
+  // pasen también por la categorización automática si quedan como "Otros/Bizum"
   const bizumResult = reconcileBizums();
   logEvent("INFO",
     `Bizums: ${bizumResult.adjusted} gasto(s) ajustado(s), ` +
@@ -164,12 +166,17 @@ function processFolderCSVs() {
     `${bizumResult.bizumRowsRemoved} fila(s) eliminada(s).`
   );
 
-  // --- PENDIENTES: filas sin categoría para incluir en el email ---
+  // --- PENDIENTES: recogemos las filas sin categoría para incluirlas en el email ---
   const stillPending = getStillPendingRows(sheet);
-  logPendingRows(stillPending);
+  logGeminiResult(0, stillPending.length, stillPending);
 
-  // --- CIERRE: LOG + EMAIL ---
-  // Solo enviamos email si hay novedades reales (nuevas filas, errores o pendientes)
+  // --- EXPORTACIÓN AL DASHBOARD ---
+  // Solo exportamos si hubo cambios reales en la hoja
+  //if (_logSession && _logSession.newRowsTotal > 0) {
+  //  exportDashboardData();
+  //}
+
+  // --- CIERRE: LOG + EMAIL (#8 + #10) ---
   resetHistoryCache();
   finalizeLogger(CONFIG.NOTIFICATION_EMAIL);
 }

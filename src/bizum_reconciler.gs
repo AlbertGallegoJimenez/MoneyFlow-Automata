@@ -38,7 +38,7 @@ const BIZUM_MATCH_MAX_RATIO = 0.95;
  * @returns {{ adjusted: number, converted: number, bizumRowsRemoved: number }}
  */
 function reconcileBizums() {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CONFIG.SHEET_NAME);
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(CONFIG.CASH_FLOW_SHEET_NAME);
   const lastRow = sheet.getLastRow();
 
   if (lastRow < 2) return { adjusted: 0, converted: 0, bizumRowsRemoved: 0 };

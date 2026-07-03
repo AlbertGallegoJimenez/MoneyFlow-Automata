@@ -156,27 +156,23 @@ function processFolderCSVs() {
     file.moveTo(processedFolder);
   }
 
-  // --- RECONCILIACIÓN DE BIZUMS ---
-  // Debe ejecutarse antes de Gemini para que los Bizums convertidos a ingreso
-  // pasen también por la categorización automática si quedan como "Otros/Bizum"
-  const bizumResult = reconcileBizums();
-  logEvent("INFO",
-    `Bizums: ${bizumResult.adjusted} gasto(s) ajustado(s), ` +
-    `${bizumResult.converted} convertido(s) a ingreso, ` +
-    `${bizumResult.bizumRowsRemoved} fila(s) eliminada(s).`
-  );
+  // Solo ejecutamos el post-proceso si hubo archivos procesados
+  if (_logSession && _logSession.filesProcessed.length > 0) {
 
-  // --- PENDIENTES: recogemos las filas sin categoría para incluirlas en el email ---
-  const stillPending = getStillPendingRows(sheet);
-  logGeminiResult(0, stillPending.length, stillPending);
+    // --- RECONCILIACIÓN DE BIZUMS ---
+    const bizumResult = reconcileBizums();
+    logEvent("INFO",
+      `Bizums: ${bizumResult.adjusted} gasto(s) ajustado(s), ` +
+      `${bizumResult.converted} convertido(s) a ingreso, ` +
+      `${bizumResult.bizumRowsRemoved} fila(s) eliminada(s).`
+    );
 
-  // --- EXPORTACIÓN AL DASHBOARD ---
-  // Solo exportamos si hubo cambios reales en la hoja
-  //if (_logSession && _logSession.newRowsTotal > 0) {
-  //  exportDashboardData();
-  //}
+    // --- PENDIENTES: recogemos las filas sin categoría para incluirlas en el email ---
+    const stillPending = getStillPendingRows(sheet);
+    logPendingRows(stillPending);
+  }
 
-  // --- CIERRE: LOG + EMAIL (#8 + #10) ---
+  // --- CIERRE: LOG + EMAIL ---
   resetHistoryCache();
   finalizeLogger(CONFIG.NOTIFICATION_EMAIL);
 }

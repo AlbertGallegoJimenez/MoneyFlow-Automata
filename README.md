@@ -1,21 +1,23 @@
 # 💸 MoneyFlow-Automata: Personal FinOps Pipeline
 > **Sistema automatizado de ingeniería de datos para finanzas personales.**
-> Ingesta, limpieza, normalización y categorización inteligente de transacciones bancarias (Caixabank, Trade Republic & MyInvestor), con dashboard web integrado.
+> Ingesta, limpieza, normalización y categorización inteligente de transacciones bancarias con dashboard web integrado.
 
 ## Resumen del Proyecto
 
-Este repositorio contiene el código fuente (Google Apps Script) para transformar una hoja de cálculo de Google en un **Data Warehouse personal**. El sistema está diseñado bajo una arquitectura de "Dropzone" en Google Drive, permitiendo la carga asíncrona de extractos bancarios en formato CSV.
+Este repositorio contiene el código fuente (Google Apps Script) para transformar una libro de cálculo de Google en un **Data Warehouse personal**. El sistema está diseñado bajo una arquitectura de "Dropzone" en Google Drive, permitiendo la carga asíncrona de extractos bancarios en formato CSV.
 
-El objetivo es eliminar la entrada manual de datos y centralizar toda la información financiera en un **dashboard web propio**, servido directamente desde Google Apps Script sin dependencias externas.
+El objetivo es eliminar la entrada manual de transacciones bancarias (flujo de caja) y centralizar toda la información financiera en un **dashboard web propio**, servido directamente desde Google Apps Script.
 
 ![alt text](diagrama_moneyflow-automata.drawio.png)
+
+![alt text](dashboard_animation.gif)
 
 ---
 
 ## Características "Smart"
 
 ### 1. Arquitectura Multi-Banco con Detección Robusta
-El sistema detecta automáticamente el origen del archivo CSV comparando su primera línea contra un conjunto de **firmas canónicas** por banco (normalizadas: sin BOM, sin comillas, en minúsculas).
+El sistema detecta automáticamente el origen del archivo CSV comparando su primera línea contra un conjunto de **firmas canónicas** por banco.
 
 El mapa de firmas vive en `BANK_SIGNATURES` dentro de `file_processor.gs`: añadir soporte para un banco nuevo solo requiere añadir una entrada ahí y su función parser, sin tocar la lógica de detección.
 
@@ -24,7 +26,7 @@ Parsers implementados:
 - **Caixabank:** Detección de columnas por nombre de header. Normaliza formato europeo (`-2.800,00EUR`) a flotantes estándar.
 - **MyInvestor:** Detección de columnas por nombre de header. Parsea el formato nativo, normaliza importes con coma decimal y mapea fondos de inversión y promociones.
 
-### 2. Lógica Contable de Doble Registro (Trade Republic)
+### 2. Lógica Contable de Doble Asiento (Trade Republic)
 Para mantener un balance neto real, el script detecta las recompensas (*Saveback*) y divide la transacción en dos asientos:
 1. **Ingreso:** "Dinero nuevo" generado por el reward.
 2. **Inversión:** Salida inmediata hacia el activo (ETF/Plan).
@@ -63,17 +65,7 @@ Resuelve automáticamente el problema de gastos compartidos pagados con Bizum:
 
 Los Bizums salientes (`TRANSFER_INSTANT_OUTBOUND`) se marcan como `Pendiente Categorizar` para asignación manual de categoría.
 
-### 6. Descripción Limpia Automática
-El campo Descripción (col E) se genera a partir del concepto bancario bruto aplicando:
-- Eliminación de códigos numéricos de 4+ dígitos
-- Eliminación de sufijos geográficos y societarios (`BCN`, `SL`, `SA`, `ES`…)
-- Capitalización correcta (primera letra de cada palabra)
-
-El concepto original del banco se preserva intacto en la columna K.
-
-Ejemplo: `"MERCADONA 0234 BARCELONA"` → `"Mercadona"`
-
-### 7. Log Persistente + Notificación por Email
+### 6. Log Persistente + Notificación por Email
 Al final de cada ejecución el sistema genera automáticamente:
 
 **Archivo `.log` en Google Drive** — guardado en la carpeta raíz del libro de cálculo con nombre `moneyflow_YYYY-MM-DD_HH-MM.log`. Contiene el log completo con timestamps de todos los eventos, errores, resultados del reconciliador de Bizums y de Gemini.
@@ -92,9 +84,13 @@ Contenido del email:
 ## 📊 Dashboard Web
 El dashboard está construido en HTML/JS puro con **Apache ECharts** y se sirve directamente desde Google Apps Script como Web App, sin necesidad de servidores externos ni despliegues.
 
-**Tres vistas principales:**
+**Dos vistas principales:**
+
+**Flujo de caja:**
 - **Resumen** — KPIs del mes actual, evolución 12 meses, distribución de gastos y últimas transacciones
 - **Análisis mensual** — desglose por categoría con barras de progreso, top 5 gastos, comparativa mes actual vs anterior vs media 6 meses, y split consumo/inversión
+
+**Patrimonio e Inversión:**
 - **Histórico** — evolución anual por categoría, inversión acumulada, tasa de ahorro mensual y comparativa año a año
 - **Patrimonio e Inversión** — snapshot actual de cartera por broker/clase de activo, evolución histórica de rentabilidad por activo
 

@@ -7,7 +7,7 @@ const MY_NAMES = [
   "ALBERT GALLEGO JIMENEZ",
   "Albert Revolut",
   "Albert MyInvestor"
-]; 
+];
 const SELF_TRANSFER_CONCEPT = "nomina"; 
 
 // ==========================================
@@ -169,7 +169,7 @@ function processFolderCSVs() {
 
     // --- PENDIENTES: recogemos las filas sin categoría para incluirlas en el email ---
     const stillPending = getStillPendingRows(sheet);
-    logPendingRows(stillPending);
+    logGeminiResult(0, stillPending.length, stillPending);
   }
 
   // --- CIERRE: LOG + EMAIL ---

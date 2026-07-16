@@ -242,6 +242,7 @@ function mapConceptToKeyword(conceptLower) {
     ["repsol",            "Transporte", "Gasolina"],
     ["cepsa",             "Transporte", "Gasolina"],
     ["gm oil",            "Transporte", "Gasolina"],
+    ["gasolin",           "Transporte", "Gasolina"],
     ["cabify",            "Transporte", "Taxi/VTC"],
     ["uber",              "Transporte", "Taxi/VTC"],
     ["acciona",           "Transporte", "Motosharing"],
@@ -252,6 +253,7 @@ function mapConceptToKeyword(conceptLower) {
     ["metro barcelona",   "Transporte", "Transporte público"],
     ["residents barcelo", "Transporte", "Aparcamiento"],
     ["itv",               "Transporte", "Mantenimiento coche"],
+    ["applus",            "Transporte", "Mantenimiento coche"],
     ["qualitas auto",     "Transporte", "Seguro coche"],
     ["renfe",             "Transporte", "Transporte público"],
 
@@ -275,8 +277,7 @@ function mapConceptToKeyword(conceptLower) {
     ["core s&p 500",  "Inversión y ahorro", "ETFs"],
     ["interés",       "Recompensas/Cashback", "Cuenta remunerada TR"],
     ["interest",      "Recompensas/Cashback", "Cuenta remunerada TR"],
-    ["occident",      "Inversión y ahorro",   "Seguro Unit Linked"],
-    ["universitat obert", "Inversión y ahorro", "Matrícula máster"],
+    ["universitat", "Inversión y ahorro", "Formación"],
 
     // Vivienda
     ["pago transferencias", "Vivienda", "Alquiler"],
@@ -288,13 +289,16 @@ function mapConceptToKeyword(conceptLower) {
     // Impuestos y multas
     ["ajunt. de barcelon", "Impuestos y multas", "Impuesto circulación"],
     ["impuesto renta",     "Impuestos y multas", "IRPF"],
+    ["tribut",             "Impuestos y multas", "IRPF"],
 
     // Ropa y calzado
     ["cortefiel",    "Ropa y calzado", "Ropa"],
     ["massimo dutti","Ropa y calzado", "Ropa"],
+    ["zara",         "Ropa y calzado", "Ropa"],
+    ["inditex",      "Ropa y calzado", "Ropa"],
 
     // Regalos y donaciones
-    ["colvin",                  "Regalos", "Cumpleaños"],
+    ["colvin",                   "Regalos", "Cumpleaños"],
     ["fundación francisco luzon","Regalos", "Donación"],
 
     // MyInvestor

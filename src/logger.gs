@@ -100,28 +100,30 @@ function finalizeLogger(recipientEmail) {
 
   _log("INFO", `=== Fin de ejecución — Duración: ${duration}s ===`);
 
+// Solo enviamos si hay novedades: filas nuevas, errores, archivos ignorados o pendientes
+  const hayNovedades = _logSession.newRowsTotal > 0
+  || _logSession.errors.length > 0
+  || _logSession.skippedFiles.length > 0
+  || (_logSession.pendingRows && _logSession.pendingRows.length > 0);
+
   // --- 1. ESCRIBIR ARCHIVO .LOG EN DRIVE ---
-  try {
-    const logContent = _logSession.lines.join('\n');
-    const fileName   = `moneyflow_${fileLabel}.log`;
+  if (hayNovedades) {
+    try {
+      const logContent = _logSession.lines.join('\n');
+      const fileName   = `moneyflow_${fileLabel}.log`;
 
-    // Guardamos en la carpeta raíz del libro de cálculo
-    const ssFile      = DriveApp.getFileById(SpreadsheetApp.getActiveSpreadsheet().getId());
-    const parentFolder = ssFile.getParents().next();
+      // Guardamos en la carpeta raíz del libro de cálculo
+      const ssFile      = DriveApp.getFileById(SpreadsheetApp.getActiveSpreadsheet().getId());
+      const parentFolder = ssFile.getParents().next();
 
-    parentFolder.createFile(fileName, logContent, MimeType.PLAIN_TEXT);
-    Logger.log(`📄 Log guardado: ${fileName}`);
-  } catch (e) {
-    Logger.log("❌ Error al guardar el archivo de log: " + e.toString());
+      parentFolder.createFile(fileName, logContent, MimeType.PLAIN_TEXT);
+      Logger.log(`📄 Log guardado: ${fileName}`);
+    } catch (e) {
+      Logger.log("❌ Error al guardar el archivo de log: " + e.toString());
+    }
   }
 
   // --- 2. ENVIAR EMAIL DE RESUMEN ---
-  // Solo enviamos si hay novedades: filas nuevas, errores, archivos ignorados o pendientes
-  const hayNovedades = _logSession.newRowsTotal > 0
-    || _logSession.errors.length > 0
-    || _logSession.skippedFiles.length > 0
-    || (_logSession.pendingRows && _logSession.pendingRows.length > 0);
-
   if (!hayNovedades) {
     Logger.log("ℹ️ Sin novedades — email omitido.");
   } else {

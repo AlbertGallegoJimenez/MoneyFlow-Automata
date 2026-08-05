@@ -80,6 +80,7 @@
   .grid-3 { grid-template-columns: repeat(3, 1fr); }
   .grid-2 { grid-template-columns: repeat(2, 1fr); }
   .grid-6040 { grid-template-columns: 3fr 2fr; }
+  .grid-7525 { grid-template-columns: 3fr 1fr; }
 
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; }
   .card-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1rem; font-weight: 600; display:flex; justify-content: space-between; align-items: center;}
@@ -134,7 +135,7 @@
 
   @media (max-width: 900px) {
     .grid-4, .grid-3 { grid-template-columns: repeat(2, 1fr); }
-    .grid-6040, .grid-2 { grid-template-columns: 1fr; }
+    .grid-6040, .grid-7525, .grid-2 { grid-template-columns: 1fr; }
     header, .tabs-bar, .filters-bar, main { padding-left: 1rem; padding-right: 1rem; }
   }
   /* ── MODO PRIVACIDAD ── */
@@ -371,19 +372,54 @@
       </div>
 
       <div class="tab-panel" id="tab-port-historico">
+        <!-- Nueva barra de filtros temporales -->
+        <div class="filters-bar" style="padding:0.75rem 0; border:none; margin-bottom:0.5rem">
+          <span class="filter-label">Desde Año</span><select id="filter-port-year-from"></select>
+          <span class="filter-label" style="margin-left:0.5rem">Hasta Año</span><select id="filter-port-year-to"></select>
+        </div>
+
         <div class="card" style="margin-bottom:1rem">
           <div class="card-title">La Bola de Nieve (Capital vs Mercado)</div>
           <div class="chart chart-xl" id="chart-port-area"></div>
         </div>
         
-        <div class="card">
-          <div class="card-title" style="align-items:center;">
-            <span>Evolución de Rentabilidad (%)</span>
-            <select id="filter-activo-port" style="margin-left:auto; width: auto; max-width: 250px;">
-              <option value="all">Todos los activos</option>
-            </select>
+        <div class="grid grid-7525">
+          <div class="card">
+            <div class="card-title" style="align-items:center;">
+              <span>Evolución de Rentabilidad (%)</span>
+              <!-- El filtro de activo se mantiene en su tarjeta -->
+              <select id="filter-activo-port" style="margin-left:auto; width: auto; max-width: 250px;">
+                <option value="all">Todos los activos</option>
+              </select>
+            </div>
+            <div class="chart chart-md" id="chart-port-lines"></div>
           </div>
-          <div class="chart chart-md" id="chart-port-lines"></div>
+
+          <div class="card">
+            <div class="card-title">Hitos del Periodo</div>
+            <div style="display:flex; flex-direction:column; gap:1.25rem; margin-top:0.5rem">
+              <div>
+                <div class="kpi-label">Plusvalía neta del periodo</div>
+                <div class="kpi-value blur-target" id="port-hito-plusvalia">—</div>
+              </div>
+              <div>
+                <div class="kpi-label">Rentabilidad Absoluta</div>
+                <div class="kpi-value" id="port-hito-rentabilidad">—</div>
+              </div>
+              <div>
+                <div class="kpi-label">Activo más rentable (periodo)</div>
+                <div class="kpi-value" id="port-hito-mejor-activo" style="font-size: 1.1rem; display: flex; align-items: center; margin-top: 0.4rem;">—</div>
+              </div>
+              <div>
+                <div class="kpi-label">Max Drawdown (Mayor caída)</div>
+                <div class="kpi-value red-val" id="port-hito-drawdown">—</div>
+              </div>
+              <div class="split-block" style="margin-top:1rem">
+                <div class="split-sub">Captura más alcista: <span id="port-hito-mejor-fecha" style="color:var(--green);font-weight:600">—</span></div>
+                <div class="split-sub">Captura más bajista: <span id="port-hito-peor-fecha" style="color:var(--red);font-weight:600">—</span></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </main>
@@ -1134,15 +1170,37 @@ function processPortfolio() {
   });
   FECHAS_PORT = Object.keys(SNAPSHOTS).sort(); 
   
+  // 1. Selector de Activo
   const activos = new Set();
   RAW_PORTFOLIO.forEach(r => activos.add(r.activo));
-  const sel = document.getElementById('filter-activo-port');
-  if(sel) {
-    sel.innerHTML = '<option value="all">Todos los activos</option>';
+  const selActivo = document.getElementById('filter-activo-port');
+  if(selActivo) {
+    selActivo.innerHTML = '<option value="all">Todos los activos</option>';
     Array.from(activos).sort().forEach(a => {
-      if(a) sel.innerHTML += `<option value="${a}">${a}</option>`;
+      if(a) selActivo.innerHTML += `<option value="${a}">${a}</option>`;
     });
-    sel.addEventListener('change', renderPortfolioHistorico);
+    // IMPORTANTE: Pasamos 'true' para que SOLO se actualice el gráfico de líneas
+    selActivo.addEventListener('change', () => renderPortfolioHistorico(true));
+  }
+
+  // 2. Selectores Temporales
+  const portYears = [...new Set(FECHAS_PORT.map(f => f.substring(0,4)))].sort();
+  const selFrom = document.getElementById('filter-port-year-from');
+  const selTo = document.getElementById('filter-port-year-to');
+  
+  if (selFrom && selTo && portYears.length) {
+    selFrom.innerHTML = '';
+    selTo.innerHTML = '';
+    portYears.forEach(y => {
+      selFrom.innerHTML += `<option value="${y}">${y}</option>`;
+      selTo.innerHTML += `<option value="${y}">${y}</option>`;
+    });
+    selFrom.value = portYears[0]; 
+    selTo.value = portYears[portYears.length - 1]; 
+    
+    // IMPORTANTE: Pasamos 'false' para que recalcule KPIs y la Bola de Nieve
+    selFrom.addEventListener('change', () => renderPortfolioHistorico(false));
+    selTo.addEventListener('change', () => renderPortfolioHistorico(false));
   }
 }
  
@@ -1234,54 +1292,188 @@ function renderPortfolioActual() {
   applyPrivacyMode();
 }
  
-function renderPortfolioHistorico() {
+function renderPortfolioHistorico(soloLineas = false) {
   if (!FECHAS_PORT.length) return;
   
-  const capData = [], valData = [];
-  FECHAS_PORT.forEach(f => {
-    let c=0, v=0;
-    SNAPSHOTS[f].forEach(r => {
-      if (r.clase === "Efectivo") return; 
-      c+=r.capital; v+=r.valor;
-    });
-    capData.push(+c.toFixed(2)); valData.push(+v.toFixed(2));
+  // 1. LEER FILTROS TEMPORALES
+  const yearFrom = document.getElementById('filter-port-year-from').value || "1900";
+  const yearTo = document.getElementById('filter-port-year-to').value || "2100";
+  
+  const filteredFechas = FECHAS_PORT.filter(f => {
+    const y = f.substring(0,4);
+    return y >= yearFrom && y <= yearTo;
   });
- 
-  setTimeout(() => {
-    const chartArea = initEchart('chart-port-area');
-    if(chartArea) {
-      chartArea.setOption({
-        backgroundColor:'transparent',
-        tooltip: { trigger:'axis', backgroundColor:'#1E2D40', borderColor:'#1E2D40', textStyle:{color:'#E2E8F0',fontSize:12},
-          formatter: p => `<b>${p[0].axisValue}</b><br/>${p[1].marker} Valor: <b>${fmt(p[1].value)}</b><br/>${p[0].marker} Invertido: <b>${fmt(p[0].value)}</b>`
-        },
-        legend: { data:['Invertido','Mercado'], bottom:0, textStyle:{color:'#94A3B8',fontSize:11}, itemWidth:10, itemHeight:10 },
-        grid: { top: 20, left: 60, right: 20, bottom: 40 },
-        xAxis: { type: 'category', data: FECHAS_PORT.map(f=>f.substring(0,7)), axisLine:{lineStyle:{color:'#1E2D40'}}, axisLabel:{color:'#94A3B8',fontSize:10}, splitLine:{show:false} },
-        yAxis: { type: 'value', axisLabel:{color:'#94A3B8',fontSize:10,formatter:v=>fmtShort(v)}, splitLine:{lineStyle:{color:'#1E2D401A'}} },
-        series: [
-          { name: 'Invertido', type: 'line', data: capData, smooth: true, symbol: 'none', lineStyle:{color:'#94A3B8'}, areaStyle:{color:'#162032'} },
-          { name: 'Mercado', type: 'line', data: valData, smooth: true, symbol: 'none', lineStyle:{color:'#10B981'}, areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'#10B98166'},{offset:1,color:'#10B98100'}]}} }
-        ]
+
+  if (!filteredFechas.length) return;
+  
+  // --- SECCIÓN A: BOLA DE NIEVE Y KPIs (Se salta si soloLineas es true) ---
+  if (!soloLineas) {
+    const capData = [], valData = [];
+    let globalMaxVal = -Infinity;
+    let maxDrawdown = 0;
+    let prevVal = null;
+    let maxGain = -Infinity, maxLoss = Infinity;
+    let bestDate = "—", worstDate = "—";
+
+    filteredFechas.forEach(f => {
+      let c=0, v=0;
+      SNAPSHOTS[f].forEach(r => {
+        if (r.clase === "Efectivo") return; 
+        c+=r.capital; v+=r.valor;
+      });
+      capData.push([f, +c.toFixed(2)]);
+      valData.push([f, +v.toFixed(2)]);
+
+      // Drawdown y Volatilidad
+      if (v > globalMaxVal) globalMaxVal = v;
+      const currentDrawdown = globalMaxVal > 0 ? (globalMaxVal - v) / globalMaxVal : 0;
+      if (currentDrawdown > maxDrawdown) maxDrawdown = currentDrawdown;
+
+      if (prevVal !== null && prevVal > 0) {
+        const diffPct = ((v - prevVal) / prevVal) * 100;
+        if (diffPct > maxGain) { maxGain = diffPct; bestDate = f; }
+        if (diffPct < maxLoss) { maxLoss = diffPct; worstDate = f; }
+      }
+      prevVal = v;
+    });
+   
+    const endSnap = valData[valData.length-1][1];
+    const endCap = capData[capData.length-1][1];
+    const firstFecha = filteredFechas[0];
+    const globalIndex = FECHAS_PORT.indexOf(firstFecha);
+    
+    let baselineSnap = 0, baselineCap = 0;
+
+    if (globalIndex > 0) {
+      const prevFecha = FECHAS_PORT[globalIndex - 1];
+      SNAPSHOTS[prevFecha].forEach(r => {
+        if (r.clase !== "Efectivo") {
+          baselineCap += r.capital;
+          baselineSnap += r.valor;
+        }
       });
     }
 
+    const aportacionesNetas = endCap - baselineCap;
+    const plusvaliaPeriodo = (endSnap - baselineSnap) - aportacionesNetas;
+    const rentabilidadPeriodo = endCap > 0 ? (plusvaliaPeriodo / endCap) * 100 : 0;
+
+    const endF = filteredFechas[filteredFechas.length - 1];
+    const bestAsset = { name: "—", pctDiff: -Infinity, logo: "", broker: "" };
+    const startPctMap = {};
+    
+    if (globalIndex > 0) {
+      const prevFecha = FECHAS_PORT[globalIndex - 1];
+      SNAPSHOTS[prevFecha].forEach(r => {
+        if (r.clase !== "Efectivo") {
+          startPctMap[r.activo] = r.capital > 0 ? ((r.valor - r.capital) / r.capital) * 100 : 0;
+        }
+      });
+    }
+
+    SNAPSHOTS[endF].forEach(r => {
+      if (r.clase !== "Efectivo") {
+        const endPct = r.capital > 0 ? ((r.valor - r.capital) / r.capital) * 100 : 0;
+        const startPct = startPctMap[r.activo] || 0; 
+        const diff = endPct - startPct; 
+        
+        if (diff > bestAsset.pctDiff) {
+          bestAsset.pctDiff = diff;
+          bestAsset.name = r.activo;
+          bestAsset.logo = r.logo;
+          bestAsset.broker = r.broker;
+        }
+      }
+    });
+
+    // ACTUALIZACIÓN DEL DOM (Con animaciones)
+    const pPlusvaliaEl = document.getElementById('port-hito-plusvalia');
+    pPlusvaliaEl.className = 'kpi-value blur-target ' + (plusvaliaPeriodo >= 0 ? 'green-val' : 'red-val');
+    animateValue(pPlusvaliaEl, plusvaliaPeriodo);
+    
+    const pRentEl = document.getElementById('port-hito-rentabilidad');
+    pRentEl.className = 'kpi-value ' + (rentabilidadPeriodo >= 0 ? 'green-val' : 'red-val');
+    animateValue(pRentEl, rentabilidadPeriodo / 100, false); // /100 porque animateValue lo multiplica
+
+    const pDrawdownEl = document.getElementById('port-hito-drawdown');
+    animateValue(pDrawdownEl, -maxDrawdown, false); // Pasamos en negativo para visualizar la caída
+
+    const bestAssetEl = document.getElementById('port-hito-mejor-activo');
+    if (bestAsset.name !== "—" && bestAsset.pctDiff !== -Infinity) {
+      const imgHtml = bestAsset.logo && bestAsset.logo.startsWith('http') ? `<img src="${bestAsset.logo}" class="broker-logo" style="width:28px;height:28px;margin-right:10px;padding:3px;" title="${bestAsset.broker}">` : `<span title="${bestAsset.broker}" style="margin-right:10px;">🏦</span>`;
+      bestAssetEl.innerHTML = `${imgHtml} <span style="font-size:0.85rem; font-family:var(--font-body); font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:140px;" title="${bestAsset.name}">${bestAsset.name}</span> <span style="font-size:0.85rem; font-family:var(--font-mono); margin-left:auto; color:var(--green)">+${bestAsset.pctDiff.toFixed(1)}%</span>`;
+    } else {
+      bestAssetEl.innerHTML = "—";
+    }
+
+    const parseDate = (dstr) => {
+      if(dstr === "—") return "—";
+      const d = new Date(dstr);
+      return `${MONTHS_ES[d.getMonth()]} '${String(d.getFullYear()).slice(2)}`;
+    };
+    
+    document.getElementById('port-hito-mejor-fecha').textContent = bestDate !== "—" ? `${parseDate(bestDate)} (+${maxGain.toFixed(1)}%)` : "—";
+    document.getElementById('port-hito-peor-fecha').textContent = worstDate !== "—" ? `${parseDate(worstDate)} (${maxLoss.toFixed(1)}%)` : "—";
+
+    setTimeout(() => {
+      const chartArea = initEchart('chart-port-area');
+      if(chartArea) {
+        chartArea.setOption({
+          backgroundColor:'transparent',
+          tooltip: { trigger:'axis', backgroundColor:'#1E2D40', borderColor:'#1E2D40', textStyle:{color:'#E2E8F0',fontSize:12},
+            formatter: params => {
+              const date = new Date(params[0].value[0]);
+              let s = `<b>${date.getDate()} ${MONTHS_ES[date.getMonth()]} ${date.getFullYear()}</b><br/>`;
+              params.forEach(p => {
+                  s += `${p.marker} ${p.seriesName}: <b>${fmt(p.value[1])}</b><br/>`;
+              });
+              return s;
+            }
+          },
+          legend: { data:['Invertido','Mercado'], bottom:0, textStyle:{color:'#94A3B8',fontSize:11}, itemWidth:10, itemHeight:10 },
+          grid: { top: 20, left: 60, right: 20, bottom: 40 },
+          xAxis: { 
+            type: 'time', 
+            axisLine:{lineStyle:{color:'#1E2D40'}}, 
+            splitLine:{show:false},
+            axisLabel:{
+              color:'#94A3B8', fontSize:10, 
+              formatter: value => {
+                const d = new Date(value);
+                return MONTHS_ES[d.getMonth()] + " '" + String(d.getFullYear()).slice(2);
+              }
+            } 
+          },
+          yAxis: { type: 'value', axisLabel:{color:'#94A3B8',fontSize:10,formatter:v=>fmtShort(v)}, splitLine:{lineStyle:{color:'#1E2D401A'}} },
+          series: [
+            { name: 'Invertido', type: 'line', data: capData, smooth: false, symbol: 'none', lineStyle:{color:'#94A3B8'}, areaStyle:{color:'#162032'} },
+            { name: 'Mercado', type: 'line', data: valData, smooth: false, symbol: 'none', lineStyle:{color:'#10B981'}, areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'#10B98166'},{offset:1,color:'#10B98100'}]}} }
+          ]
+        });
+      }
+    }, 50);
+    
+    applyPrivacyMode();
+  } // <-- Fin de la Sección A
+
+  // --- SECCIÓN B: GRÁFICO DE LÍNEAS (Se ejecuta SIEMPRE) ---
+  setTimeout(() => {
     const filterActivo = document.getElementById('filter-activo-port').value;
     const seriesDict = {};
     
-    FECHAS_PORT.forEach((f, idx) => {
+    filteredFechas.forEach((f) => {
       SNAPSHOTS[f].forEach(r => {
         if (filterActivo !== 'all' && r.activo !== filterActivo) return;
         if (r.clase === "Efectivo") return;
         if (!seriesDict[r.activo]) {
           seriesDict[r.activo] = { 
-            name: r.activo, type: 'line', smooth: true, symbolSize: 6,
-            data: new Array(FECHAS_PORT.length).fill(null), 
+            name: r.activo, type: 'line', smooth: false, symbolSize: 6,
+            data: [],
             itemStyle: { color: COLOR_BROKER[r.broker] || COLOR_BROKER["Otros"] } 
           };
         }
         const pct = r.capital > 0 ? ((r.valor-r.capital)/r.capital)*100 : 0;
-        seriesDict[r.activo].data[idx] = +pct.toFixed(2);
+        seriesDict[r.activo].data.push([f, +pct.toFixed(2)]);
       });
     });
 
@@ -1289,13 +1481,33 @@ function renderPortfolioHistorico() {
     if(chartLines) {
       chartLines.setOption({
         backgroundColor:'transparent',
-        tooltip: { trigger:'axis', backgroundColor:'#1E2D40', borderColor:'#1E2D40', textStyle:{color:'#E2E8F0',fontSize:12}, valueFormatter: v => v !== null ? v+'%' : '-' },
+        tooltip: { trigger:'axis', backgroundColor:'#1E2D40', borderColor:'#1E2D40', textStyle:{color:'#E2E8F0',fontSize:12}, 
+          formatter: params => {
+            const date = new Date(params[0].value[0]);
+            let s = `<b>${date.getDate()} ${MONTHS_ES[date.getMonth()]} ${date.getFullYear()}</b><br/>`;
+            params.forEach(p => { s += `${p.marker} ${p.seriesName}: <b>${p.value[1]}%</b><br/>`; });
+            return s;
+          } 
+        },
         legend: { type:'scroll', bottom: 0, textStyle:{color:'#94A3B8',fontSize:11} },
         grid: { top: 20, left: 40, right: 20, bottom: 50 },
-        xAxis: { type: 'category', data: FECHAS_PORT.map(f=>f.substring(5)), axisLine:{lineStyle:{color:'#1E2D40'}}, axisLabel:{color:'#94A3B8',fontSize:10}, splitLine:{show:false} },
+        xAxis: { 
+          type: 'time', 
+          axisLine:{lineStyle:{color:'#1E2D40'}}, 
+          splitLine:{show:false},
+          axisLabel:{
+            color:'#94A3B8', fontSize:10, 
+            formatter: value => {
+              const d = new Date(value);
+              return MONTHS_ES[d.getMonth()] + " '" + String(d.getFullYear()).slice(2);
+            }
+          }
+        },
         yAxis: { type: 'value', axisLabel:{color:'#94A3B8',fontSize:10,formatter:'{value}%'}, splitLine:{lineStyle:{color:'#1E2D401A'}} },
         series: Object.values(seriesDict)
       });
+      // Aseguramos que la gráfica de arriba también responda si se cambia el tamaño de ventana
+      const chartArea = echarts.getInstanceByDom(document.getElementById('chart-port-area'));
       window.addEventListener('resize', ()=>{ if(chartArea) chartArea.resize(); if(chartLines) chartLines.resize(); });
     }
   }, 50);

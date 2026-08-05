@@ -21,6 +21,7 @@ const SHAREABLE_CATEGORIES = [
   { categoria: "Alimentación",  subcategoria: "Delivery"    },
   { categoria: "Ocio",          subcategoria: "Bar (cervezas, cafés, etc.)" },
   { categoria: "Ocio",          subcategoria: "Concierto"   },
+  { categoria: "Ocio",          subcategoria: "Cine"   },
   { categoria: "Transporte",    subcategoria: "Taxi/VTC"    },
   { categoria: "Transporte",    subcategoria: "Gasolina"    }
 ];

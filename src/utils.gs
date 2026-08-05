@@ -226,6 +226,7 @@ function mapConceptToKeyword(conceptLower) {
 
     // Alimentación
     ["condis",      "Alimentación", "Supermercado"],
+    ["lupa",        "Alimentación", "Supermercado"],
     ["dia",         "Alimentación", "Supermercado"],
     ["mercadona",   "Alimentación", "Supermercado"],
     ["carrefour",   "Alimentación", "Supermercado"],
@@ -233,10 +234,11 @@ function mapConceptToKeyword(conceptLower) {
     ["lidl",        "Alimentación", "Supermercado"],
     ["alcampo",     "Alimentación", "Supermercado"],
     ["supermerc",   "Alimentación", "Supermercado"],
-    ["uber eats",    "Alimentación", "Delivery"],
+    ["uber eats",   "Alimentación", "Delivery"],
     ["just eat",    "Alimentación", "Delivery"],
     ["sushi",       "Alimentación", "Restaurante"],
     ["hsn",         "Alimentación", "Suplementación"],
+    ["macxipa",     "Alimentación", "Panadería"],
 
     // Transporte
     ["repsol",            "Transporte", "Gasolina"],
@@ -260,12 +262,16 @@ function mapConceptToKeyword(conceptLower) {
     // Salud
     ["farmacia",          "Salud", "Farmacia"],
     ["activ fitness esp", "Salud", "Gimnasio"],
-    ["barberia",          "Salud", "Peluquería"],
+    ["barber",            "Salud", "Peluquería"],
 
     // Ocio
     ["apple.com/bill",       "Ocio", "Suscripción streaming"],
     ["pago traspasos",       "Ocio", "Suscripción streaming"],
     ["pagament traspassos",  "Ocio", "Suscripción streaming"],
+    ["dazn",                 "Ocio", "Suscripción streaming"],
+    ["spotify",              "Ocio", "Suscripción streaming"],
+    ["hbo",                  "Ocio", "Suscripción streaming"],
+    ["netflix",              "Ocio", "Suscripción streaming"],
     ["cine",                 "Ocio", "Cine"],
     ["yelmo",                "Ocio", "Cine"],
     ["playstation",          "Ocio", "Videojuegos"],
@@ -277,7 +283,7 @@ function mapConceptToKeyword(conceptLower) {
     ["core s&p 500",  "Inversión y ahorro", "ETFs"],
     ["interés",       "Recompensas/Cashback", "Cuenta remunerada TR"],
     ["interest",      "Recompensas/Cashback", "Cuenta remunerada TR"],
-    ["universitat", "Inversión y ahorro", "Formación"],
+    ["universitat",   "Inversión y ahorro", "Formación"],
 
     // Vivienda
     ["pago transferencias", "Vivienda", "Alquiler"],

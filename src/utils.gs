@@ -140,69 +140,74 @@ function extractSignificantWords(concept) {
  * @param {object[][]} sheet - Hoja Gastos (para cargar caché si aún no está cargada)
  * @returns {{categoria: string, subcategoria: string, source: string}}
  */
-function mapConceptToCategory(concept, sheet) {
+function mapConceptToCategory(concept, amount, sheet) {
   const conceptLower = concept.toLowerCase().trim();
+  let resultado = null;
 
-  // --- NIVEL 1: Coincidencia exacta en historial ---
+  // --- NIVEL 1 y 2: Historial ---
   if (sheet) {
     const history = getHistoryCache(sheet);
 
+    // 1. Coincidencia exacta
     const exactMatch = history.find(h => h.conceptoOriginal === conceptLower);
     if (exactMatch) {
-      Logger.log(`🟢 [Exacto] "${concept}" → ${exactMatch.categoria} / ${exactMatch.subcategoria}`);
-      return {
-        categoria:    exactMatch.categoria,
-        subcategoria: exactMatch.subcategoria,
-        source:       "historial_exacto"
-      };
+      resultado = { categoria: exactMatch.categoria, subcategoria: exactMatch.subcategoria, source: "historial_exacto" };
+      Logger.log(`🟢 [Exacto] "${concept}" → ${resultado.categoria} / ${resultado.subcategoria}`);
     }
 
-    // --- NIVEL 2: Coincidencia parcial en historial ---
-    const significantWords = extractSignificantWords(conceptLower);
+    // 2. Coincidencia parcial
+    if (!resultado) {
+      const significantWords = extractSignificantWords(conceptLower);
+      if (significantWords.length > 0) {
+        const votes = {};
+        for (const entry of history) {
+          const entryWords = extractSignificantWords(entry.conceptoOriginal);
+          const hasCommonWord = significantWords.some(w => entryWords.includes(w));
 
-    if (significantWords.length > 0) {
-      // Contamos votos: por cada entrada del historial que comparte al menos
-      // una palabra significativa, sumamos un voto a su categoría+subcategoría
-      const votes = {};
-
-      for (const entry of history) {
-        const entryWords = extractSignificantWords(entry.conceptoOriginal);
-        const hasCommonWord = significantWords.some(w => entryWords.includes(w));
-
-        if (hasCommonWord) {
-          const key = `${entry.categoria}|||${entry.subcategoria}`;
-          votes[key] = (votes[key] || 0) + 1;
+          if (hasCommonWord) {
+            const key = `${entry.categoria}|||${entry.subcategoria}`;
+            votes[key] = (votes[key] || 0) + 1;
+          }
         }
-      }
 
-      if (Object.keys(votes).length > 0) {
-        // Ganador = la combinación categoría+subcategoría con más votos
-        const winner = Object.entries(votes).sort((a, b) => b[1] - a[1])[0];
-        const [winnerCat, winnerSub] = winner[0].split("|||");
-        Logger.log(`🟡 [Parcial] "${concept}" → ${winnerCat} / ${winnerSub} (${winner[1]} votos)`);
-        return {
-          categoria:    winnerCat,
-          subcategoria: winnerSub,
-          source:       "historial_parcial"
-        };
+        if (Object.keys(votes).length > 0) {
+          const winner = Object.entries(votes).sort((a, b) => b[1] - a[1])[0];
+          const [winnerCat, winnerSub] = winner[0].split("|||");
+          resultado = { categoria: winnerCat, subcategoria: winnerSub, source: "historial_parcial" };
+          Logger.log(`🟡 [Parcial] "${concept}" → ${resultado.categoria} / ${resultado.subcategoria} (${winner[1]} votos)`);
+        }
       }
     }
   }
 
-  // --- NIVEL 3: Diccionario de keywords (legado) ---
-  const keywordResult = mapConceptToKeyword(conceptLower);
-  if (keywordResult) {
-    Logger.log(`🔵 [Keyword] "${concept}" → ${keywordResult.categoria} / ${keywordResult.subcategoria}`);
-    return { ...keywordResult, source: "keyword" };
+  // --- NIVEL 3: Keywords ---
+  if (!resultado) {
+    const keywordResult = mapConceptToKeyword(conceptLower);
+    if (keywordResult) {
+      resultado = { ...keywordResult, source: "keyword" };
+      Logger.log(`🔵 [Keyword] "${concept}" → ${resultado.categoria} / ${resultado.subcategoria}`);
+    }
   }
 
   // --- NIVEL 4: Sin categoría ---
-  Logger.log(`🔴 [Pendiente] "${concept}" → sin coincidencia`);
-  return {
-    categoria:    "Pendiente Categorizar",
-    subcategoria: "Pendiente Categorizar",
-    source:       "pendiente"
-  };
+  if (!resultado) {
+    resultado = { categoria: "Pendiente Categorizar", subcategoria: "Pendiente Categorizar", source: "pendiente" };
+    Logger.log(`🔴 [Pendiente] "${concept}" → sin coincidencia`);
+  }
+
+  // --- INTERCEPTOR DE IMPORTE (Restaurante vs Bar) ---
+  if (resultado.subcategoria === "Restaurante" || resultado.subcategoria === "Bar (cervezas, cafés, etc.)") {
+    if (amount >= 10) {
+      resultado.categoria = "Alimentación";
+      resultado.subcategoria = "Restaurante";
+    } else {
+      resultado.categoria = "Ocio";
+      resultado.subcategoria = "Bar (cervezas, cafés, etc.)";
+    }
+    Logger.log(`⚖️ [Ajuste Importe] Ajustado a: ${resultado.categoria} / ${resultado.subcategoria} (Importe: ${amount}€)`);
+  }
+
+  return resultado;
 }
 
 // ==========================================
@@ -416,7 +421,7 @@ function processTransactionLogic(trn, trnHash, sourceBank, currentSequenceNum, s
     const tipo = parseFloat(trn.amount) < 0 ? "Gasto" : "Ingreso";
 
     // Categorización: historial → keywords → pendiente (#5)
-    const mapped = mapConceptToCategory(trn.title, sheet);
+    const mapped = mapConceptToCategory(trn.title, amount, sheet);
 
     // Descripción limpia (#7): nombre del comercio capitalizado, sin códigos numéricos
     const cleanDescription = cleanConceptDescription(trn.title);

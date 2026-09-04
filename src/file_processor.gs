@@ -66,7 +66,7 @@ function processFolderCSVs() {
   // --- INICIO DE LOG (#8) ---
   initLogger();
 
-  const folder = DriveApp.getFolderById(CONFIG.FOLDER_ID);
+  const folder = DriveApp.getFolderById(CONFIG.DROPZONE_FOLDER_ID);
   const processedFolder = DriveApp.getFolderById(CONFIG.PROCESSED_FOLDER_ID);
   const files = folder.getFilesByType(MimeType.CSV);
 

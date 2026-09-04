@@ -3,13 +3,6 @@
  * Detecta automáticamente el banco y procesa los datos para MoneyFlow-Automata.
  */
 
-const MY_NAMES = [
-  "ALBERT GALLEGO JIMENEZ",
-  "Albert Revolut",
-  "Albert MyInvestor"
-];
-const SELF_TRANSFER_CONCEPT = "nomina"; 
-
 // ==========================================
 // FIRMAS DE BANCOS (#1: Detección robusta)
 // ==========================================
@@ -253,7 +246,7 @@ function parseTradeRepublicCSV(csvString) {
     const counterpartyName = col.counterpartyName !== -1 ? (row[col.counterpartyName] || "").trim() : "";
 
     // Filtro de transferencias propias
-    if (MY_NAMES.some(n => description.includes(n) || counterpartyName.includes(n))) continue;
+    if (CONFIG.MY_NAMES.some(n => description.includes(n) || counterpartyName.includes(n))) continue;
 
     // Flujo de caja neto
     const netAmount = amount + fee + tax;
@@ -366,9 +359,14 @@ function parseCaixabankCSV(rawString) {
       continue;
     }
 
-    // FILTRO: Transferencia a mí mismo (salida de nómina)
-    if (rawConcept.trim() === SELF_TRANSFER_CONCEPT && amountFloat < 0) {
-      Logger.log("Saltando transferencia propia (nomina salida): " + rawAmount);
+    // FILTRO: Transferencias propias (iterando la lista e ignorando mayúsculas/minúsculas)
+    const rawConceptLower = rawConcept.trim().toLowerCase();
+    const isSelfTransfer = CONFIG.SELF_TRANSFER_CONCEPT.some(
+      concepto => rawConceptLower === concepto.trim().toLowerCase()
+    );
+
+    if (isSelfTransfer && amountFloat < 0) {
+      Logger.log("Saltando transferencia propia (" + rawConcept.trim() + "): " + rawAmount);
       continue;
     }
 

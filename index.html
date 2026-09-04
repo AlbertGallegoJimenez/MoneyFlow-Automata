@@ -1501,7 +1501,7 @@ function renderPortfolioHistorico(soloLineas = false) {
               const d = new Date(value);
               return MONTHS_ES[d.getMonth()] + " '" + String(d.getFullYear()).slice(2);
             }
-          }
+          } 
         },
         yAxis: { type: 'value', axisLabel:{color:'#94A3B8',fontSize:10,formatter:'{value}%'}, splitLine:{lineStyle:{color:'#1E2D401A'}} },
         series: Object.values(seriesDict)

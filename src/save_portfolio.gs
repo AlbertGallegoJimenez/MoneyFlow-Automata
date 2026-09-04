@@ -122,9 +122,9 @@ function _mapBrokerLogo(broker_name) {
   if (broker === "Caixabank") return "https://companieslogo.com/img/orig/CABK.MC-581477ce.png?t=1720244491";
   if (broker === "Indexa Capital") return "https://cdn.brandfetch.io/idFrtHnS3B/w/256/h/256/theme/dark/icon.jpeg?c=1dxbfHSJFAPEGdCLU4o5B";
   if (broker === "Binance") return "https://images.seeklogo.com/logo-png/59/1/binance-icon-logo-png_seeklogo-598330.png";
-  if (broker === "Banco Santander") return "https://companieslogo.com/img/orig/SAN-8a4d0f73.png?t=1720244493";
+  if (broker === "Santander") return "https://companieslogo.com/img/orig/SAN-8a4d0f73.png?t=1720244493";
   if (broker === "BBVA") return "https://companieslogo.com/img/orig/BBVA-55b94247.png?t=1720244490";
-  if (broker === "Banco Sabadell") return "https://companieslogo.com/img/orig/SAB.MC-c833cad0.png?t=1720244493";
+  if (broker === "Sabadell") return "https://companieslogo.com/img/orig/SAB.MC-c833cad0.png?t=1720244493";
   if (broker === "Bankinter") return "https://companieslogo.com/img/orig/BKT.MC-125e2416.png?t=1746968371";
   if (broker === "Revolut") return "https://cdn.brandfetch.io/idkTaHd18D/w/400/h/400/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B";
   if (broker === "Freedom 24") return "https://cdn.brandfetch.io/idiZHZSXhU/w/48/h/48/theme/dark/logo.png?c=1dxbfHSJFAPEGdCLU4o5B";

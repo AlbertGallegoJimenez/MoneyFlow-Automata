@@ -197,7 +197,7 @@
         </div>
         <div class="grid grid-6040" style="margin-bottom:1rem">
           <div class="card"><div class="card-title">Evolución mensual — últimos 12 meses</div><div class="chart chart-lg" id="chart-evolucion"></div></div>
-          <div class="card"><div class="card-title">Distribución este mes</div><div class="chart chart-lg" id="chart-donut"></div></div>
+          <div class="card"><div class="card-title">Gasto por categoría — este mes</div><div class="chart chart-lg" id="chart-treemap"></div></div>
         </div>
         <div class="card">
           <div class="card-title">Últimas 10 transacciones</div>
@@ -486,10 +486,20 @@ function catColor(cat) { return CAT_COLORS[cat] || "#94A3B8"; }
 function initEchart(domId) {
   const dom = document.getElementById(domId);
   if (!dom) return null;
-  let chart = echarts.getInstanceByDom(dom);
-  if (chart) chart.dispose(); 
+  const existing = echarts.getInstanceByDom(dom);
+  if (existing) existing.dispose();
+  dom.innerHTML = '';
   return echarts.init(dom, null, { renderer: 'svg' });
 }
+// Single resize handler for every chart. Then DELETE the per-render
+// `window.addEventListener('resize', ...)` lines (renderTopSubcategorias and
+// renderPresupuesto) — they pile up one extra listener on every render.
+window.addEventListener('resize', () => {
+  document.querySelectorAll('.chart').forEach(el => {
+    const c = echarts.getInstanceByDom(el);
+    if (c) c.resize();
+  });
+});
 
 // ══════════════════════════════════════════════════════
 // MODO PRIVACIDAD (blur de datos sensibles de Patrimonio)
@@ -649,6 +659,14 @@ function applyBankFilter() {
 
 function fmt(n) { return (n < 0 ? '-' : '') + Math.abs(n).toLocaleString('es-ES', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' €'; }
 function fmtShort(n) { return Math.abs(n) >= 1000 ? (n/1000).toFixed(1) + 'k' : n; }
+// Compact integer label for chart annotations: 523 -> "523", 1234 -> "1,2k"
+function fmtLabel(v) {
+  return v >= 1000 ? (v / 1000).toFixed(1).replace('.', ',') + 'k' : String(Math.round(v));
+}
+// Whole-euro money string for tile labels: 1234.5 -> "1.235 €"
+function fmtMoney0(v) {
+  return Math.round(v).toLocaleString('es-ES') + ' €';
+}
 
 function txOfMonth(year, month) { return FILTERED.filter(t => t.fecha.startsWith(year + '-' + String(month).padStart(2,'0'))); }
 function txOfYear(year) { return FILTERED.filter(t => t.fecha.startsWith(year)); }
@@ -686,7 +704,7 @@ function renderResumen() {
   document.getElementById('kpi-balance').textContent = 'Balance neto: ' + fmt(bal);
   document.getElementById('kpi-balance').className = 'kpi-delta ' + (bal>=0?'up':'down');
 
-  renderEvolucion(); renderDonut(txM); renderRecientes();
+  renderEvolucion(); renderTreemap(txM); renderRecientes();
 }
 
 function renderEvolucion() {
@@ -716,17 +734,87 @@ function renderEvolucion() {
   });
 }
 
-function renderDonut(txM) {
-  const bycat = {};
-  txM.filter(t => t.tipo==='Gasto').forEach(t => bycat[t.categoria] = (bycat[t.categoria]||0) + Math.abs(t.valor));
-  const data = Object.entries(bycat).map(([name,value])=>({ name, value:+value.toFixed(2), itemStyle:{color:catColor(name)} })).sort((a,b)=>b.value-a.value);
-  if (!data.length) { document.getElementById('chart-donut').innerHTML = '<div class="empty">Sin datos este mes</div>'; return; }
-  const chart = initEchart('chart-donut');
-  chart.setOption({
-    tooltip:{ trigger:'item', backgroundColor:'#1E2D40', textStyle:{color:'#E2E8F0'} },
-    legend:{ orient:'vertical', right:0, top:'center', textStyle:{color:'#94A3B8',fontSize:10} },
-    series:[{ type:'pie', radius:['45%','70%'], center:['38%','50%'], data, label:{show:false}, itemStyle:{borderColor:'#111827',borderWidth:2} }]
+function buildTreemapData(txM) {
+  const tree = {};
+  txM.forEach(t => {
+    if (t.tipo !== 'Gasto' || t.categoria === INV_CAT) return;
+    const cat = t.categoria;
+    const sub = t.subcategoria || 'Sin subcategoría';
+    const v = Math.abs(t.valor);
+    if (!tree[cat]) tree[cat] = { total: 0, subs: {} };
+    tree[cat].total += v;
+    tree[cat].subs[sub] = (tree[cat].subs[sub] || 0) + v;
   });
+ 
+  // Subtle alpha steps so subcategories of one category are distinguishable
+  // while keeping dark label text readable on every tile.
+  const ALPHAS = ['FF', 'EB', 'D6', 'C2', 'B3'];
+ 
+  const nodes = Object.entries(tree)
+    .sort((a, b) => b[1].total - a[1].total)
+    .map(([cat, d]) => {
+      const base = catColor(cat);
+      return {
+        name: cat,
+        value: +d.total.toFixed(2),
+        itemStyle: { color: base },
+        children: Object.entries(d.subs)
+          .sort((a, b) => b[1] - a[1])
+          .map(([sub, v], i) => ({
+            name: sub,
+            value: +v.toFixed(2),
+            itemStyle: { color: base + ALPHAS[Math.min(i, ALPHAS.length - 1)] }
+          }))
+      };
+    });
+ 
+  return { nodes, total: nodes.reduce((s, n) => s + n.value, 0) };
+}
+ 
+function buildTreemapOption(txM) {
+  const { nodes, total } = buildTreemapData(txM);
+  return {
+    backgroundColor: 'transparent',
+    tooltip: {
+      backgroundColor: '#1E2D40',
+      textStyle: { color: '#E2E8F0', fontSize: 12 },
+      formatter: info => {
+        const pct = total > 0 ? (info.value / total * 100).toFixed(1) : '0.0';
+        return `<b>${info.name}</b><br/>${fmt(info.value)} · ${pct}% del gasto`;
+      }
+    },
+    series: [{
+      type: 'treemap',
+      data: nodes,
+      roam: false,
+      nodeClick: 'zoomToNode',   // click a category to drill into its subcategories
+      leafDepth: 1,              // show only categories first; breadcrumb to go back
+      left: 0, right: 0, top: 0, bottom: 28,
+      breadcrumb: {
+        show: true, bottom: 0, height: 22,
+        itemStyle: { color: '#162032', borderColor: '#1E2D40', textStyle: { color: '#E2E8F0' } }
+      },
+      itemStyle: { borderColor: '#111827', borderWidth: 2, gapWidth: 2, borderRadius: 4 },
+      label: {
+        show: true, color: '#0A0E1A', fontSize: 11, fontWeight: 600, overflow: 'truncate',
+        formatter: p => `${p.name}\n${fmtMoney0(p.value)}`
+      },
+      emphasis: { itemStyle: { borderColor: '#E2E8F0' } }
+    }]
+  };
+}
+ 
+function renderTreemap(txM) {
+  const el = document.getElementById('chart-treemap');
+  if (!el) return;
+  const chart = initEchart('chart-treemap');
+  const option = buildTreemapOption(txM);
+  if (!option.series[0].data.length) {
+    chart.dispose();
+    el.innerHTML = '<div class="empty">Sin gastos este mes</div>';
+    return;
+  }
+  chart.setOption(option);
 }
 
 function renderRecientes() {
@@ -917,30 +1005,123 @@ function renderHistorico() {
   renderLineas(year); renderInvAcum(year); renderTasaAhorro(year); renderTablaAnual(year);
 }
 
-function renderLineas(year) {
-  const byCat={};
-  txOfYear(year).filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).forEach(t=>byCat[t.categoria]=(byCat[t.categoria]||0)+Math.abs(t.valor));
-  const top5cats = Object.entries(byCat).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([c])=>c);
-
-  const series = top5cats.map(cat=>({
-    name: cat, type: 'bar', stack: 'gastos', barMaxWidth: 32, itemStyle: { color: catColor(cat), borderRadius: 0 },
-    data: Array.from({length:12},(_,i)=>+(sumGastosReales(txOfMonth(year,i+1).filter(t=>t.categoria===cat))||0).toFixed(2))
-  }));
-
-  series.push({
-    name: 'Inversión', type: 'line', stack: 'inversion', itemStyle: { color: '#38BDF866', borderRadius: [3,3,0,0] },
-    data: Array.from({length:12},(_,i)=>+sumInversion(txOfMonth(year,i+1)).toFixed(2))
+const TOTAL_SERIES_ID = 'total-label';
+ 
+// One pass over the year's transactions: monthly sums per consumption category
+// plus the investment line. Categories keep a FIXED order (CAT_COLORS order)
+// so colors and stack positions stay stable between years.
+function buildStackedData(year) {
+  const byCatMonth = {};
+  const inv = Array(12).fill(0);
+ 
+  txOfYear(year).forEach(t => {
+    if (t.tipo !== 'Gasto') return;
+    const m = parseInt(t.fecha.substring(5, 7), 10) - 1;
+    const v = Math.abs(t.valor);
+    if (t.categoria === INV_CAT) { inv[m] += v; return; }
+    if (!byCatMonth[t.categoria]) byCatMonth[t.categoria] = Array(12).fill(0);
+    byCatMonth[t.categoria][m] += v;
   });
-
-  const chart = initEchart('chart-lineas');
-  chart.setOption({
-    backgroundColor:'transparent',
-    tooltip:{trigger:'axis',backgroundColor:'#1E2D40',textStyle:{color:'#E2E8F0',fontSize:12}},
-    legend:{bottom:0,textStyle:{color:'#94A3B8',fontSize:11}},
-    grid:{top:10,left:55,right:10,bottom:50},
-    xAxis:{type:'category',data:MONTHS_ES,axisLine:{lineStyle:{color:'#1E2D40'}},axisLabel:{color:'#94A3B8',fontSize:11},splitLine:{show:false}},
-    yAxis:{type:'value',axisLabel:{color:'#94A3B8',fontSize:10,formatter:v=>fmtShort(v)},splitLine:{lineStyle:{color:'#1E2D4033'}}},
+ 
+  const known   = Object.keys(CAT_COLORS).filter(c => c !== INV_CAT && byCatMonth[c]);
+  const unknown = Object.keys(byCatMonth).filter(c => !(c in CAT_COLORS));
+  return { cats: [...known, ...unknown], byCatMonth, inv };
+}
+ 
+function buildStackedOption(year) {
+  const { cats, byCatMonth, inv } = buildStackedData(year);
+  const round = arr => arr.map(v => +v.toFixed(2));
+ 
+  // Monthly total of the categories that are currently selected in the legend.
+  // `selected` is the map ECharts gives in `legendselectchanged` ({name: bool}).
+  const totalsFor = selected => MONTHS_ES.map((_, i) =>
+    +cats
+      .filter(c => !selected || selected[c] !== false)
+      .reduce((s, c) => s + byCatMonth[c][i], 0)
+      .toFixed(2)
+  );
+ 
+  const series = cats.map(cat => ({
+    name: cat, type: 'bar', stack: 'gastos', barMaxWidth: 32,
+    itemStyle: { color: catColor(cat) },
+    data: round(byCatMonth[cat])
+  }));
+ 
+  series.push({
+    name: 'Inversión', type: 'line', z: 5,
+    data: round(inv),
+    symbol: 'circle', symbolSize: 6,
+    lineStyle: { color: '#38BDF8', width: 2 },
+    itemStyle: { color: '#38BDF8' }
+  });
+ 
+  // Invisible line that only carries the total label above each stack.
+  // It is NOT in legend.data, so it can't be toggled; its data is rewritten
+  // on every legend change (see renderLineas).
+  series.push({
+    id: TOTAL_SERIES_ID, name: 'Total', type: 'line', z: 6, silent: true,
+    data: totalsFor(null),
+    // NOTE: symbol:'none' would also suppress the label; a zero-size symbol keeps it.
+    symbol: 'circle', symbolSize: 0,
+    lineStyle: { opacity: 0 },
+    label: {
+      show: true, position: 'top', distance: 4,
+      color: '#E2E8F0', fontSize: 10, fontFamily: "'JetBrains Mono', monospace",
+      formatter: p => (p.value > 0 ? fmtLabel(p.value) : '')
+    }
+  });
+ 
+  const option = {
+    backgroundColor: 'transparent',
+    tooltip: {
+      trigger: 'axis', axisPointer: { type: 'shadow' },
+      backgroundColor: '#1E2D40', textStyle: { color: '#E2E8F0', fontSize: 12 },
+      formatter: params => {
+        // Deselected series are absent from `params`, so the total below
+        // always matches what is visible.
+        const rows = params
+          .filter(p => p.seriesId !== TOTAL_SERIES_ID && p.seriesType === 'bar' && p.value > 0)
+          .sort((a, b) => b.value - a.value);
+        const invP = params.find(p => p.seriesName === 'Inversión');
+        const total = rows.reduce((s, p) => s + p.value, 0);
+        let html = `<b>${params[0].axisValueLabel}</b><br/>`;
+        rows.forEach(p => { html += `${p.marker} ${p.seriesName}: <b>${fmt(p.value)}</b><br/>`; });
+        html += `<div style="margin-top:4px;padding-top:4px;border-top:1px solid #4B5563">Total consumo: <b>${fmt(total)}</b></div>`;
+        if (invP) html += `<span style="color:#38BDF8">Inversión: <b>${fmt(invP.value)}</b></span>`;
+        return html;
+      }
+    },
+    legend: {
+      data: [...cats, 'Inversión'],
+      bottom: 0, textStyle: { color: '#94A3B8', fontSize: 11 }
+    },
+    // top margin leaves room for the total labels above the tallest bar
+    grid: { top: 28, left: 55, right: 10, bottom: 70 },
+    xAxis: {
+      type: 'category', data: MONTHS_ES,
+      axisLine: { lineStyle: { color: '#1E2D40' } },
+      axisLabel: { color: '#94A3B8', fontSize: 11 }, splitLine: { show: false }
+    },
+    yAxis: {
+      type: 'value',
+      axisLabel: { color: '#94A3B8', fontSize: 10, formatter: v => fmtShort(v) },
+      splitLine: { lineStyle: { color: '#1E2D4033' } }
+    },
     series
+  };
+ 
+  return { option, totalsFor };
+}
+ 
+function renderLineas(year) {
+  const chart = initEchart('chart-lineas');
+  if (!chart) return;
+  const { option, totalsFor } = buildStackedOption(year);
+  chart.setOption(option);
+ 
+  // Recompute the total labels whenever a category is toggled in the legend.
+  chart.on('legendselectchanged', e => {
+    chart.setOption({ series: [{ id: TOTAL_SERIES_ID, data: totalsFor(e.selected) }] });
   });
 }
 

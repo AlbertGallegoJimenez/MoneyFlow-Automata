@@ -280,16 +280,9 @@
         <div class="empty" id="pres-empty" style="display:none">No hay datos de presupuesto disponibles.</div>
       
         <div id="pres-content">
-          <!-- Controls -->
+          <!-- Controls: the budget is annual, so there is only a year selector -->
           <div class="filters-bar" style="padding:0.75rem 0; border:none; margin-bottom:0.25rem">
             <span class="filter-label">Año</span><select id="pres-year"></select>
-            <span class="filter-label" style="margin-left:0.5rem">Periodo</span>
-            <select id="pres-period">
-              <option value="month">Mes</option>
-              <option value="ytd" selected>Acumulado del año</option>
-              <option value="year">Año completo</option>
-            </select>
-            <span class="filter-label" style="margin-left:0.5rem" id="pres-month-label">Hasta</span><select id="pres-month"></select>
           </div>
           <div id="pres-note" style="color:var(--muted);font-size:0.75rem;margin-bottom:0.5rem"></div>
       
@@ -690,36 +683,23 @@ function initFilters() {
   selYM.addEventListener('change', renderMensual);
   selMM.addEventListener('change', renderMensual);
   document.getElementById('filter-bank').addEventListener('change', applyBankFilter);
+  initPresupuestoFilters(); 
 }
 
+// Call once at the END of initFilters().
 function initPresupuestoFilters() {
-  const now = new Date();
   const selY = document.getElementById('pres-year');
-  const selM = document.getElementById('pres-month');
-  const selP = document.getElementById('pres-period');
   const selC = document.getElementById('pres-cat-select');
-  if (!selY || !selM || !selP || !selC) return;
+  if (!selY || !selC) return;
  
+  // Years come from the budget sheet itself, not from the transactions.
+  const years = [...new Set((RAW_PRESUPUESTO || []).map(r => String(r.anyo)))].sort();
   selY.innerHTML = '';
-  YEARS.forEach(y => { const o = document.createElement('option'); o.value = y; o.textContent = y; selY.appendChild(o); });
-  selY.value = YEARS.includes(String(now.getFullYear())) ? String(now.getFullYear()) : YEARS[YEARS.length - 1];
+  years.forEach(y => { const o = document.createElement('option'); o.value = y; o.textContent = y; selY.appendChild(o); });
+  const thisYear = String(new Date().getFullYear());
+  if (years.length) selY.value = years.includes(thisYear) ? thisYear : years[years.length - 1];
  
-  selM.innerHTML = '';
-  MONTHS_FULL.forEach((m, i) => { const o = document.createElement('option'); o.value = String(i + 1).padStart(2, '0'); o.textContent = m; selM.appendChild(o); });
-  const defaultMonth = () => (Number(selY.value) === now.getFullYear() ? String(now.getMonth() + 1).padStart(2, '0') : '12');
-  selM.value = defaultMonth();
- 
-  const syncPeriod = () => {
-    const full = selP.value === 'year';
-    selM.disabled = full;
-    selM.style.opacity = full ? 0.4 : 1;
-    document.getElementById('pres-month-label').textContent = selP.value === 'month' ? 'Mes' : 'Hasta';
-  };
-  syncPeriod();
- 
-  selY.addEventListener('change', () => { selM.value = defaultMonth(); renderPresupuesto(); });
-  selM.addEventListener('change', renderPresupuesto);
-  selP.addEventListener('change', () => { syncPeriod(); renderPresupuesto(); });
+  selY.addEventListener('change', renderPresupuesto);
   selC.addEventListener('change', () => {
     PRES_STATE.selectedCat = selC.value;
     if (PRES_DATA) renderPresDeviationCharts(PRES_DATA);
@@ -981,14 +961,19 @@ function showChartEmpty(domId, message) {
 // 'absolute' : real euros on a common axis (shows the weight of each category).
 const BULLET_MODE = 'percent';
  
-// Monthly budget per consumption category for a year. `previsto` is already
-// monthly in the sheet, so no proration is needed.
+// How is `previsto` stored in the budget sheet?
+//   'monthly' : already the monthly budget (used as is)
+//   'annual'  : yearly budget; the monthly budget is previsto / 12
+const PREVISTO_BASIS = 'monthly';
+ 
+// Monthly budget per consumption category for a year.
 function monthlyBudgetByCategory(year) {
+  const divisor = PREVISTO_BASIS === 'annual' ? 12 : 1;
   const out = {};
   (RAW_PRESUPUESTO || []).forEach(r => {
     if (r.tipo !== 'Gasto' || r.categoria === INV_CAT) return;
     if (Number(r.anyo) !== Number(year)) return;
-    out[r.categoria] = (out[r.categoria] || 0) + (Number(r.previsto) || 0);
+    out[r.categoria] = (out[r.categoria] || 0) + (Number(r.previsto) || 0) / divisor;
   });
   return out;
 }
@@ -1617,20 +1602,6 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
  
-function presPeriodMonths(period, month) {
-  const m = Number(month);
-  if (period === 'month') return [m];
-  if (period === 'ytd') return Array.from({ length: m }, (_, i) => i + 1);
-  return Array.from({ length: 12 }, (_, i) => i + 1);
-}
- 
-function presPeriodLabel(year, period, month) {
-  const m = Number(month);
-  if (period === 'month') return `${MONTHS_FULL[m - 1]} ${year}`;
-  if (period === 'ytd') return `${MONTHS_ES[0]}–${MONTHS_ES[m - 1]} ${year} (${m} ${m === 1 ? 'mes' : 'meses'})`;
-  return `Año ${year} (12 meses)`;
-}
- 
 function addToSubMap(map, cat, sub, v) {
   const key = cat + '|' + sub;
   if (!map[key]) map[key] = { cat, sub, v: 0 };
@@ -1652,35 +1623,26 @@ function mergeSubs(realMap, prevMap) {
 }
  
 // All the numbers the tab needs, in one pure function (no DOM).
-// Always uses ALL banks: the budget is global.
-function buildPresupuestoData(year, period, month) {
-  const months = presPeriodMonths(period, month);
-  const monthSet = new Set(months);
-  const n = months.length;
-  const yearPrefix = String(year) + '-';
+// Works on the budget sheet only (one row per category/subcategory and year):
+// `previsto` = monthly budget, `real` = monthly figure computed by the sheet.
+function buildPresupuestoData(year) {
+  let incReal = 0, incPrev = 0;
+  const realSub = {}, prevSub = {}, invRealSub = {}, invPrevSub = {};
  
-  // ── Real, from transactions
-  let incReal = 0;
-  const realSub = {}, invRealSub = {};
-  RAW.forEach(t => {
-    if (!t.fecha.startsWith(yearPrefix)) return;
-    if (!monthSet.has(parseInt(t.fecha.substring(5, 7), 10))) return;
-    const v = Math.abs(t.valor);
-    if (t.tipo === 'Ingreso') { incReal += v; return; }
-    if (t.tipo !== 'Gasto') return;
-    addToSubMap(t.categoria === INV_CAT ? invRealSub : realSub, t.categoria, t.subcategoria || 'Sin subcategoría', v);
-  });
- 
-  // ── Budget: `previsto` is monthly, so multiply by the months in the period
-  let incPrev = 0;
-  const prevSub = {}, invPrevSub = {};
   (RAW_PRESUPUESTO || []).forEach(r => {
     if (Number(r.anyo) !== Number(year)) return;
-    const v = (Number(r.previsto) || 0) * n;
+    const real = Number(r.real) || 0;
+    const prev = Number(r.previsto) || 0;
     const sub = r.subcategoria || 'Sin subcategoría';
-    if (r.categoria === INV_CAT) { addToSubMap(invPrevSub, r.categoria, sub, v); return; }
-    if (r.tipo === 'Ingreso') { incPrev += v; return; }
-    if (r.tipo === 'Gasto') addToSubMap(prevSub, r.categoria, sub, v);
+    if (r.categoria === INV_CAT) {
+      addToSubMap(invRealSub, r.categoria, sub, real);
+      addToSubMap(invPrevSub, r.categoria, sub, prev);
+    } else if (r.tipo === 'Ingreso') {
+      incReal += real; incPrev += prev;
+    } else if (r.tipo === 'Gasto') {
+      addToSubMap(realSub, r.categoria, sub, real);
+      addToSubMap(prevSub, r.categoria, sub, prev);
+    }
   });
  
   // ── Consumption by category (with subcategories), worst deviation first
@@ -1740,7 +1702,7 @@ function buildPresupuestoData(year, period, month) {
   }
  
   return {
-    year, period, month: Number(month), months: n,
+    year,
     income: { real: incReal, prev: incPrev },
     consumption: { real: consReal, prev: consPrev },
     invest: { real: invReal, prev: invPrev, subs: invSubs },
@@ -1970,7 +1932,7 @@ function presFillCategorySelect(d) {
 function renderPresDeviationCharts(d) {
   // Left: categories
   if (!d.cats.length) {
-    showChartEmpty('chart-pres-dev-cat', 'Sin gastos ni presupuesto en este periodo');
+    showChartEmpty('chart-pres-dev-cat', 'Sin datos de presupuesto para este año');
     showChartEmpty('chart-pres-dev-sub', 'Sin datos');
     return;
   }
@@ -2003,7 +1965,7 @@ function renderPresDeviationCharts(d) {
 function renderPresInvestment(d) {
   const el = document.getElementById('pres-inv-list');
   if (!d.invest.subs.length) {
-    el.innerHTML = '<div class="empty" style="padding:1.5rem 1rem">Sin objetivos ni aportaciones en este periodo</div>';
+    el.innerHTML = '<div class="empty" style="padding:1.5rem 1rem">Sin objetivos de ahorro ni inversión para este año</div>';
     return;
   }
   el.innerHTML = d.invest.subs.map(s => {
@@ -2040,7 +2002,7 @@ function renderPresRule(d) {
   const chipsEl = document.getElementById('pres-rule-chips');
   const noteEl = document.getElementById('pres-rule-note');
   if (!d.rule) {
-    showChartEmpty('chart-pres-rule', 'Sin ingresos en el periodo: no se puede calcular la regla');
+    showChartEmpty('chart-pres-rule', 'Sin ingresos en el presupuesto de este año: no se puede calcular la regla');
     chipsEl.innerHTML = '';
     noteEl.textContent = '';
     return;
@@ -2067,16 +2029,11 @@ function renderPresupuesto() {
   contentEl.style.display = '';
  
   const year = document.getElementById('pres-year').value;
-  const period = document.getElementById('pres-period').value;
-  const month = document.getElementById('pres-month').value;
- 
-  const d = buildPresupuestoData(year, period, month);
+  const d = buildPresupuestoData(year);
   PRES_DATA = d;
  
-  const notes = [`Periodo: ${presPeriodLabel(year, period, month)}. Previsto = presupuesto mensual × ${d.months}.`,
-                 'El presupuesto es global: esta pestaña ignora el filtro de banco.'];
-  if (period === 'year' && Number(year) === new Date().getFullYear()) notes.push('El real solo incluye lo transcurrido del año.');
-  document.getElementById('pres-note').textContent = notes.join(' ');
+  document.getElementById('pres-note').textContent =
+    `Presupuesto ${year} en base mensual: previsto frente a real (gasto diario medio × 30, calculado en la hoja). No se recalcula ni se filtra por periodos menores a un año.`;
  
   presEnsureSelection(d);
   presFillCategorySelect(d);

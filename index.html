@@ -213,32 +213,50 @@
           <span class="filter-label">Mes</span><select id="filter-month-mensual"></select>
           <span class="filter-label" style="margin-left:0.5rem">Año</span><select id="filter-year-mensual"></select>
         </div>
+
+        <!-- KPIs (unchanged) -->
         <div class="grid grid-4" style="margin-bottom:1rem">
           <div class="card"><div class="card-title">Ingresos</div><div class="kpi-value green-val" id="m-ingresos">—</div></div>
           <div class="card"><div class="card-title">Gastos reales</div><div class="kpi-value red-val" id="m-gastos">—</div></div>
           <div class="card"><div class="card-title">Invertido</div><div class="kpi-value accent-val" id="m-inversion">—</div></div>
           <div class="card"><div class="card-title">Balance neto</div><div class="kpi-value" id="m-balance">—</div></div>
         </div>
-        <div class="grid grid-6040" style="margin-bottom:1rem">
-          <div class="card"><div class="card-title">Desglose por categoría</div><div id="breakdown-gastos"></div><div style="margin-top:1.25rem"><div class="card-title" style="color:var(--accent)">Inversión</div><div id="breakdown-inversion"></div></div></div>
-          <div class="card" style="display:flex;flex-direction:column;gap:1.25rem">
-            <div>
-              <div class="card-title">Top 5 gastos del mes</div>
-              <table class="data-table" id="table-top5"><thead><tr><th>Descripción</th><th>Categoría</th><th class="text-right">Valor</th></tr></thead><tbody></tbody></table>
-            </div>
-            <div>
-              <div class="card-title">Consumo vs Inversión</div>
-              <div style="display:flex;gap:1.5rem;margin-top:0.25rem">
-                <div class="split-block"><div class="split-main red-val" id="m-consumo-abs">—</div><div class="split-sub">Consumo real</div><div class="split-pct red-val" id="m-consumo-pct">—% ingresos</div></div>
-                <div style="width:1px;background:var(--border)"></div>
-                <div class="split-block"><div class="split-main accent-val" id="m-inv-abs">—</div><div class="split-sub">Inversión</div><div class="split-pct accent-val" id="m-inv-pct">—% ingresos</div></div>
-              </div>
-            </div>
+
+        <!-- Budget bullet chart -->
+        <div class="card" style="margin-bottom:1rem">
+          <div class="card-title">
+            <span>Presupuesto del mes por categoría</span>
+            <span style="text-transform:none;letter-spacing:0;font-weight:400;font-size:0.7rem;display:flex;gap:0.9rem;align-items:center">
+              <span><span style="display:inline-block;width:3px;height:12px;background:var(--text);vertical-align:middle;margin-right:4px"></span>Presupuesto</span>
+              <span><span style="color:var(--green)">●</span> ≤ 80 %</span>
+              <span><span style="color:var(--amber)">●</span> 80–100 %</span>
+              <span><span style="color:var(--red)">●</span> &gt; 100 %</span>
+            </span>
           </div>
+          <div id="bullet-note" style="color:var(--muted);font-size:0.75rem;margin-bottom:0.5rem"></div>
+          <div class="chart" id="chart-bullet"></div>
+          <div id="bullet-unbudgeted" style="color:var(--muted);font-size:0.75rem;margin-top:0.5rem"></div>
         </div>
+
+        <!-- Cash-flow Sankey (height is set from JS) -->
+        <div class="card" style="margin-bottom:1rem">
+          <div class="card-title">Flujo del mes · de dónde viene y a dónde va el dinero</div>
+          <div class="chart" id="chart-sankey"></div>
+        </div>
+
+        <!-- Detail -->
         <div class="grid grid-2" style="margin-bottom:1rem">
-          <div class="card"><div class="card-title">Mes actual vs mes anterior vs media 6 meses</div><div class="chart chart-md" id="chart-comparativa"></div></div>
-          <div class="card"><div class="card-title">Top 8 Subcategorías</div><div class="chart chart-md" id="chart-top-subcategorias"></div></div>
+          <div class="card">
+            <div class="card-title">Top 8 subcategorías</div>
+            <div class="chart chart-md" id="chart-top-subcategorias"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Top 5 gastos del mes</div>
+            <table class="data-table" id="table-top5">
+              <thead><tr><th>Descripción</th><th>Categoría</th><th class="text-right">Valor</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -259,64 +277,87 @@
       </div>
 
       <div class="tab-panel" id="tab-presupuesto">
-        <!-- KPIs globales -->
-        <div class="section-sep">Resumen anual</div>
-        <div class="grid grid-3" style="margin-bottom:1rem">
-          <div class="card">
-            <div class="card-title">Ingresos previstos vs reales</div>
-            <div style="display:flex;align-items:baseline;gap:0.5rem">
+        <div class="empty" id="pres-empty" style="display:none">No hay datos de presupuesto disponibles.</div>
+      
+        <div id="pres-content">
+          <!-- Controls -->
+          <div class="filters-bar" style="padding:0.75rem 0; border:none; margin-bottom:0.25rem">
+            <span class="filter-label">Año</span><select id="pres-year"></select>
+            <span class="filter-label" style="margin-left:0.5rem">Periodo</span>
+            <select id="pres-period">
+              <option value="month">Mes</option>
+              <option value="ytd" selected>Acumulado del año</option>
+              <option value="year">Año completo</option>
+            </select>
+            <span class="filter-label" style="margin-left:0.5rem" id="pres-month-label">Hasta</span><select id="pres-month"></select>
+          </div>
+          <div id="pres-note" style="color:var(--muted);font-size:0.75rem;margin-bottom:0.5rem"></div>
+      
+          <!-- KPIs: consumption (3) + savings/investment with goal semantics (1) -->
+          <div class="grid grid-4" style="margin-bottom:1rem">
+            <div class="card">
+              <div class="card-title">Ingresos</div>
               <div class="kpi-value green-val" id="pres-ing-real">—</div>
-              <div class="kpi-label">real</div>
+              <div class="kpi-label" id="pres-ing-label">real</div>
+              <div class="kpi-delta neu" id="pres-ing-delta">vs previsto —</div>
             </div>
-            <div class="kpi-delta" id="pres-ing-delta">vs previsto —</div>
-          </div>
-          <div class="card">
-            <div class="card-title">Gastos previstos vs reales (sin inversión)</div>
-            <div style="display:flex;align-items:baseline;gap:0.5rem">
+            <div class="card">
+              <div class="card-title">Consumo (sin inversión)</div>
               <div class="kpi-value red-val" id="pres-gas-real">—</div>
-              <div class="kpi-label">real</div>
+              <div class="kpi-label" id="pres-gas-label">real</div>
+              <div class="kpi-delta neu" id="pres-gas-delta">vs previsto —</div>
             </div>
-            <div class="kpi-delta" id="pres-gas-delta">vs previsto —</div>
-          </div>
-          <div class="card">
-            <div class="card-title">Balance neto previsto vs real (sin inversión)</div>
-            <div style="display:flex;align-items:baseline;gap:0.5rem">
+            <div class="card">
+              <div class="card-title">Balance (ingresos − consumo)</div>
               <div class="kpi-value" id="pres-bal-real">—</div>
-              <div class="kpi-label">real</div>
+              <div class="kpi-label" id="pres-bal-label">real</div>
+              <div class="kpi-delta neu" id="pres-bal-delta">vs previsto —</div>
             </div>
-            <div class="kpi-delta" id="pres-bal-delta">vs previsto —</div>
+            <div class="card" style="border-left:3px solid var(--accent)">
+              <div class="card-title">Ahorro e inversión · objetivo</div>
+              <div class="kpi-value accent-val" id="pres-inv-real">—</div>
+              <div class="kpi-label" id="pres-inv-label">real</div>
+              <div class="progress-track" style="margin-top:0.6rem"><div class="progress-fill" id="pres-inv-fill" style="width:0%"></div></div>
+              <div class="kpi-delta neu" id="pres-inv-delta">—</div>
+            </div>
+          </div>
+      
+          <!-- Deviation explorer: categories -> subcategories -->
+          <div class="section-sep">Desviaciones del presupuesto</div>
+          <div class="grid grid-2" style="margin-bottom:1rem">
+            <div class="card">
+              <div class="card-title">
+                <span>Por categoría</span>
+                <span style="text-transform:none;letter-spacing:0;font-weight:400;font-size:0.7rem;color:var(--muted)">
+                  <span style="color:var(--red)">●</span> te pasas · <span style="color:var(--green)">●</span> te sobra · clic para ver el detalle
+                </span>
+              </div>
+              <div class="chart" id="chart-pres-dev-cat"></div>
+            </div>
+            <div class="card">
+              <div class="card-title">
+                <span id="pres-sub-title">Subcategorías</span>
+                <select id="pres-cat-select" style="max-width:220px"></select>
+              </div>
+              <div class="chart" id="chart-pres-dev-sub"></div>
+            </div>
+          </div>
+      
+          <!-- 50/30/20 + savings goals -->
+          <div class="section-sep">¿Es saludable mi distribución?</div>
+          <div class="grid grid-6040" style="margin-bottom:1rem">
+            <div class="card">
+              <div class="card-title">Regla 50/30/20 · sobre ingresos</div>
+              <div class="chart" id="chart-pres-rule" style="height:230px"></div>
+              <div id="pres-rule-chips" style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:0.75rem"></div>
+              <div id="pres-rule-note" style="color:var(--muted);font-size:0.72rem;margin-top:0.6rem"></div>
+            </div>
+            <div class="card">
+              <div class="card-title">Ahorro e inversión · objetivos por subcategoría</div>
+              <div id="pres-inv-list" style="margin-top:0.5rem"></div>
+            </div>
           </div>
         </div>
-
-        <!-- Gráfico, Tabla y Subcategorías en la misma fila -->
-        <div class="grid grid-3" style="margin-bottom:1rem">
-          <div class="card">
-            <div class="card-title">Previsto vs Real (Categorías)</div>
-            <div class="chart chart-lg" id="chart-pres-categorias"></div>
-          </div>
-          
-          <div class="card" style="overflow-x:auto;">
-            <div class="card-title">Desviación por categoría</div>
-            <table class="data-table" id="table-pres-categorias">
-              <thead><tr>
-                <th>Categoría</th>
-                <th class="text-right">Previsto</th>
-                <th class="text-right">Real</th>
-                <th class="text-right">Desviación</th>
-              </tr></thead>
-              <tbody></tbody>
-            </table>
-          </div>
-
-          <div class="card">
-            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem">
-              <div class="card-title" style="margin-bottom:0">Subcategorías</div>
-              <select id="filter-pres-categoria" style="margin-left:auto;width:auto"></select>
-            </div>
-            <div id="pres-subcat-container" style="max-height:360px; overflow-y:auto; padding-right:5px;"></div>
-          </div>
-        </div>
-
       </div>
     </main>
   </div>
@@ -651,6 +692,40 @@ function initFilters() {
   document.getElementById('filter-bank').addEventListener('change', applyBankFilter);
 }
 
+function initPresupuestoFilters() {
+  const now = new Date();
+  const selY = document.getElementById('pres-year');
+  const selM = document.getElementById('pres-month');
+  const selP = document.getElementById('pres-period');
+  const selC = document.getElementById('pres-cat-select');
+  if (!selY || !selM || !selP || !selC) return;
+ 
+  selY.innerHTML = '';
+  YEARS.forEach(y => { const o = document.createElement('option'); o.value = y; o.textContent = y; selY.appendChild(o); });
+  selY.value = YEARS.includes(String(now.getFullYear())) ? String(now.getFullYear()) : YEARS[YEARS.length - 1];
+ 
+  selM.innerHTML = '';
+  MONTHS_FULL.forEach((m, i) => { const o = document.createElement('option'); o.value = String(i + 1).padStart(2, '0'); o.textContent = m; selM.appendChild(o); });
+  const defaultMonth = () => (Number(selY.value) === now.getFullYear() ? String(now.getMonth() + 1).padStart(2, '0') : '12');
+  selM.value = defaultMonth();
+ 
+  const syncPeriod = () => {
+    const full = selP.value === 'year';
+    selM.disabled = full;
+    selM.style.opacity = full ? 0.4 : 1;
+    document.getElementById('pres-month-label').textContent = selP.value === 'month' ? 'Mes' : 'Hasta';
+  };
+  syncPeriod();
+ 
+  selY.addEventListener('change', () => { selM.value = defaultMonth(); renderPresupuesto(); });
+  selM.addEventListener('change', renderPresupuesto);
+  selP.addEventListener('change', () => { syncPeriod(); renderPresupuesto(); });
+  selC.addEventListener('change', () => {
+    PRES_STATE.selectedCat = selC.value;
+    if (PRES_DATA) renderPresDeviationCharts(PRES_DATA);
+  });
+}
+
 function applyBankFilter() {
   const bank = document.getElementById('filter-bank').value;
   FILTERED = bank === 'all' ? RAW : RAW.filter(t => t.banco === bank);
@@ -830,61 +905,450 @@ function renderRecientes() {
 
 function renderMensual() {
   const year  = document.getElementById('filter-year-mensual').value;
-  const month = document.getElementById('filter-month-mensual').value;
-  const txM   = txOfMonth(year, parseInt(month));
-
+  const month = parseInt(document.getElementById('filter-month-mensual').value);
+  const txM   = txOfMonth(year, month);
+ 
   const ing = sumIngresos(txM);
   const gas = sumGastosReales(txM);
   const inv = sumInversion(txM);
   const bal = ing - gas - inv;
-
+ 
   animateValue(document.getElementById('m-ingresos'), ing);
   animateValue(document.getElementById('m-gastos'), gas);
   animateValue(document.getElementById('m-inversion'), inv);
   const balEl = document.getElementById('m-balance');
   animateValue(balEl, bal);
-  balEl.className = 'kpi-value ' + (bal>=0?'green-val':'red-val');
-
-  animateValue(document.getElementById('m-consumo-abs'), gas);
-  animateValue(document.getElementById('m-inv-abs'), inv);
-  document.getElementById('m-consumo-pct').textContent = ing>0 ? (gas/ing*100).toFixed(1)+'% ingresos' : '—';
-  document.getElementById('m-inv-pct').textContent     = ing>0 ? (inv/ing*100).toFixed(1)+'% ingresos' : '—';
-
-  renderBreakdown(txM); renderTop5(txM); renderComparativa(year, parseInt(month)); renderTopSubcategorias(year, parseInt(month));
+  balEl.className = 'kpi-value ' + (bal >= 0 ? 'green-val' : 'red-val');
+ 
+  renderBulletPresupuesto(year, month);
+  renderSankey(txM);
+  renderTopSubcategorias(year, month);
+  renderTop5(txM);
 }
 
-function renderBreakdown(txM) {
-  const byCat = {};
-  txM.filter(t=>t.tipo==='Gasto' && t.categoria!==INV_CAT).forEach(t=>byCat[t.categoria]=(byCat[t.categoria]||0)+Math.abs(t.valor));
-  const total = Object.values(byCat).reduce((s,v)=>s+v,0);
-  const sorted = Object.entries(byCat).sort((a,b)=>b[1]-a[1]);
-
-  const gasEl = document.getElementById('breakdown-gastos');
-  if (!sorted.length) { gasEl.innerHTML = '<div style="color:var(--muted);font-size:0.8rem">Sin gastos este mes</div>'; }
-  else {
-    gasEl.innerHTML = sorted.map(([cat,val])=>`
-      <div class="progress-row">
-        <div class="progress-label">${cat}</div>
-        <div class="progress-track"><div class="progress-fill" style="width:${total>0?(val/total*100):0}%;background:${catColor(cat)}"></div></div>
-        <div class="progress-val">${fmt(val)}</div>
-      </div>`).join('');
+// ─────────────────────────────────────────────────────────────────────
+// Shared helpers
+// ─────────────────────────────────────────────────────────────────────
+ 
+const STATUS_COLORS = { ok: '#10B981', warn: '#FBBF24', over: '#F87171' };
+const ACCENT = '#38BDF8';
+ 
+// Same thresholds as the subcategory progress list in the Presupuesto tab:
+// > 100 % over budget, > 80 % warning, otherwise fine.
+function budgetStatus(pct) {
+  return pct > 100 ? 'over' : pct > 80 ? 'warn' : 'ok';
+}
+ 
+// Month transactions for ALL banks. The budget is global, so budget
+// comparisons must not depend on the bank filter.
+function txOfMonthAll(year, month) {
+  const prefix = year + '-' + String(month).padStart(2, '0');
+  return RAW.filter(t => t.fecha.startsWith(prefix));
+}
+ 
+function shiftMonth(year, month, delta) {
+  const d = new Date(Number(year), month - 1 + delta, 1);
+  return { y: d.getFullYear(), m: d.getMonth() + 1 };
+}
+ 
+function consumptionByCategory(txs) {
+  const out = {};
+  txs.forEach(t => {
+    if (t.tipo === 'Gasto' && t.categoria !== INV_CAT) {
+      out[t.categoria] = (out[t.categoria] || 0) + Math.abs(t.valor);
+    }
+  });
+  return out;
+}
+ 
+// Replaces a chart container with an empty-state message (disposing any chart).
+function showChartEmpty(domId, message) {
+  const el = document.getElementById(domId);
+  if (!el) return;
+  const c = echarts.getInstanceByDom(el);
+  if (c) c.dispose();
+  el.style.height = '';
+  el.innerHTML = `<div class="empty">${message}</div>`;
+}
+ 
+ 
+// ─────────────────────────────────────────────────────────────────────
+// 1) BULLET CHART — "Have I gone over budget in category X?"
+// ─────────────────────────────────────────────────────────────────────
+ 
+// 'percent'  : every row is scaled to its own budget, so all budget markers sit
+//              on the same 100 % line and "crossing the line" = over budget.
+// 'absolute' : real euros on a common axis (shows the weight of each category).
+const BULLET_MODE = 'percent';
+ 
+// Monthly budget per consumption category for a year. `previsto` is already
+// monthly in the sheet, so no proration is needed.
+function monthlyBudgetByCategory(year) {
+  const out = {};
+  (RAW_PRESUPUESTO || []).forEach(r => {
+    if (r.tipo !== 'Gasto' || r.categoria === INV_CAT) return;
+    if (Number(r.anyo) !== Number(year)) return;
+    out[r.categoria] = (out[r.categoria] || 0) + (Number(r.previsto) || 0);
+  });
+  return out;
+}
+ 
+// Average of the 6 months before `month`, dividing only by months that
+// actually have data (so the first months of history don't look artificially low).
+function avgPrevMonthsByCategory(year, month, span = 6) {
+  const sums = {};
+  let monthsWithData = 0;
+  for (let i = 1; i <= span; i++) {
+    const { y, m } = shiftMonth(year, month, -i);
+    const txs = txOfMonthAll(y, m);
+    if (!txs.length) continue;
+    monthsWithData++;
+    Object.entries(consumptionByCategory(txs)).forEach(([k, v]) => { sums[k] = (sums[k] || 0) + v; });
   }
-
-  const byInv = {};
-  txM.filter(t=>t.tipo==='Gasto' && t.categoria===INV_CAT).forEach(t=>byInv[t.subcategoria]=(byInv[t.subcategoria]||0)+Math.abs(t.valor));
-  const totalInv = Object.values(byInv).reduce((s,v)=>s+v,0);
-  const sortedInv = Object.entries(byInv).sort((a,b)=>b[1]-a[1]);
-
-  const invEl = document.getElementById('breakdown-inversion');
-  if (!sortedInv.length) { invEl.innerHTML = '<div style="color:var(--muted);font-size:0.8rem">Sin inversión registrada</div>'; }
-  else {
-    invEl.innerHTML = sortedInv.map(([sub,val])=>`
-      <div class="progress-row">
-        <div class="progress-label">${sub}</div>
-        <div class="progress-track"><div class="progress-fill" style="width:${totalInv>0?(val/totalInv*100):0}%;background:var(--accent)"></div></div>
-        <div class="progress-val">${fmt(val)}</div>
-      </div>`).join('');
+  const avg = {};
+  if (monthsWithData) Object.keys(sums).forEach(k => { avg[k] = sums[k] / monthsWithData; });
+  return { avg, monthsWithData };
+}
+ 
+// `now` is injectable so the data builder is testable.
+function buildBulletData(year, month, now = new Date()) {
+  const budget = monthlyBudgetByCategory(year);
+  const real = consumptionByCategory(txOfMonthAll(year, month));
+  const prevP = shiftMonth(year, month, -1);
+  const prev = consumptionByCategory(txOfMonthAll(prevP.y, prevP.m));
+  const { avg, monthsWithData } = avgPrevMonthsByCategory(year, month);
+ 
+  // Fraction of the month elapsed (only for the month currently in progress).
+  const isCurrent = now.getFullYear() === Number(year) && now.getMonth() + 1 === Number(month);
+  const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const frac = isCurrent ? now.getDate() / daysInMonth : null;
+ 
+  const cats = [...new Set([...Object.keys(budget), ...Object.keys(real)])];
+  const rows = cats.map(cat => {
+    const b = budget[cat] || 0;
+    const r = real[cat] || 0;
+    return {
+      cat, budget: b, real: r,
+      pct: b > 0 ? r / b * 100 : null,
+      expected: frac !== null ? b * frac : null,
+      prev: prev[cat] || 0,
+      avg6: monthsWithData ? (avg[cat] || 0) : null
+    };
+  });
+ 
+  return {
+    // Worst offenders first
+    rows: rows.filter(r => r.budget > 0).sort((a, b) => b.pct - a.pct),
+    // Spending in categories without any budget this year
+    unbudgeted: rows.filter(r => r.budget <= 0 && r.real > 0).sort((a, b) => b.real - a.real),
+    frac,
+    day: frac !== null ? now.getDate() : null,
+    hasBudget: Object.keys(budget).length > 0
+  };
+}
+ 
+function buildBulletOption(data, mode = BULLET_MODE) {
+  const { rows, frac } = data;
+  const pctMode = mode === 'percent';
+ 
+  // Position of a euro value on the x axis, depending on the mode.
+  const pos = (r, v) => (pctMode ? (r.budget > 0 ? v / r.budget * 100 : 0) : v);
+ 
+  const maxPos = Math.max(...rows.map(r => Math.max(pos(r, r.real), pos(r, r.budget))), 1);
+  // In percent mode the axis is capped (bars beyond it are clipped; the label
+  // still shows the real percentage).
+  const xMax = pctMode ? Math.min(Math.max(130, Math.ceil(maxPos * 1.08 / 10) * 10), 220) : maxPos * 1.1;
+ 
+  const rowColor = r => STATUS_COLORS[budgetStatus(r.pct)];
+  const labelStyle = key => ({ color: STATUS_COLORS[key], fontWeight: 600, fontSize: 11 });
+ 
+  const series = [
+    // Background track
+    {
+      name: 'track', type: 'bar', silent: true, z: 1, barWidth: 20,
+      data: rows.map(() => xMax),
+      itemStyle: { color: '#1E2D40', borderRadius: 4 }
+    },
+    // Real spending (thin bar, colored by status)
+    {
+      // Own (hidden) y-axis: overlapping bars of different widths on the same axis
+      // are not vertically centered by ECharts, a separate axis centers each one.
+      name: 'real', type: 'bar', z: 2, barWidth: 8, yAxisIndex: 1,
+      data: rows.map(r => ({
+        value: Math.min(pos(r, r.real), xMax),
+        itemStyle: { color: rowColor(r), borderRadius: 3 }
+      }))
+    },
+    // Budget marker
+    {
+      name: 'budget', type: 'scatter', silent: true, z: 4,
+      symbol: 'rect', symbolSize: [3, 28], itemStyle: { color: '#E2E8F0' },
+      data: rows.map((r, i) => [pos(r, r.budget), i])
+    }
+  ];
+ 
+  // Pace marker: where spending "should" be by today (current month only).
+  if (frac !== null) {
+    series.push({
+      name: 'pace', type: 'scatter', silent: true, z: 3,
+      symbol: 'rect', symbolSize: [2, 18], itemStyle: { color: ACCENT },
+      data: rows.map((r, i) => [pos(r, r.expected), i])
+    });
   }
+ 
+  // Invisible points at the right edge that only carry the "€ / €  %" label.
+  // (symbolSize 0, not symbol:'none', otherwise ECharts drops the label.)
+  series.push({
+    name: 'labels', type: 'scatter', silent: true, z: 5,
+    symbol: 'circle', symbolSize: 0,
+    data: rows.map((r, i) => [xMax, i]),
+    label: {
+      show: true, position: 'right', distance: 10,
+      rich: { m: { color: '#94A3B8', fontSize: 11, width: 120, align: 'left' }, ok: labelStyle('ok'), warn: labelStyle('warn'), over: labelStyle('over') },
+      formatter: p => {
+        const r = rows[p.dataIndex];
+        return `{m|${fmtMoney0(r.real)} / ${fmtMoney0(r.budget)}}  {${budgetStatus(r.pct)}|${Math.round(r.pct)}%}`;
+      }
+    }
+  });
+ 
+  return {
+    backgroundColor: 'transparent',
+    tooltip: {
+      trigger: 'axis', axisPointer: { type: 'shadow', shadowStyle: { color: 'rgba(255,255,255,0.04)' } },
+      backgroundColor: '#1E2D40', textStyle: { color: '#E2E8F0', fontSize: 12 },
+      formatter: params => {
+        const r = rows[params[0].dataIndex];
+        const diff = r.real - r.budget;
+        const col = STATUS_COLORS[budgetStatus(r.pct)];
+        let html = `<b>${r.cat}</b><br/>Gastado: <b>${fmt(r.real)}</b> de ${fmt(r.budget)} (${r.pct.toFixed(0)}%)<br/>`;
+        html += diff > 0
+          ? `<span style="color:${col}">Te has pasado ${fmt(diff)}</span><br/>`
+          : `<span style="color:${col}">Te quedan ${fmt(-diff)}</span><br/>`;
+        if (r.expected !== null) html += `Ritmo esperado a hoy: ${fmt(r.expected)}<br/>`;
+        html += `<span style="color:#94A3B8">Mes anterior: ${fmt(r.prev)}`;
+        html += r.avg6 !== null ? ` · Media 6m: ${fmt(r.avg6)}</span>` : '</span>';
+        return html;
+      }
+    },
+    grid: { top: 6, left: 8, right: 190, bottom: 26, containLabel: true },
+    xAxis: {
+      type: 'value', min: 0, max: xMax,
+      axisLabel: { color: '#94A3B8', fontSize: 10, formatter: pctMode ? v => v + '%' : v => fmtShort(v) },
+      axisLine: { show: false }, splitLine: { show: false }
+    },
+    yAxis: [
+      {
+        type: 'category', data: rows.map(r => r.cat), inverse: true,
+        axisTick: { show: false }, axisLine: { show: false },
+        axisLabel: { color: '#E2E8F0', fontSize: 11 }
+      },
+      // Hidden twin axis used only by the 'real' bar series (see above)
+      { type: 'category', data: rows.map(r => r.cat), inverse: true, show: false }
+    ],
+    series
+  };
+}
+ 
+function renderBulletPresupuesto(year, month) {
+  const el = document.getElementById('chart-bullet');
+  if (!el) return;
+  const noteEl = document.getElementById('bullet-note');
+  const unbEl = document.getElementById('bullet-unbudgeted');
+  const data = buildBulletData(year, month);
+ 
+  // Context notes
+  const notes = [];
+  const bankSel = document.getElementById('filter-bank');
+  if (bankSel && bankSel.value !== 'all') notes.push('El presupuesto es global: este gráfico ignora el filtro de banco.');
+  if (data.frac !== null) notes.push(`La marca azul es el ritmo esperado a día ${data.day} (${Math.round(data.frac * 100)}% del mes).`);
+  if (noteEl) noteEl.textContent = notes.join(' ');
+ 
+  if (unbEl) {
+    unbEl.textContent = data.unbudgeted.length
+      ? 'Sin presupuesto este año: ' + data.unbudgeted.map(r => `${r.cat} (${fmtMoney0(r.real)})`).join(', ')
+      : '';
+  }
+ 
+  if (!data.hasBudget || !data.rows.length) {
+    showChartEmpty('chart-bullet', `Sin presupuesto definido para ${year}`);
+    return;
+  }
+ 
+  // One row per category: size the container to the number of rows.
+  el.style.height = Math.max(180, data.rows.length * 36 + 50) + 'px';
+  const chart = initEchart('chart-bullet');
+  chart.setOption(buildBulletOption(data));
+}
+ 
+ 
+// ─────────────────────────────────────────────────────────────────────
+// 2) SANKEY — where does the month's money come from and go to?
+// ─────────────────────────────────────────────────────────────────────
+// Columns: [income sources] → Ingresos → Consumo / Inversión y ahorro / Sobrante
+//          → categories / investment subcategories.
+// Node names are internal ids (prefixed) because a category can share its name
+// with an income category or a subcategory (e.g. "Otros"); labels are kept in
+// `displayName`.
+ 
+function buildSankeyData(txM) {
+  const incomeBy = {}, consumeBy = {}, invBy = {};
+  const add = (obj, key, v) => { obj[key] = (obj[key] || 0) + v; };
+ 
+  txM.forEach(t => {
+    const v = Math.abs(t.valor);
+    if (t.tipo === 'Ingreso') add(incomeBy, t.categoria || 'Ingresos', v);
+    else if (t.tipo === 'Gasto') {
+      if (t.categoria === INV_CAT) add(invBy, t.subcategoria || 'Sin subcategoría', v);
+      else add(consumeBy, t.categoria, v);
+    }
+  });
+ 
+  const sum = obj => Object.values(obj).reduce((s, v) => s + v, 0);
+  const ing = sum(incomeBy), gas = sum(consumeBy), inv = sum(invBy);
+  if (ing + gas + inv <= 0) return null;
+ 
+  const deficit = Math.max(0, gas + inv - ing);   // spent more than earned
+  const surplus = Math.max(0, ing - gas - inv);   // money left over
+  const incomeKeys = Object.keys(incomeBy);
+  // With a single income source the first column is redundant, except in a
+  // deficit month, where the inflow must show where the extra money came from.
+  const showSources = incomeKeys.length > 1 || deficit > 0;
+ 
+  const nodes = [];
+  const links = [];
+  const label = {};
+  const addNode = (id, text, color) => { nodes.push({ name: id, displayName: text, itemStyle: { color } }); label[id] = text; };
+  const addLink = (s, t, v) => { if (v > 0.005) links.push({ source: s, target: t, value: +v.toFixed(2) }); };
+  const byValueDesc = obj => Object.entries(obj).sort((a, b) => b[1] - a[1]);
+ 
+  // Column 0: sources
+  if (showSources) {
+    byValueDesc(incomeBy).forEach(([k, v]) => { addNode('in:' + k, k, STATUS_COLORS.ok); addLink('in:' + k, 'hub', v); });
+    if (deficit > 0) { addNode('src:savings', 'Uso de ahorro', STATUS_COLORS.warn); addLink('src:savings', 'hub', deficit); }
+  }
+ 
+  // Column 1: hub
+  addNode('hub', deficit > 0 ? 'Entradas' : 'Ingresos', STATUS_COLORS.ok);
+ 
+  // Column 2: groups
+  if (gas > 0) { addNode('grp:consumo', 'Consumo', STATUS_COLORS.over); addLink('hub', 'grp:consumo', gas); }
+  if (inv > 0) { addNode('grp:inv', 'Inversión y ahorro', ACCENT); addLink('hub', 'grp:inv', inv); }
+  if (surplus > 0) { addNode('grp:sobrante', 'Sobrante', '#94A3B8'); addLink('hub', 'grp:sobrante', surplus); }
+ 
+  // Column 3: leaves (same order as their groups, so links don't cross)
+  byValueDesc(consumeBy).forEach(([cat, v]) => { addNode('cat:' + cat, cat, catColor(cat)); addLink('grp:consumo', 'cat:' + cat, v); });
+  byValueDesc(invBy).forEach(([sub, v]) => { addNode('inv:' + sub, sub, ACCENT + 'CC'); addLink('grp:inv', 'inv:' + sub, v); });
+ 
+  return {
+    nodes, links, label,
+    totalFlow: ing + deficit,
+    leafCount: Object.keys(consumeBy).length + Object.keys(invBy).length
+  };
+}
+ 
+function buildSankeyOption(data) {
+  const { nodes, links, label, totalFlow } = data;
+  return {
+    backgroundColor: 'transparent',
+    tooltip: {
+      trigger: 'item', backgroundColor: '#1E2D40', textStyle: { color: '#E2E8F0', fontSize: 12 },
+      formatter: p => {
+        if (p.dataType === 'edge') {
+          const pct = totalFlow > 0 ? (p.data.value / totalFlow * 100).toFixed(1) : '0.0';
+          return `${label[p.data.source]} → ${label[p.data.target]}<br/><b>${fmt(p.data.value)}</b> · ${pct}% de las entradas`;
+        }
+        return `<b>${p.data.displayName}</b><br/>${fmt(p.value)}`;
+      }
+    },
+    series: [{
+      type: 'sankey', data: nodes, links,
+      left: 8, right: 190, top: 8, bottom: 8,
+      nodeWidth: 14, nodeGap: 10,
+      layoutIterations: 0,      // keep the array order (sorted by amount)
+      nodeAlign: 'left',        // 'Sobrante' stays next to Consumo / Inversión
+      draggable: false,
+      emphasis: { focus: 'adjacency' },
+      lineStyle: { color: 'gradient', curveness: 0.5, opacity: 0.35 },
+      label: {
+        color: '#E2E8F0', fontSize: 11, position: 'right',
+        textBorderColor: '#111827', textBorderWidth: 3,   // halo: labels in middle columns sit over links
+        formatter: p => `${p.data.displayName}  ${fmtMoney0(p.value)}`
+      }
+    }]
+  };
+}
+ 
+function renderSankey(txM) {
+  const el = document.getElementById('chart-sankey');
+  if (!el) return;
+  const data = buildSankeyData(txM);
+  if (!data) { showChartEmpty('chart-sankey', 'Sin movimientos este mes'); return; }
+  el.style.height = Math.max(340, data.leafCount * 30 + 40) + 'px';
+  const chart = initEchart('chart-sankey');
+  chart.setOption(buildSankeyOption(data));
+}
+ 
+ 
+// ─────────────────────────────────────────────────────────────────────
+// 3) TOP 8 SUBCATEGORIES (fixed key: category + subcategory)
+// ─────────────────────────────────────────────────────────────────────
+ 
+function buildTopSubcatRows(txM, n = 8) {
+  const by = {};
+  txM.forEach(t => {
+    if (t.tipo !== 'Gasto' || t.categoria === INV_CAT) return;
+    const sub = t.subcategoria || 'Sin subcategoría';
+    const key = t.categoria + '|' + sub;
+    if (!by[key]) by[key] = { cat: t.categoria, sub, total: 0 };
+    by[key].total += Math.abs(t.valor);
+  });
+ 
+  const top = Object.values(by).sort((a, b) => b.total - a.total).slice(0, n);
+  // Disambiguate equal subcategory names that belong to different categories.
+  const nameCount = {};
+  top.forEach(r => { nameCount[r.sub] = (nameCount[r.sub] || 0) + 1; });
+  return top.map(r => ({
+    ...r,
+    total: +r.total.toFixed(2),
+    label: nameCount[r.sub] > 1 ? `${r.sub} · ${r.cat}` : r.sub
+  }));
+}
+ 
+function buildTopSubcatOption(rows) {
+  return {
+    backgroundColor: 'transparent',
+    tooltip: {
+      trigger: 'axis', axisPointer: { type: 'shadow' },
+      backgroundColor: '#1E2D40', textStyle: { color: '#E2E8F0', fontSize: 12 },
+      formatter: params => {
+        const r = rows[params[0].dataIndex];
+        return `<b>${r.sub}</b><br/><span style="color:#94A3B8">${r.cat}</span><br/>${fmt(r.total)}`;
+      }
+    },
+    grid: { top: 10, left: 10, right: 40, bottom: 10, containLabel: true },
+    xAxis: {
+      type: 'value',
+      axisLabel: { color: '#94A3B8', fontSize: 10, formatter: v => fmtShort(v) },
+      splitLine: { lineStyle: { color: '#1E2D4033' } }
+    },
+    yAxis: {
+      type: 'category', data: rows.map(r => r.label), inverse: true,   // biggest on top
+      axisLabel: { color: '#E2E8F0', fontSize: 11 }, axisLine: { lineStyle: { color: '#1E2D40' } }
+    },
+    series: [{
+      type: 'bar', barMaxWidth: 18,
+      data: rows.map(r => ({ value: r.total, itemStyle: { color: catColor(r.cat), borderRadius: [0, 3, 3, 0] } })),
+      label: { show: true, position: 'right', color: '#94A3B8', fontSize: 10, formatter: p => fmtLabel(p.value) }
+    }]
+  };
+}
+ 
+function renderTopSubcategorias(year, month) {
+  const rows = buildTopSubcatRows(txOfMonth(year, month));
+  if (!rows.length) { showChartEmpty('chart-top-subcategorias', 'Sin gastos este mes'); return; }
+  const chart = initEchart('chart-top-subcategorias');
+  chart.setOption(buildTopSubcatOption(rows));
 }
 
 function renderTop5(txM) {
@@ -895,83 +1359,6 @@ function renderTop5(txM) {
       <td style="color:var(--muted)">${t.categoria}</td>
       <td class="mono text-right red-val">${fmt(t.valor)}</td>
     </tr>`).join('') || '<tr><td colspan="3" class="empty">Sin gastos</td></tr>';
-}
-
-function renderComparativa(year, month) {
-  const prev = month===1 ? {y:parseInt(year)-1,m:12} : {y:parseInt(year),m:month-1};
-  const txCurr = txOfMonth(year, month), txPrev = txOfMonth(prev.y, prev.m);
-
-  const media6 = {};
-  for (let i=1;i<=6;i++){
-    const d = new Date(parseInt(year), month-1-i, 1);
-    const txs = txOfMonth(d.getFullYear(), d.getMonth()+1);
-    txs.filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).forEach(t=>media6[t.categoria]=(media6[t.categoria]||0)+Math.abs(t.valor));
-  }
-  Object.keys(media6).forEach(k=>media6[k]=+(media6[k]/6).toFixed(2));
-
-  const allCats = [...new Set([...txCurr.filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).map(t=>t.categoria),
-    ...txPrev.filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).map(t=>t.categoria), ...Object.keys(media6)])];
-
-  const byCurr={}, byPrev={};
-  txCurr.filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).forEach(t=>byCurr[t.categoria]=(byCurr[t.categoria]||0)+Math.abs(t.valor));
-  txPrev.filter(t=>t.tipo==='Gasto'&&t.categoria!==INV_CAT).forEach(t=>byPrev[t.categoria]=(byPrev[t.categoria]||0)+Math.abs(t.valor));
-
-  const cats = allCats.sort((a,b)=>(byCurr[b]||0)-(byCurr[a]||0));
-  const mnPrev = MONTHS_ES[prev.m-1], mnCurr = MONTHS_ES[month-1];
-
-  const chart = initEchart('chart-comparativa');
-  chart.setOption({
-    backgroundColor:'transparent',
-    tooltip:{trigger:'axis',backgroundColor:'#1E2D40',textStyle:{color:'#E2E8F0',fontSize:12}},
-    legend:{data:[mnCurr,mnPrev,'Media 6m'],bottom:0,textStyle:{color:'#94A3B8',fontSize:11}},
-    grid:{top:10,left:55,right:10,bottom:40},
-    xAxis:{type:'category',data:cats,axisLabel:{color:'#94A3B8',fontSize:10},axisLine:{lineStyle:{color:'#1E2D40'}},splitLine:{show:false}},
-    yAxis:{type:'value',axisLabel:{color:'#94A3B8',fontSize:10,formatter:v=>fmtShort(v)},splitLine:{lineStyle:{color:'#1E2D4033'}}},
-    series:[
-      {name:mnCurr,type:'bar',data:cats.map(c=>+(byCurr[c]||0).toFixed(2)),barMaxWidth:16,itemStyle:{color:'#38BDF8',borderRadius:[3,3,0,0]}},
-      {name:mnPrev,type:'bar',data:cats.map(c=>+(byPrev[c]||0).toFixed(2)),barMaxWidth:16,itemStyle:{color:'#94A3B844',borderRadius:[3,3,0,0]}},
-      {name:'Media 6m',type:'line',data:cats.map(c=>+(media6[c]||0).toFixed(2)),symbol:'circle',symbolSize:5,lineStyle:{color:'#FBBF24',width:1.5,type:'dashed'},itemStyle:{color:'#FBBF24'}},
-    ]
-  });
-}
-
-function renderTopSubcategorias(year, month) {
-  const txM = txOfMonth(year, month);
-
-  const bySubcat = {};
-  txM.filter(t => t.tipo === 'Gasto' && t.categoria !== INV_CAT).forEach(t => {
-    const key = t.subcategoria || '(Sin subcategoría)';
-    if (!bySubcat[key]) bySubcat[key] = { total: 0, categoria: t.categoria };
-    bySubcat[key].total += Math.abs(t.valor);
-  });
-
-  const top8 = Object.entries(bySubcat)
-    .map(([subcat, v]) => ({ subcat, total: +v.total.toFixed(2), categoria: v.categoria }))
-    .sort((a, b) => b.total - a.total)
-    .slice(0, 8)
-    .reverse(); // mayor importe arriba en barras horizontales
-
-  const chart = initEchart('chart-top-subcategorias');
-  if(!chart) return;
-
-  chart.setOption({
-    backgroundColor: 'transparent',
-    tooltip: {
-      trigger: 'axis', axisPointer: { type: 'shadow' },
-      backgroundColor: '#1E2D40', textStyle: { color: '#E2E8F0', fontSize: 12 },
-      formatter: params => `<b>${params[0].name}</b><br/>${fmt(params[0].value)}`
-    },
-    grid: { top: 10, left: 10, right: 30, bottom: 10, containLabel: true },
-    xAxis: { type: 'value', axisLabel: { color: '#94A3B8', fontSize: 10, formatter: v => fmtShort(v) }, splitLine: { lineStyle: { color: '#1E2D4033' } } },
-    yAxis: { type: 'category', data: top8.map(s => s.subcat), axisLabel: { color: '#E2E8F0', fontSize: 11 }, axisLine: { lineStyle: { color: '#1E2D40' } } },
-    series: [{
-      type: 'bar',
-      data: top8.map(s => ({ value: s.total, itemStyle: { color: catColor(s.categoria) } })),
-      barMaxWidth: 18,
-      label: { show: true, position: 'right', color: '#94A3B8', fontSize: 10, formatter: p => fmtShort(p.value) }
-    }]
-  });
-  window.addEventListener('resize', ()=>chart.resize());
 }
 
 function renderHistorico() {
@@ -1185,166 +1572,518 @@ function renderTablaAnual(selectedYear) {
 // TAB — PRESUPUESTO
 // ══════════════════════════════════════════════════════
 
-function renderPresupuesto() {
-  if (!RAW_PRESUPUESTO || RAW_PRESUPUESTO.length === 0) {
-    document.getElementById('tab-presupuesto').innerHTML = '<div class="empty">No hay datos de presupuesto disponibles.</div>';
-    return;
+// ─────────────────────────────────────────────────────────────────────
+// 50/30/20 CONFIGURATION — edit these to match how YOU classify spending
+// ─────────────────────────────────────────────────────────────────────
+ 
+const RULE_BUCKETS = ['Necesidades', 'Deseos', 'Ahorro'];
+const RULE_TARGETS = { Necesidades: 50, Deseos: 30, Ahorro: 20 };   // % of income
+const RULE_TOLERANCE_PP = 5;           // percentage points before a bucket turns red
+const RULE_DEFAULT_BUCKET = 'Deseos';  // used for categories that are not mapped
+ 
+// Default bucket per category. The savings bucket is always INV_CAT.
+const RULE_CATEGORY_MAP = {
+  'Vivienda': 'Necesidades',
+  'Alimentación': 'Necesidades',
+  'Transporte': 'Necesidades',
+  'Salud': 'Necesidades',
+  'Impuestos y multas': 'Necesidades',
+  'Ocio': 'Deseos',
+  'Ropa y calzado': 'Deseos',
+  'Regalos y donaciones': 'Deseos',
+  'Otros': 'Deseos'
+};
+ 
+// Exceptions at subcategory level, key = 'Category|Subcategory'.
+// Add your own, e.g. 'Transporte|Taxi': 'Deseos'.
+const RULE_SUBCATEGORY_OVERRIDES = {
+  'Alimentación|Restaurante': 'Deseos'
+};
+ 
+const RULE_COLORS = { Necesidades: '#2DD4BF', Deseos: '#C4B5FD', Ahorro: '#38BDF8', 'Sobrante': '#1E2D40' };
+ 
+function ruleBucketFor(cat, sub) {
+  if (cat === INV_CAT) return 'Ahorro';
+  const b = RULE_SUBCATEGORY_OVERRIDES[cat + '|' + sub] || RULE_CATEGORY_MAP[cat];
+  return RULE_BUCKETS.includes(b) ? b : RULE_DEFAULT_BUCKET;
+}
+ 
+ 
+// ─────────────────────────────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────────────────────────────
+ 
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+ 
+function presPeriodMonths(period, month) {
+  const m = Number(month);
+  if (period === 'month') return [m];
+  if (period === 'ytd') return Array.from({ length: m }, (_, i) => i + 1);
+  return Array.from({ length: 12 }, (_, i) => i + 1);
+}
+ 
+function presPeriodLabel(year, period, month) {
+  const m = Number(month);
+  if (period === 'month') return `${MONTHS_FULL[m - 1]} ${year}`;
+  if (period === 'ytd') return `${MONTHS_ES[0]}–${MONTHS_ES[m - 1]} ${year} (${m} ${m === 1 ? 'mes' : 'meses'})`;
+  return `Año ${year} (12 meses)`;
+}
+ 
+function addToSubMap(map, cat, sub, v) {
+  const key = cat + '|' + sub;
+  if (!map[key]) map[key] = { cat, sub, v: 0 };
+  map[key].v += v;
+}
+ 
+// Joins real and budget maps into rows { cat, sub, real, prev, dev, pct }.
+function mergeSubs(realMap, prevMap) {
+  const keys = new Set([...Object.keys(realMap), ...Object.keys(prevMap)]);
+  return [...keys].map(k => {
+    const r = realMap[k], p = prevMap[k];
+    const real = r ? r.v : 0, prev = p ? p.v : 0;
+    return {
+      cat: (r || p).cat, sub: (r || p).sub, real, prev,
+      dev: real - prev,                                  // > 0 = over budget
+      pct: prev > 0 ? real / prev * 100 : null           // real / budget
+    };
+  }).filter(s => s.real > 0 || s.prev > 0);
+}
+ 
+// All the numbers the tab needs, in one pure function (no DOM).
+// Always uses ALL banks: the budget is global.
+function buildPresupuestoData(year, period, month) {
+  const months = presPeriodMonths(period, month);
+  const monthSet = new Set(months);
+  const n = months.length;
+  const yearPrefix = String(year) + '-';
+ 
+  // ── Real, from transactions
+  let incReal = 0;
+  const realSub = {}, invRealSub = {};
+  RAW.forEach(t => {
+    if (!t.fecha.startsWith(yearPrefix)) return;
+    if (!monthSet.has(parseInt(t.fecha.substring(5, 7), 10))) return;
+    const v = Math.abs(t.valor);
+    if (t.tipo === 'Ingreso') { incReal += v; return; }
+    if (t.tipo !== 'Gasto') return;
+    addToSubMap(t.categoria === INV_CAT ? invRealSub : realSub, t.categoria, t.subcategoria || 'Sin subcategoría', v);
+  });
+ 
+  // ── Budget: `previsto` is monthly, so multiply by the months in the period
+  let incPrev = 0;
+  const prevSub = {}, invPrevSub = {};
+  (RAW_PRESUPUESTO || []).forEach(r => {
+    if (Number(r.anyo) !== Number(year)) return;
+    const v = (Number(r.previsto) || 0) * n;
+    const sub = r.subcategoria || 'Sin subcategoría';
+    if (r.categoria === INV_CAT) { addToSubMap(invPrevSub, r.categoria, sub, v); return; }
+    if (r.tipo === 'Ingreso') { incPrev += v; return; }
+    if (r.tipo === 'Gasto') addToSubMap(prevSub, r.categoria, sub, v);
+  });
+ 
+  // ── Consumption by category (with subcategories), worst deviation first
+  const subs = mergeSubs(realSub, prevSub);
+  const catMap = {};
+  subs.forEach(s => {
+    if (!catMap[s.cat]) catMap[s.cat] = { cat: s.cat, real: 0, prev: 0, subs: [] };
+    catMap[s.cat].real += s.real;
+    catMap[s.cat].prev += s.prev;
+    catMap[s.cat].subs.push(s);
+  });
+  const cats = Object.values(catMap)
+    .map(c => ({
+      ...c,
+      dev: c.real - c.prev,
+      pct: c.prev > 0 ? c.real / c.prev * 100 : null,
+      subs: c.subs.sort((a, b) => b.dev - a.dev)
+    }))
+    .sort((a, b) => b.dev - a.dev);
+ 
+  const consReal = cats.reduce((s, c) => s + c.real, 0);
+  const consPrev = cats.reduce((s, c) => s + c.prev, 0);
+ 
+  // ── Savings / investment (goal semantics)
+  const invSubs = mergeSubs(invRealSub, invPrevSub).sort((a, b) => b.prev - a.prev || b.real - a.real);
+  const invReal = invSubs.reduce((s, x) => s + x.real, 0);
+  const invPrev = invSubs.reduce((s, x) => s + x.prev, 0);
+ 
+  // ── 50/30/20
+  let rule = null;
+  if (incReal > 0) {
+    const tally = (key, savings) => {
+      const o = { Necesidades: 0, Deseos: 0, Ahorro: savings };
+      subs.forEach(s => { o[ruleBucketFor(s.cat, s.sub)] += s[key]; });
+      return o;
+    };
+    const realB = tally('real', invReal);
+    const prevB = tally('prev', invPrev);
+    const budgetBaseFallback = incPrev <= 0;           // no income budget: use real income as base
+    const baseBudget = budgetBaseFallback ? incReal : incPrev;
+    const pctOf = (b, base) => Object.fromEntries(RULE_BUCKETS.map(k => [k, b[k] / base * 100]));
+ 
+    const rows = [
+      { key: 'rule',   name: `Regla ${RULE_BUCKETS.map(b => RULE_TARGETS[b]).join('/')}`, vals: { ...RULE_TARGETS }, amounts: null },
+      { key: 'budget', name: 'Mi presupuesto', vals: pctOf(prevB, baseBudget), amounts: prevB },
+      { key: 'real',   name: 'Mi real',        vals: pctOf(realB, incReal),    amounts: realB }
+    ].map(r => {
+      const sum = RULE_BUCKETS.reduce((s, b) => s + r.vals[b], 0);
+      return { ...r, sum, unassigned: Math.max(0, 100 - sum) };
+    });
+ 
+    // Categories using the default bucket because nobody mapped them
+    const unmapped = cats.map(c => c.cat).filter(c =>
+      !(c in RULE_CATEGORY_MAP) && !Object.keys(RULE_SUBCATEGORY_OVERRIDES).some(k => k.startsWith(c + '|')));
+ 
+    rule = { rows, budgetBaseFallback, unmapped };
   }
-
-  const gastos   = RAW_PRESUPUESTO.filter(r => r.tipo === 'Gasto');
-  const ingresos = RAW_PRESUPUESTO.filter(r => r.tipo === 'Ingreso');
-
-  // ── KPIs globales ────────────────────────────────────────────────────────
-  const ingReal  = ingresos.reduce((s, r) => s + r.real, 0);
-  const ingPrev  = ingresos.reduce((s, r) => s + r.previsto, 0);
-  
-  // Aislamos los gastos de consumo (excluyendo la categoría de Inversión)
-  const consumos = gastos.filter(r => r.categoria !== INV_CAT);
-  const consumoReal = consumos.reduce((s, r) => s + r.real, 0);
-  const consumoPrev = consumos.reduce((s, r) => s + r.previsto, 0);
-
-  // Ahora el balance excluye la inversión en ambas partes
-  const balReal  = ingReal - consumoReal;
-  const balPrev  = ingPrev - consumoPrev;
-
-  // Animamos los KPIs
-  animateValue(document.getElementById('pres-ing-real'), ingReal);
-  animateValue(document.getElementById('pres-gas-real'), consumoReal); 
-  
+ 
+  return {
+    year, period, month: Number(month), months: n,
+    income: { real: incReal, prev: incPrev },
+    consumption: { real: consReal, prev: consPrev },
+    invest: { real: invReal, prev: invPrev, subs: invSubs },
+    cats, rule
+  };
+}
+ 
+ 
+// ─────────────────────────────────────────────────────────────────────
+// CHART OPTIONS (pure)
+// ─────────────────────────────────────────────────────────────────────
+ 
+// Diverging bars of (real − budget). Right/red = over budget, left/green = under.
+// `items`: [{ key, label, cat?, real, prev, dev, pct }]; `selectedKey` gets an outline.
+function buildDeviationOption(items, selectedKey = null) {
+  const devs = items.map(i => i.dev);
+  const maxDev = Math.max(0, ...devs), minDev = Math.min(0, ...devs);
+  const pad = Math.max((maxDev - minDev) * 0.45, 1);   // room for the end labels
+ 
+  return {
+    backgroundColor: 'transparent',
+    tooltip: {
+      trigger: 'axis', axisPointer: { type: 'shadow', shadowStyle: { color: 'rgba(255,255,255,0.04)' } },
+      backgroundColor: '#1E2D40', textStyle: { color: '#E2E8F0', fontSize: 12 },
+      formatter: params => {
+        const it = items[params[0].dataIndex];
+        const col = it.dev > 0 ? STATUS_COLORS.over : STATUS_COLORS.ok;
+        let html = `<b>${escapeHtml(it.label)}</b><br/>`;
+        html += `Real: <b>${fmt(it.real)}</b> · Previsto: ${fmt(it.prev)}`;
+        html += it.pct === null ? ' (sin presupuesto)<br/>' : ` (${it.pct.toFixed(0)}%)<br/>`;
+        html += it.dev > 0
+          ? `<span style="color:${col}">Te has pasado ${fmt(it.dev)}</span>`
+          : `<span style="color:${col}">Por debajo del presupuesto en ${fmt(-it.dev)}</span>`;
+        return html;
+      }
+    },
+    grid: { top: 8, left: 8, right: 12, bottom: 24, containLabel: true },
+    xAxis: {
+      type: 'value', min: minDev - (minDev < 0 ? pad : 0), max: maxDev + pad,
+      axisLabel: { show: false },   // values are printed at the end of each bar
+      axisLine: { show: false }, axisTick: { show: false },
+      splitLine: { lineStyle: { color: '#1E2D4033' } }
+    },
+    yAxis: {
+      type: 'category', data: items.map(i => i.label), inverse: true,
+      axisTick: { show: false },
+      axisLine: { show: false, onZero: false },   // labels stay on the left edge, not on the zero line
+      axisLabel: { color: '#E2E8F0', fontSize: 11, width: 150, overflow: 'truncate' }
+    },
+    series: [{
+      id: 'dev', type: 'bar', barMaxWidth: 16,
+      data: items.map(i => ({
+        value: +i.dev.toFixed(2),
+        itemStyle: {
+          color: i.dev > 0 ? STATUS_COLORS.over : STATUS_COLORS.ok,
+          borderRadius: i.dev >= 0 ? [0, 3, 3, 0] : [3, 0, 0, 3],
+          borderColor: '#E2E8F0', borderWidth: i.key === selectedKey ? 1.5 : 0
+        },
+        label: { position: i.dev >= 0 ? 'right' : 'left' }
+      })),
+      label: {
+        show: true, color: '#94A3B8', fontSize: 11,
+        formatter: p => {
+          const it = items[p.dataIndex];
+          const sign = it.dev > 0 ? '+' : it.dev < 0 ? '−' : '';
+          const pct = it.pct === null ? 'sin presupuesto' : Math.round(it.pct) + '%';
+          return `${sign}${fmtMoney0(Math.abs(it.dev))} · ${pct}`;
+        }
+      },
+      // Zero line
+      markLine: {
+        silent: true, symbol: 'none', label: { show: false },
+        lineStyle: { color: '#4B5563', width: 1, type: 'solid' }, data: [{ xAxis: 0 }]
+      }
+    }]
+  };
+}
+ 
+function buildRuleOption(rule) {
+  const names = rule.rows.map(r => r.name);
+  const maxSum = Math.max(100, ...rule.rows.map(r => r.sum));
+  const xMax = Math.ceil(maxSum / 10) * 10;
+  const segs = [...RULE_BUCKETS, 'Sobrante'];
+ 
+  const series = segs.map(seg => ({
+    id: seg, name: seg, type: 'bar', stack: 'rule', barWidth: 26,
+    itemStyle: { color: RULE_COLORS[seg], borderColor: '#111827', borderWidth: 1 },
+    label: {
+      show: true, fontSize: 11, fontWeight: 600,
+      color: seg === 'Sobrante' ? '#94A3B8' : '#0A0E1A',
+      formatter: p => (p.value >= 5 ? Math.round(p.value) + '%' : '')
+    },
+    data: rule.rows.map(r => +(seg === 'Sobrante' ? r.unassigned : r.vals[seg]).toFixed(2))
+  }));
+ 
+  // 100 % of income reference (visible when a bar goes beyond it)
+  series[0].markLine = {
+    silent: true, symbol: 'none', label: { show: false },
+    lineStyle: { color: '#E2E8F0', width: 1, type: 'dashed' }, data: [{ xAxis: 100 }]
+  };
+ 
+  return {
+    backgroundColor: 'transparent',
+    tooltip: {
+      trigger: 'axis', axisPointer: { type: 'shadow', shadowStyle: { color: 'rgba(255,255,255,0.04)' } },
+      backgroundColor: '#1E2D40', textStyle: { color: '#E2E8F0', fontSize: 12 },
+      formatter: params => {
+        const r = rule.rows[params[0].dataIndex];
+        let html = `<b>${r.name}</b><br/>`;
+        RULE_BUCKETS.forEach(b => {
+          html += `<span style="color:${RULE_COLORS[b]}">●</span> ${b}: <b>${r.vals[b].toFixed(1)}%</b>`;
+          html += r.amounts ? ` · ${fmt(r.amounts[b])}<br/>` : '<br/>';
+        });
+        if (r.unassigned > 0.05) html += `<span style="color:#94A3B8">Sobrante: ${r.unassigned.toFixed(1)}%</span>`;
+        else if (r.sum > 100.05) html += `<span style="color:${STATUS_COLORS.over}">Supera los ingresos en ${(r.sum - 100).toFixed(1)} pp</span>`;
+        return html;
+      }
+    },
+    legend: { data: segs, bottom: 0, textStyle: { color: '#94A3B8', fontSize: 11 } },
+    grid: { top: 6, left: 8, right: 16, bottom: 34, containLabel: true },
+    xAxis: {
+      type: 'value', min: 0, max: xMax,
+      axisLabel: { color: '#94A3B8', fontSize: 10, formatter: v => v + '%' },
+      splitLine: { show: false }
+    },
+    yAxis: {
+      type: 'category', data: names, inverse: true,
+      axisTick: { show: false }, axisLine: { show: false },
+      axisLabel: { color: '#E2E8F0', fontSize: 11 }
+    },
+    series
+  };
+}
+ 
+// Goal semantics for savings: reaching the target is GOOD.
+function goalStatus(pct) {
+  return pct >= 100 ? 'ok' : pct >= 80 ? 'warn' : 'over';
+}
+ 
+// Rule semantics: needs/wants over target is bad; savings under target is bad.
+function ruleStatus(bucket, diffPp) {
+  if (bucket === 'Ahorro') return diffPp >= 0 ? 'ok' : diffPp >= -RULE_TOLERANCE_PP ? 'warn' : 'over';
+  return diffPp <= 0 ? 'ok' : diffPp <= RULE_TOLERANCE_PP ? 'warn' : 'over';
+}
+ 
+ 
+// ─────────────────────────────────────────────────────────────────────
+// RENDERING (DOM)
+// ─────────────────────────────────────────────────────────────────────
+ 
+const PRES_STATE = { selectedCat: null };   // category name or '__all__'
+let PRES_DATA = null;
+ 
+function presSetDelta(id, delta, badWhenPositive) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const good = badWhenPositive ? delta < 0 : delta > 0;
+  el.textContent = `vs previsto ${delta >= 0 ? '+' : ''}${fmt(delta)}`;
+  el.className = 'kpi-delta ' + (delta === 0 ? 'neu' : good ? 'up' : 'down');
+}
+ 
+function renderPresKpis(d) {
+  const balReal = d.income.real - d.consumption.real;
+  const balPrev = d.income.prev - d.consumption.prev;
+ 
+  animateValue(document.getElementById('pres-ing-real'), d.income.real);
+  animateValue(document.getElementById('pres-gas-real'), d.consumption.real);
   const balEl = document.getElementById('pres-bal-real');
   animateValue(balEl, balReal);
   balEl.className = 'kpi-value ' + (balReal >= 0 ? 'green-val' : 'red-val');
-
-  const ingDelta  = ingReal - ingPrev;
-  const gasDelta  = consumoReal - consumoPrev; 
-  const balDelta  = balReal - balPrev;
-
-  // Para ingresos: positivo = bien (ingresaste más). Para gastos: positivo = mal (gastaste más)
-  const _deltaEl = (id, delta, invertSign) => {
-    const el = document.getElementById(id);
-    const good = invertSign ? delta < 0 : delta > 0;
-    el.textContent = `vs previsto ${delta >= 0 ? '+' : ''}${fmt(delta)}`;
-    el.className   = 'kpi-delta ' + (delta === 0 ? 'neu' : good ? 'up' : 'down');
-  };
-  _deltaEl('pres-ing-delta', ingDelta, false);
-  _deltaEl('pres-gas-delta', gasDelta, true);
-  _deltaEl('pres-bal-delta', balDelta, false);
-
-  // ── Gráfico y tabla por categoría (solo gastos) ──────────────────────────
-  const byCat = {};
-  gastos.forEach(r => {
-    if (!byCat[r.categoria]) byCat[r.categoria] = { previsto: 0, real: 0 };
-    byCat[r.categoria].previsto += r.previsto;
-    byCat[r.categoria].real     += r.real;
-  });
-
-  // Ordenar por desviación absoluta descendente
-  const catEntries = Object.entries(byCat)
-    .map(([cat, v]) => ({ cat, ...v, desviacion: v.real - v.previsto }))
-    .sort((a, b) => Math.abs(b.desviacion) - Math.abs(a.desviacion));
-
-  // Gráfico barras horizontales agrupadas previsto vs real
-  const chart = initEchart('chart-pres-categorias');
-  if (chart) {
-    const labels = catEntries.map(e => e.cat).reverse();
-    chart.setOption({
-      backgroundColor: 'transparent',
-      tooltip: {
-        trigger: 'axis', axisPointer: { type: 'shadow' },
-        backgroundColor: '#1E2D40', textStyle: { color: '#E2E8F0', fontSize: 12 },
-        formatter: params => {
-          let s = `<b>${params[0].axisValue}</b><br/>`;
-          params.forEach(p => { s += `${p.marker} ${p.seriesName}: <b>${fmt(p.value)}</b><br/>`; });
-          return s;
-        }
-      },
-      legend: { bottom: 0, textStyle: { color: '#94A3B8', fontSize: 11 } },
-      grid: { top: 10, left: 10, right: 20, bottom: 35, containLabel: true },
-      xAxis: { type: 'value', axisLabel: { color: '#94A3B8', fontSize: 10, formatter: v => fmtShort(v) }, splitLine: { lineStyle: { color: '#1E2D4033' } } },
-      yAxis: { type: 'category', data: labels, axisLabel: { color: '#E2E8F0', fontSize: 11 }, axisLine: { lineStyle: { color: '#1E2D40' } } },
-      series: [
-        { name: 'Previsto',  type: 'bar', data: catEntries.map(e => +e.previsto.toFixed(2)).reverse(), barMaxWidth: 12, itemStyle: { color: '#94A3B844', borderRadius: [0, 3, 3, 0] } },
-        { name: 'Real',      type: 'bar', data: catEntries.map(e => +e.real.toFixed(2)).reverse(),     barMaxWidth: 12,
-          itemStyle: { borderRadius: [0, 3, 3, 0],
-            color: p => {
-              const entry = catEntries[catEntries.length - 1 - p.dataIndex];
-              return entry.desviacion > 0 ? '#F87171' : '#10B981';
-            }
-          }
-        }
-      ]
-    });
-    window.addEventListener('resize', () => chart.resize());
+ 
+  document.getElementById('pres-ing-label').textContent = `real · previsto ${fmtMoney0(d.income.prev)}`;
+  document.getElementById('pres-gas-label').textContent = `real · previsto ${fmtMoney0(d.consumption.prev)}`;
+  document.getElementById('pres-bal-label').textContent = `real · previsto ${fmtMoney0(balPrev)}`;
+  presSetDelta('pres-ing-delta', d.income.real - d.income.prev, false);   // more income = good
+  presSetDelta('pres-gas-delta', d.consumption.real - d.consumption.prev, true);   // more spending = bad
+  presSetDelta('pres-bal-delta', balReal - balPrev, false);
+ 
+  // Savings / investment card: goal semantics
+  animateValue(document.getElementById('pres-inv-real'), d.invest.real);
+  const invDelta = document.getElementById('pres-inv-delta');
+  const fill = document.getElementById('pres-inv-fill');
+  if (d.invest.prev > 0) {
+    const pct = d.invest.real / d.invest.prev * 100;
+    const col = STATUS_COLORS[goalStatus(pct)];
+    document.getElementById('pres-inv-label').textContent = `real · objetivo ${fmtMoney0(d.invest.prev)}`;
+    invDelta.textContent = `${pct.toFixed(0)}% del objetivo`;
+    invDelta.className = 'kpi-delta';
+    invDelta.style.color = col;
+    fill.style.width = Math.min(100, pct) + '%';
+    fill.style.background = col;
+  } else {
+    document.getElementById('pres-inv-label').textContent = 'real · sin objetivo definido';
+    invDelta.textContent = '—';
+    invDelta.className = 'kpi-delta neu';
+    invDelta.style.color = '';
+    fill.style.width = '0%';
   }
-
-  // Tabla de desviaciones
-  const tbody = document.querySelector('#table-pres-categorias tbody');
-  tbody.innerHTML = catEntries.map(e => `
-    <tr>
-      <td>${e.cat}</td>
-      <td class="mono text-right" style="color:var(--muted)">${fmt(e.previsto)}</td>
-      <td class="mono text-right">${fmt(e.real)}</td>
-      <td class="mono text-right">
-        <span style="color:${e.desviacion > 0 ? 'var(--red)' : e.desviacion < 0 ? 'var(--green)' : 'var(--muted)'}">
-          ${e.desviacion > 0 ? '+' : ''}${fmt(e.desviacion)}
-        </span>
-      </td>
-    </tr>`).join('');
-
-  // ── Selector de categorías para el detalle de subcategorías ─────────────
-  const cats = [...new Set(gastos.map(r => r.categoria))].sort();
-  const sel  = document.getElementById('filter-pres-categoria');
-  if (sel && sel.options.length <= 1) {
-    // Solo inicializamos el select la primera vez
-    sel.innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
-    sel.addEventListener('change', renderPresupuestoSubcat);
-  }
-  renderPresupuestoSubcat();
 }
-
-function renderPresupuestoSubcat() {
-  const sel      = document.getElementById('filter-pres-categoria');
-  const catSel   = sel ? sel.value : null;
-  if (!catSel) return;
-
-  const subcats  = RAW_PRESUPUESTO.filter(r => r.tipo === 'Gasto' && r.categoria === catSel)
-    .sort((a, b) => Math.abs(b.diferencia) - Math.abs(a.diferencia));
-
-  const container = document.getElementById('pres-subcat-container');
-  if (!subcats.length) {
-    container.innerHTML = '<div class="empty">Sin datos para esta categoría.</div>';
+ 
+// Subcategory items shown in the right-hand chart for the current selection.
+function presSubItems(d) {
+  const sel = PRES_STATE.selectedCat;
+  if (sel === '__all__') {
+    return d.cats.flatMap(c => c.subs)
+      .sort((a, b) => Math.abs(b.dev) - Math.abs(a.dev)).slice(0, 12)
+      .sort((a, b) => b.dev - a.dev)
+      .map(s => ({ ...s, key: s.cat + '|' + s.sub, label: `${s.sub} · ${s.cat}` }));
+  }
+  const c = d.cats.find(x => x.cat === sel);
+  return c ? c.subs.map(s => ({ ...s, key: s.cat + '|' + s.sub, label: s.sub })) : [];
+}
+ 
+function presEnsureSelection(d) {
+  const sel = PRES_STATE.selectedCat;
+  const valid = sel === '__all__' || d.cats.some(c => c.cat === sel);
+  if (!valid) PRES_STATE.selectedCat = d.cats.length && d.cats[0].dev > 0 ? d.cats[0].cat : '__all__';
+}
+ 
+function presFillCategorySelect(d) {
+  const sel = document.getElementById('pres-cat-select');
+  sel.innerHTML = '<option value="__all__">Todas · mayores desviaciones</option>' +
+    d.cats.map(c => `<option value="${escapeHtml(c.cat)}">${escapeHtml(c.cat)}</option>`).join('');
+  sel.value = PRES_STATE.selectedCat;
+}
+ 
+function renderPresDeviationCharts(d) {
+  // Left: categories
+  if (!d.cats.length) {
+    showChartEmpty('chart-pres-dev-cat', 'Sin gastos ni presupuesto en este periodo');
+    showChartEmpty('chart-pres-dev-sub', 'Sin datos');
     return;
   }
-
-  // Barras de progreso con % de ejecución + desviación para cada subcategoría
-  container.innerHTML = subcats.map(r => {
-    const pct        = r.previsto > 0 ? Math.min((r.real / r.previsto) * 100, 150) : 0;
-    const pctDisplay = r.previsto > 0 ? ((r.real / r.previsto) * 100).toFixed(0) : '—';
-    const desviacion = r.diferencia; // ya viene calculado como real - previsto
-    const barColor   = pct > 100 ? 'var(--red)' : pct > 80 ? 'var(--amber)' : 'var(--green)';
-    const devColor   = desviacion > 0 ? 'var(--red)' : desviacion < 0 ? 'var(--green)' : 'var(--muted)';
-
-    return `
-      <div style="margin-bottom:1rem">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.35rem">
-          <span style="font-size:0.8rem;color:var(--text)">${r.subcategoria}</span>
-          <div style="display:flex;gap:1.5rem;align-items:center">
-            <span style="font-size:0.72rem;color:var(--muted)">
-              ${fmt(r.real)} <span style="color:var(--muted2)">/ ${fmt(r.previsto)}</span>
-            </span>
-            <span style="font-size:0.72rem;font-family:var(--font-mono);color:${devColor}">
-              ${desviacion > 0 ? '+' : ''}${fmt(desviacion)}
-            </span>
-            <span style="font-size:0.72rem;font-family:var(--font-mono);color:${barColor};width:38px;text-align:right">
-              ${pctDisplay}%
-            </span>
-          </div>
-        </div>
-        <div class="progress-track">
-          <div class="progress-fill" style="width:${Math.min(pct, 100)}%;background:${barColor}"></div>
-        </div>
-      </div>`;
+  const catItems = d.cats.map(c => ({ ...c, key: c.cat, label: c.cat }));
+  const subItems = presSubItems(d);
+  const rows = Math.max(catItems.length, subItems.length);
+  const h = Math.max(260, rows * 34 + 40) + 'px';
+ 
+  document.getElementById('chart-pres-dev-cat').style.height = h;
+  const left = initEchart('chart-pres-dev-cat');
+  left.setOption(buildDeviationOption(catItems, PRES_STATE.selectedCat));
+  left.on('click', p => {
+    const c = d.cats[p.dataIndex];
+    if (!c) return;
+    PRES_STATE.selectedCat = c.cat;
+    document.getElementById('pres-cat-select').value = c.cat;
+    renderPresDeviationCharts(d);
+  });
+ 
+  // Right: subcategories of the selection
+  const sel = PRES_STATE.selectedCat;
+  document.getElementById('pres-sub-title').textContent =
+    sel === '__all__' ? 'Subcategorías con mayor desviación' : `Subcategorías · ${sel}`;
+  if (!subItems.length) { showChartEmpty('chart-pres-dev-sub', 'Sin subcategorías'); return; }
+  document.getElementById('chart-pres-dev-sub').style.height = Math.max(200, subItems.length * 34 + 40) + 'px';
+  const right = initEchart('chart-pres-dev-sub');
+  right.setOption(buildDeviationOption(subItems));
+}
+ 
+function renderPresInvestment(d) {
+  const el = document.getElementById('pres-inv-list');
+  if (!d.invest.subs.length) {
+    el.innerHTML = '<div class="empty" style="padding:1.5rem 1rem">Sin objetivos ni aportaciones en este periodo</div>';
+    return;
+  }
+  el.innerHTML = d.invest.subs.map(s => {
+    const has = s.prev > 0;
+    const col = has ? STATUS_COLORS[goalStatus(s.pct)] : '#94A3B8';
+    const width = has ? Math.min(100, s.pct) : 0;
+    const val = has ? `${fmtMoney0(s.real)} / ${fmtMoney0(s.prev)}` : `${fmtMoney0(s.real)} · sin objetivo`;
+    return `<div class="progress-row">
+      <div class="progress-label" title="${escapeHtml(s.sub)}">${escapeHtml(s.sub)}</div>
+      <div class="progress-track"><div class="progress-fill" style="width:${width}%;background:${col}"></div></div>
+      <div class="progress-val" style="width:auto;min-width:130px;color:${col}">${val}</div>
+    </div>`;
   }).join('');
+}
+ 
+function ruleChipsHtml(rule) {
+  const real = rule.rows.find(r => r.key === 'real');
+  const bud = rule.rows.find(r => r.key === 'budget');
+  return RULE_BUCKETS.map(b => {
+    const pct = real.vals[b];
+    const diff = pct - RULE_TARGETS[b];
+    const col = STATUS_COLORS[ruleStatus(b, diff)];
+    const sign = diff > 0 ? '+' : diff < 0 ? '−' : '';
+    return `<div style="flex:1;min-width:150px;background:var(--surface2);border-left:3px solid ${col};border-radius:6px;padding:0.6rem 0.8rem">
+      <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted)">${b}</div>
+      <div style="font-family:var(--font-mono);font-size:1.25rem;font-weight:700;color:${col}">${pct.toFixed(0)}%</div>
+      <div style="font-size:0.7rem;color:var(--muted)">objetivo ${RULE_TARGETS[b]}% · <span style="color:${col}">${sign}${Math.abs(diff).toFixed(0)} pp</span></div>
+      <div style="font-size:0.7rem;color:var(--muted)">presupuesto ${bud.vals[b].toFixed(0)}% · ${fmtMoney0(real.amounts[b])}</div>
+    </div>`;
+  }).join('');
+}
+ 
+function renderPresRule(d) {
+  const chipsEl = document.getElementById('pres-rule-chips');
+  const noteEl = document.getElementById('pres-rule-note');
+  if (!d.rule) {
+    showChartEmpty('chart-pres-rule', 'Sin ingresos en el periodo: no se puede calcular la regla');
+    chipsEl.innerHTML = '';
+    noteEl.textContent = '';
+    return;
+  }
+  const chart = initEchart('chart-pres-rule');
+  chart.setOption(buildRuleOption(d.rule));
+  chipsEl.innerHTML = ruleChipsHtml(d.rule);
+ 
+  const notes = [];
+  if (d.rule.budgetBaseFallback) notes.push('El presupuesto no define ingresos: se usan los ingresos reales como base.');
+  if (d.rule.unmapped.length) notes.push(`Sin clasificar (cuentan como ${RULE_DEFAULT_BUCKET}): ${d.rule.unmapped.join(', ')}.`);
+  noteEl.textContent = notes.join(' ');
+}
+ 
+function renderPresupuesto() {
+  const emptyEl = document.getElementById('pres-empty');
+  const contentEl = document.getElementById('pres-content');
+  if (!RAW_PRESUPUESTO || RAW_PRESUPUESTO.length === 0) {
+    emptyEl.style.display = '';
+    contentEl.style.display = 'none';
+    return;
+  }
+  emptyEl.style.display = 'none';
+  contentEl.style.display = '';
+ 
+  const year = document.getElementById('pres-year').value;
+  const period = document.getElementById('pres-period').value;
+  const month = document.getElementById('pres-month').value;
+ 
+  const d = buildPresupuestoData(year, period, month);
+  PRES_DATA = d;
+ 
+  const notes = [`Periodo: ${presPeriodLabel(year, period, month)}. Previsto = presupuesto mensual × ${d.months}.`,
+                 'El presupuesto es global: esta pestaña ignora el filtro de banco.'];
+  if (period === 'year' && Number(year) === new Date().getFullYear()) notes.push('El real solo incluye lo transcurrido del año.');
+  document.getElementById('pres-note').textContent = notes.join(' ');
+ 
+  presEnsureSelection(d);
+  presFillCategorySelect(d);
+  renderPresKpis(d);
+  renderPresDeviationCharts(d);
+  renderPresInvestment(d);
+  renderPresRule(d);
 }
 
 // ══════════════════════════════════════════════════════

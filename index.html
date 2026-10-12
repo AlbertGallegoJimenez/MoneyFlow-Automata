@@ -406,54 +406,108 @@
       </div>
 
       <div class="tab-panel" id="tab-port-historico">
-        <!-- Nueva barra de filtros temporales -->
+        <style>
+          .grid-5 { grid-template-columns: repeat(5, 1fr); }
+          @media (max-width: 900px) { .grid-5 { grid-template-columns: repeat(2, 1fr); } }
+          .seg { display: inline-flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+          .seg button { background: var(--surface); color: var(--muted); border: none; border-right: 1px solid var(--border);
+                        padding: 0.3rem 0.7rem; font-size: 0.75rem; font-family: var(--font-body); cursor: pointer; text-transform: none; letter-spacing: 0; }
+          .seg button:last-child { border-right: none; }
+          .seg button:hover { color: var(--text); }
+          .seg button.on { background: #38BDF81A; color: var(--accent); }
+          .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+          .chip { display: inline-flex; align-items: center; gap: 0.4rem; max-width: 240px; background: var(--surface2); border: 1px solid var(--border);
+                  color: var(--muted); border-radius: 999px; padding: 0.2rem 0.65rem; font-size: 0.72rem; font-family: var(--font-body); cursor: pointer; }
+          .chip:hover { color: var(--text); }
+          .chip .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; opacity: 0.35; }
+          .chip .t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+          .chip.on { color: var(--text); border-color: var(--accent); }
+          .chip.on .dot { opacity: 1; }
+          .chip.closed { font-style: italic; }
+          .chip-actions { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; font-size: 0.72rem; color: var(--muted); }
+          .chip-actions button { background: none; border: none; color: var(--accent); cursor: pointer; font-size: 0.72rem; font-family: var(--font-body); padding: 0 0.25rem; }
+          details.chip-closed summary { cursor: pointer; color: var(--muted); font-size: 0.72rem; margin: 0.7rem 0 0.4rem; }
+          .check-label { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.72rem; color: var(--muted); text-transform: none; letter-spacing: 0; font-weight: 400; cursor: pointer; }
+        </style>
+      
+        <!-- Period -->
         <div class="filters-bar" style="padding:0.75rem 0; border:none; margin-bottom:0.5rem">
-          <span class="filter-label">Desde Año</span><select id="filter-port-year-from"></select>
-          <span class="filter-label" style="margin-left:0.5rem">Hasta Año</span><select id="filter-port-year-to"></select>
+          <span class="filter-label">Desde</span><select id="filter-port-year-from"></select>
+          <span class="filter-label" style="margin-left:0.5rem">Hasta</span><select id="filter-port-year-to"></select>
+          <div class="seg" id="port-presets" style="margin-left:0.75rem">
+            <button data-preset="ytd">YTD</button>
+            <button data-preset="1y">1 año</button>
+            <button data-preset="3y">3 años</button>
+            <button data-preset="all" class="on">Todo</button>
+          </div>
         </div>
-
+      
+        <!-- KPI strip -->
+        <div class="grid grid-5" style="margin-bottom:1rem">
+          <div class="card">
+            <div class="card-title">Plusvalía del periodo</div>
+            <div class="kpi-value blur-target" id="port-hito-plusvalia">—</div>
+            <div class="kpi-label">generada por el mercado</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Rentabilidad (TWR)</div>
+            <div class="kpi-value" id="port-hito-rentabilidad">—</div>
+            <div class="kpi-label" id="port-hito-rent-sub">—</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Aportaciones netas</div>
+            <div class="kpi-value blur-target" id="port-hito-aportaciones">—</div>
+            <div class="kpi-label">compras − ventas</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Máx. drawdown</div>
+            <div class="kpi-value red-val" id="port-hito-drawdown">—</div>
+            <div class="kpi-label" id="port-hito-dd-sub">—</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Mejor / peor captura</div>
+            <div class="kpi-delta up" style="margin-top:0" id="port-hito-mejor-fecha">—</div>
+            <div class="kpi-delta down" id="port-hito-peor-fecha">—</div>
+            <div class="kpi-label" style="margin-top:0.4rem">neto de aportaciones</div>
+          </div>
+        </div>
+      
+        <!-- Capital + gain = market value -->
         <div class="card" style="margin-bottom:1rem">
-          <div class="card-title">La Bola de Nieve (Capital vs Mercado)</div>
+          <div class="card-title">
+            <span>Capital aportado y plusvalía</span>
+            <label class="check-label"><input type="checkbox" id="port-incl-cash"> Incluir efectivo (patrimonio total)</label>
+          </div>
           <div class="chart chart-xl" id="chart-port-area"></div>
         </div>
-        
-        <div class="grid grid-7525">
-          <div class="card">
-            <div class="card-title" style="align-items:center;">
-              <span>Evolución de Rentabilidad (%)</span>
-              <!-- El filtro de activo se mantiene en su tarjeta -->
-              <select id="filter-activo-port" style="margin-left:auto; width: auto; max-width: 250px;">
-                <option value="all">Todos los activos</option>
-              </select>
-            </div>
-            <div class="chart chart-md" id="chart-port-lines"></div>
+      
+        <!-- Returns -->
+        <div class="card" style="margin-bottom:1rem">
+          <div class="card-title">
+            <span>Evolución de la rentabilidad</span>
+            <span style="display:flex;gap:0.6rem;align-items:center">
+              <span class="seg" id="port-view-seg">
+                <button data-view="cartera">Cartera</button>
+                <button data-view="clases" class="on">Clases</button>
+                <button data-view="activos">Activos</button>
+              </span>
+              <span class="seg" id="port-metric-seg">
+                <button data-metric="twr" class="on">TWR</button>
+                <button data-metric="simple">Simple</button>
+              </span>
+            </span>
           </div>
-
-          <div class="card">
-            <div class="card-title">Hitos del Periodo</div>
-            <div style="display:flex; flex-direction:column; gap:1.25rem; margin-top:0.5rem">
-              <div>
-                <div class="kpi-label">Plusvalía neta del periodo</div>
-                <div class="kpi-value blur-target" id="port-hito-plusvalia">—</div>
-              </div>
-              <div>
-                <div class="kpi-label">Rentabilidad Absoluta</div>
-                <div class="kpi-value" id="port-hito-rentabilidad">—</div>
-              </div>
-              <div>
-                <div class="kpi-label">Activo más rentable (periodo)</div>
-                <div class="kpi-value" id="port-hito-mejor-activo" style="font-size: 1.1rem; display: flex; align-items: center; margin-top: 0.4rem;">—</div>
-              </div>
-              <div>
-                <div class="kpi-label">Max Drawdown (Mayor caída)</div>
-                <div class="kpi-value red-val" id="port-hito-drawdown">—</div>
-              </div>
-              <div class="split-block" style="margin-top:1rem">
-                <div class="split-sub">Captura más alcista: <span id="port-hito-mejor-fecha" style="color:var(--green);font-weight:600">—</span></div>
-                <div class="split-sub">Captura más bajista: <span id="port-hito-peor-fecha" style="color:var(--red);font-weight:600">—</span></div>
-              </div>
-            </div>
-          </div>
+          <div id="port-asset-panel" style="display:none;margin-bottom:0.75rem"></div>
+          <div class="chart chart-lg" id="chart-port-lines"></div>
+          <div id="port-lines-note" style="color:var(--muted);font-size:0.72rem;margin:0.4rem 0 0.9rem"></div>
+          <div class="card-title" style="margin-bottom:0.25rem">Caída desde el máximo (cartera, TWR)</div>
+          <div class="chart" id="chart-port-dd" style="height:150px"></div>
+        </div>
+      
+        <!-- Who made / lost money -->
+        <div class="card" style="margin-bottom:1rem">
+          <div class="card-title">Plusvalía por activo · quién ha generado qué</div>
+          <div class="chart" id="chart-port-contrib"></div>
         </div>
       </div>
     </main>
@@ -482,8 +536,8 @@ const COLOR_BROKER = {
 };
 
 const COLOR_CLASE = {
-  "Fondo de Renta Variable": "#bfe1f6",
-  "Fondo de Renta Fija":     "#e6e6e6",
+  "Fondos de Renta Variable": "#bfe1f6",
+  "Fondos de Renta Fija":     "#e6e6e6",
   "Commodities":             "#e6cff2",
   "ETF":                     "#ffc8aa",
   "Efectivo":                "#ffcfc9",
@@ -544,6 +598,7 @@ const PRIVACY_STORAGE_KEY = 'moneyflow_privacy_mode';
 async function togglePrivacyMode() {
   PRIVACY_MODE = !PRIVACY_MODE;
   applyPrivacyMode();
+  if (typeof portPrivacyRefresh === 'function') portPrivacyRefresh();
 
   try {
     await window.storage.set(PRIVACY_STORAGE_KEY, JSON.stringify({ enabled: PRIVACY_MODE }), false);
@@ -604,7 +659,6 @@ function loadData() {
       initFilters();
       applyBankFilter();
       processPortfolio();
-
       renderAll();
       loadPrivacyMode();
     })
@@ -656,7 +710,7 @@ function renderAll() {
   if (activeTab === 'historico') renderHistorico();
   if (activeTab === 'presupuesto') renderPresupuesto();
   if (activeTab === 'port-actual') renderPortfolioActual();
-  if (activeTab === 'port-historico') renderPortfolioHistorico();
+  if (activeTab === 'port-historico') renderPortfolioHistorico()
 }
 
 // ══════════════════════════════════════════════════════
@@ -2046,48 +2100,7 @@ function renderPresupuesto() {
 // ══════════════════════════════════════════════════════
 // LÓGICA DE PORTFOLIO (Patrimonio e Inversión)
 // ══════════════════════════════════════════════════════
-function processPortfolio() {
-  SNAPSHOTS = {};
-  RAW_PORTFOLIO.forEach(r => {
-    if (!SNAPSHOTS[r.fecha_captura]) SNAPSHOTS[r.fecha_captura] = [];
-    SNAPSHOTS[r.fecha_captura].push(r);
-  });
-  FECHAS_PORT = Object.keys(SNAPSHOTS).sort(); 
-  
-  // 1. Selector de Activo
-  const activos = new Set();
-  RAW_PORTFOLIO.forEach(r => activos.add(r.activo));
-  const selActivo = document.getElementById('filter-activo-port');
-  if(selActivo) {
-    selActivo.innerHTML = '<option value="all">Todos los activos</option>';
-    Array.from(activos).sort().forEach(a => {
-      if(a) selActivo.innerHTML += `<option value="${a}">${a}</option>`;
-    });
-    // IMPORTANTE: Pasamos 'true' para que SOLO se actualice el gráfico de líneas
-    selActivo.addEventListener('change', () => renderPortfolioHistorico(true));
-  }
 
-  // 2. Selectores Temporales
-  const portYears = [...new Set(FECHAS_PORT.map(f => f.substring(0,4)))].sort();
-  const selFrom = document.getElementById('filter-port-year-from');
-  const selTo = document.getElementById('filter-port-year-to');
-  
-  if (selFrom && selTo && portYears.length) {
-    selFrom.innerHTML = '';
-    selTo.innerHTML = '';
-    portYears.forEach(y => {
-      selFrom.innerHTML += `<option value="${y}">${y}</option>`;
-      selTo.innerHTML += `<option value="${y}">${y}</option>`;
-    });
-    selFrom.value = portYears[0]; 
-    selTo.value = portYears[portYears.length - 1]; 
-    
-    // IMPORTANTE: Pasamos 'false' para que recalcule KPIs y la Bola de Nieve
-    selFrom.addEventListener('change', () => renderPortfolioHistorico(false));
-    selTo.addEventListener('change', () => renderPortfolioHistorico(false));
-  }
-}
- 
 function renderPortfolioActual() {
   if (!FECHAS_PORT.length) {
     document.getElementById('tab-port-actual').innerHTML = '<div class="empty">No hay datos de Patrimonio</div>';
@@ -2175,227 +2188,655 @@ function renderPortfolioActual() {
 
   applyPrivacyMode();
 }
- 
-function renderPortfolioHistorico(soloLineas = false) {
-  if (!FECHAS_PORT.length) return;
-  
-  // 1. LEER FILTROS TEMPORALES
-  const yearFrom = document.getElementById('filter-port-year-from').value || "1900";
-  const yearTo = document.getElementById('filter-port-year-to').value || "2100";
-  
-  const filteredFechas = FECHAS_PORT.filter(f => {
-    const y = f.substring(0,4);
-    return y >= yearFrom && y <= yearTo;
+
+// ─────────────────────────────────────────────────────────────────────
+// CONFIG
+// ─────────────────────────────────────────────────────────────────────
+
+// Classes that never show a return (cash earns interest, but it is not tracked).
+const NO_RETURN_CLASSES = ['Efectivo'];
+
+// Distinct colors for single assets (stable: assigned by sorted asset name).
+const ASSET_PALETTE = ['#60A5FA', '#34D399', '#FBBF24', '#A78BFA', '#F472B6', '#FB923C', '#2DD4BF',
+                       '#E879F9', '#A3E635', '#F87171', '#38BDF8', '#FACC15', '#C084FC', '#4ADE80'];
+
+function portClassColor(clase) {
+  const map = typeof COLOR_CLASE !== 'undefined' ? COLOR_CLASE : {};
+  return map[clase] || '#94A3B8';
+}
+
+// "Core S&P 500 USD (Acc) (IE00B5BMR087)" -> "Core S&P 500 USD (Acc)"
+function portShortName(name) {
+  return String(name).replace(/\s*\([A-Z]{2}[A-Z0-9]{9}[0-9]\)\s*$/, '').trim();
+}
+
+function portEscape(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+const portMoney0 = v => Math.round(v).toLocaleString('es-ES') + ' €';
+const portPct = (x, d = 1) => (x >= 0 ? '+' : '') + x.toFixed(d) + '%';
+function portDateLabel(d) {
+  return `${d.slice(8, 10)} ${MONTHS_ES[parseInt(d.slice(5, 7), 10) - 1]} '${d.slice(2, 4)}`;
+}
+
+
+// ─────────────────────────────────────────────────────────────────────
+// 1) PERFORMANCE ENGINE (pure)
+// ─────────────────────────────────────────────────────────────────────
+// Model: every snapshot lists the positions you hold at that date with
+// `capital` (cost / money put in) and `valor` (market value). A position that
+// stops appearing was sold; the sale is not recorded.
+//
+// For each interval (previous snapshot -> this one) and each asset:
+//   - held in both:      flow = capital change,   gain = dValue - flow
+//   - new in this one:   flow = its capital,      gain = value - capital
+//   - sold (gone):       flow = -last value (withdrawn at its last known value),
+//                        no gain is attributed (we do not know the sale price)
+// Interval return r = gain / (opening value + inflows), flows assumed at the
+// start of the interval. Chaining (1 + r) gives the time-weighted return, which
+// does not depend on WHEN you contributed. By construction:
+//   value change = gain + flows.
+
+function portBuildEngine() {
+  const dates = FECHAS_PORT.slice();
+  const meta = {};
+  const snaps = dates.map((d, i) => {
+    const assets = {};
+    const cash = { C: 0, V: 0 };
+    (SNAPSHOTS[d] || []).forEach(r => {
+      const C = Number(r.capital) || 0, V = Number(r.valor) || 0;
+      if (NO_RETURN_CLASSES.includes(r.clase)) { cash.C += C; cash.V += V; return; }
+      if (C === 0 && V === 0) return;                 // listed but not held at that date
+      const k = r.activo;
+      if (!assets[k]) assets[k] = { C: 0, V: 0 };
+      assets[k].C += C; assets[k].V += V;
+      if (!meta[k]) meta[k] = { key: k, short: portShortName(k), firstIdx: i };
+      Object.assign(meta[k], { clase: r.clase, broker: r.broker, lastIdx: i });
+      if (r.logo) meta[k].logo = r.logo;
+    });
+    return { date: d, assets, cash };
   });
 
-  if (!filteredFechas.length) return;
-  
-  // --- SECCIÓN A: BOLA DE NIEVE Y KPIs (Se salta si soloLineas es true) ---
-  if (!soloLineas) {
-    const capData = [], valData = [];
-    let globalMaxVal = -Infinity;
-    let maxDrawdown = 0;
-    let prevVal = null;
-    let maxGain = -Infinity, maxLoss = Infinity;
-    let bestDate = "—", worstDate = "—";
-
-    filteredFechas.forEach(f => {
-      let c=0, v=0;
-      SNAPSHOTS[f].forEach(r => {
-        if (r.clase === "Efectivo") return; 
-        c+=r.capital; v+=r.valor;
-      });
-      capData.push([f, +c.toFixed(2)]);
-      valData.push([f, +v.toFixed(2)]);
-
-      // Drawdown y Volatilidad
-      if (v > globalMaxVal) globalMaxVal = v;
-      const currentDrawdown = globalMaxVal > 0 ? (globalMaxVal - v) / globalMaxVal : 0;
-      if (currentDrawdown > maxDrawdown) maxDrawdown = currentDrawdown;
-
-      if (prevVal !== null && prevVal > 0) {
-        const diffPct = ((v - prevVal) / prevVal) * 100;
-        if (diffPct > maxGain) { maxGain = diffPct; bestDate = f; }
-        if (diffPct < maxLoss) { maxLoss = diffPct; worstDate = f; }
-      }
-      prevVal = v;
-    });
-   
-    const endSnap = valData[valData.length-1][1];
-    const endCap = capData[capData.length-1][1];
-    const firstFecha = filteredFechas[0];
-    const globalIndex = FECHAS_PORT.indexOf(firstFecha);
-    
-    let baselineSnap = 0, baselineCap = 0;
-
-    if (globalIndex > 0) {
-      const prevFecha = FECHAS_PORT[globalIndex - 1];
-      SNAPSHOTS[prevFecha].forEach(r => {
-        if (r.clase !== "Efectivo") {
-          baselineCap += r.capital;
-          baselineSnap += r.valor;
-        }
-      });
-    }
-
-    const aportacionesNetas = endCap - baselineCap;
-    const plusvaliaPeriodo = (endSnap - baselineSnap) - aportacionesNetas;
-    const rentabilidadPeriodo = endCap > 0 ? (plusvaliaPeriodo / endCap) * 100 : 0;
-
-    const endF = filteredFechas[filteredFechas.length - 1];
-    const bestAsset = { name: "—", pctDiff: -Infinity, logo: "", broker: "" };
-    const startPctMap = {};
-    
-    if (globalIndex > 0) {
-      const prevFecha = FECHAS_PORT[globalIndex - 1];
-      SNAPSHOTS[prevFecha].forEach(r => {
-        if (r.clase !== "Efectivo") {
-          startPctMap[r.activo] = r.capital > 0 ? ((r.valor - r.capital) / r.capital) * 100 : 0;
-        }
-      });
-    }
-
-    SNAPSHOTS[endF].forEach(r => {
-      if (r.clase !== "Efectivo") {
-        const endPct = r.capital > 0 ? ((r.valor - r.capital) / r.capital) * 100 : 0;
-        const startPct = startPctMap[r.activo] || 0; 
-        const diff = endPct - startPct; 
-        
-        if (diff > bestAsset.pctDiff) {
-          bestAsset.pctDiff = diff;
-          bestAsset.name = r.activo;
-          bestAsset.logo = r.logo;
-          bestAsset.broker = r.broker;
-        }
-      }
-    });
-
-    // ACTUALIZACIÓN DEL DOM (Con animaciones)
-    const pPlusvaliaEl = document.getElementById('port-hito-plusvalia');
-    pPlusvaliaEl.className = 'kpi-value blur-target ' + (plusvaliaPeriodo >= 0 ? 'green-val' : 'red-val');
-    animateValue(pPlusvaliaEl, plusvaliaPeriodo);
-    
-    const pRentEl = document.getElementById('port-hito-rentabilidad');
-    pRentEl.className = 'kpi-value ' + (rentabilidadPeriodo >= 0 ? 'green-val' : 'red-val');
-    animateValue(pRentEl, rentabilidadPeriodo / 100, false); // /100 porque animateValue lo multiplica
-
-    const pDrawdownEl = document.getElementById('port-hito-drawdown');
-    animateValue(pDrawdownEl, -maxDrawdown, false); // Pasamos en negativo para visualizar la caída
-
-    const bestAssetEl = document.getElementById('port-hito-mejor-activo');
-    if (bestAsset.name !== "—" && bestAsset.pctDiff !== -Infinity) {
-      const imgHtml = bestAsset.logo && bestAsset.logo.startsWith('http') ? `<img src="${bestAsset.logo}" class="broker-logo" style="width:28px;height:28px;margin-right:10px;padding:3px;" title="${bestAsset.broker}">` : `<span title="${bestAsset.broker}" style="margin-right:10px;">🏦</span>`;
-      bestAssetEl.innerHTML = `${imgHtml} <span style="font-size:0.85rem; font-family:var(--font-body); font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:140px;" title="${bestAsset.name}">${bestAsset.name}</span> <span style="font-size:0.85rem; font-family:var(--font-mono); margin-left:auto; color:var(--green)">+${bestAsset.pctDiff.toFixed(1)}%</span>`;
-    } else {
-      bestAssetEl.innerHTML = "—";
-    }
-
-    const parseDate = (dstr) => {
-      if(dstr === "—") return "—";
-      const d = new Date(dstr);
-      return `${MONTHS_ES[d.getMonth()]} '${String(d.getFullYear()).slice(2)}`;
-    };
-    
-    document.getElementById('port-hito-mejor-fecha').textContent = bestDate !== "—" ? `${parseDate(bestDate)} (+${maxGain.toFixed(1)}%)` : "—";
-    document.getElementById('port-hito-peor-fecha').textContent = worstDate !== "—" ? `${parseDate(worstDate)} (${maxLoss.toFixed(1)}%)` : "—";
-
-    setTimeout(() => {
-      const chartArea = initEchart('chart-port-area');
-      if(chartArea) {
-        chartArea.setOption({
-          backgroundColor:'transparent',
-          tooltip: { trigger:'axis', backgroundColor:'#1E2D40', borderColor:'#1E2D40', textStyle:{color:'#E2E8F0',fontSize:12},
-            formatter: params => {
-              const date = new Date(params[0].value[0]);
-              let s = `<b>${date.getDate()} ${MONTHS_ES[date.getMonth()]} ${date.getFullYear()}</b><br/>`;
-              params.forEach(p => {
-                  s += `${p.marker} ${p.seriesName}: <b>${fmt(p.value[1])}</b><br/>`;
-              });
-              return s;
-            }
-          },
-          legend: { data:['Invertido','Mercado'], bottom:0, textStyle:{color:'#94A3B8',fontSize:11}, itemWidth:10, itemHeight:10 },
-          grid: { top: 20, left: 60, right: 20, bottom: 40 },
-          xAxis: { 
-            type: 'time', 
-            axisLine:{lineStyle:{color:'#1E2D40'}}, 
-            splitLine:{show:false},
-            axisLabel:{
-              color:'#94A3B8', fontSize:10, 
-              formatter: value => {
-                const d = new Date(value);
-                return MONTHS_ES[d.getMonth()] + " '" + String(d.getFullYear()).slice(2);
-              }
-            } 
-          },
-          yAxis: { type: 'value', axisLabel:{color:'#94A3B8',fontSize:10,formatter:v=>fmtShort(v)}, splitLine:{lineStyle:{color:'#1E2D401A'}} },
-          series: [
-            { name: 'Invertido', type: 'line', data: capData, smooth: false, symbol: 'none', lineStyle:{color:'#94A3B8'}, areaStyle:{color:'#162032'} },
-            { name: 'Mercado', type: 'line', data: valData, smooth: false, symbol: 'none', lineStyle:{color:'#10B981'}, areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'#10B98166'},{offset:1,color:'#10B98100'}]}} }
-          ]
-        });
-      }
-    }, 50);
-    
-    applyPrivacyMode();
-  } // <-- Fin de la Sección A
-
-  // --- SECCIÓN B: GRÁFICO DE LÍNEAS (Se ejecuta SIEMPRE) ---
-  setTimeout(() => {
-    const filterActivo = document.getElementById('filter-activo-port').value;
-    const seriesDict = {};
-    
-    filteredFechas.forEach((f) => {
-      SNAPSHOTS[f].forEach(r => {
-        if (filterActivo !== 'all' && r.activo !== filterActivo) return;
-        if (r.clase === "Efectivo") return;
-        if (!seriesDict[r.activo]) {
-          seriesDict[r.activo] = { 
-            name: r.activo, type: 'line', smooth: false, symbolSize: 6,
-            data: [],
-            itemStyle: { color: COLOR_BROKER[r.broker] || COLOR_BROKER["Otros"] } 
-          };
-        }
-        const pct = r.capital > 0 ? ((r.valor-r.capital)/r.capital)*100 : 0;
-        seriesDict[r.activo].data.push([f, +pct.toFixed(2)]);
-      });
-    });
-
-    const chartLines = initEchart('chart-port-lines');
-    if(chartLines) {
-      chartLines.setOption({
-        backgroundColor:'transparent',
-        tooltip: { trigger:'axis', backgroundColor:'#1E2D40', borderColor:'#1E2D40', textStyle:{color:'#E2E8F0',fontSize:12}, 
-          formatter: params => {
-            const date = new Date(params[0].value[0]);
-            let s = `<b>${date.getDate()} ${MONTHS_ES[date.getMonth()]} ${date.getFullYear()}</b><br/>`;
-            params.forEach(p => { s += `${p.marker} ${p.seriesName}: <b>${p.value[1]}%</b><br/>`; });
-            return s;
-          } 
-        },
-        legend: { type:'scroll', bottom: 0, textStyle:{color:'#94A3B8',fontSize:11} },
-        grid: { top: 20, left: 40, right: 20, bottom: 50 },
-        xAxis: { 
-          type: 'time', 
-          axisLine:{lineStyle:{color:'#1E2D40'}}, 
-          splitLine:{show:false},
-          axisLabel:{
-            color:'#94A3B8', fontSize:10, 
-            formatter: value => {
-              const d = new Date(value);
-              return MONTHS_ES[d.getMonth()] + " '" + String(d.getFullYear()).slice(2);
-            }
-          } 
-        },
-        yAxis: { type: 'value', axisLabel:{color:'#94A3B8',fontSize:10,formatter:'{value}%'}, splitLine:{lineStyle:{color:'#1E2D401A'}} },
-        series: Object.values(seriesDict)
-      });
-      // Aseguramos que la gráfica de arriba también responda si se cambia el tamaño de ventana
-      const chartArea = echarts.getInstanceByDom(document.getElementById('chart-port-area'));
-      window.addEventListener('resize', ()=>{ if(chartArea) chartArea.resize(); if(chartLines) chartLines.resize(); });
-    }
-  }, 50);
+  const last = dates.length - 1;
+  const keys = Object.keys(meta).sort((a, b) => a.localeCompare(b));
+  keys.forEach((k, n) => {
+    meta[k].held = meta[k].lastIdx === last;                          // still in the portfolio
+    meta[k].color = ASSET_PALETTE[n % ASSET_PALETTE.length];
+    meta[k].lastV = snaps[meta[k].lastIdx].assets[k].V;
+  });
+  return { dates, snaps, meta, keys };
 }
+
+// gain / base / flow of a group of assets (`keys`: Set, or null = whole portfolio)
+function portIntervalStats(snaps, i, keys) {
+  const prev = snaps[i - 1].assets, cur = snaps[i].assets;
+  const take = k => !keys || keys.has(k);
+  let gain = 0, base = 0, flow = 0;
+  Object.keys(cur).forEach(k => {
+    if (!take(k)) return;
+    const c = cur[k], p = prev[k] || { C: 0, V: 0 };
+    const dC = c.C - p.C;
+    gain += c.V - p.V - dC;
+    base += p.V + dC;
+    flow += dC;
+  });
+  Object.keys(prev).forEach(k => { if (take(k) && !cur[k]) flow -= prev[k].V; });   // sold
+  return { gain, base, flow, r: base > 0 ? gain / base : null };
+}
+
+function portHeld(E, i, keys) {
+  const a = E.snaps[i].assets;
+  return keys ? [...keys].some(k => a[k]) : Object.keys(a).length > 0;
+}
+
+// Cumulative TWR multiplier for a group, only at dates where the group is held.
+// Returns [[idx, multiplier]] (multiplier 1 = 0 %), starting at the window start.
+function portTwrCore(E, keys, W) {
+  let acc = 1;
+  const out = [];
+  for (let i = W.startIdx; i <= W.endIdx; i++) {
+    const held = portHeld(E, i, keys);
+    if (i === W.startIdx) { if (held) out.push([i, 1]); continue; }
+    const st = portIntervalStats(E.snaps, i, keys);
+    if (st.r !== null) acc *= 1 + st.r;
+    if (held) out.push([i, acc]);
+  }
+  return out;
+}
+const portTwrSeries = (E, keys, W) => portTwrCore(E, keys, W).map(([i, m]) => [i, (m - 1) * 100]);
+
+// Simple return: (value - capital) / capital of the group at each date.
+function portSimpleSeries(E, keys, W) {
+  const out = [];
+  for (let i = W.startIdx; i <= W.endIdx; i++) {
+    const a = E.snaps[i].assets;
+    let C = 0, V = 0, any = false;
+    Object.keys(a).forEach(k => { if (!keys || keys.has(k)) { C += a[k].C; V += a[k].V; any = true; } });
+    if (any && C > 0) out.push([i, (V - C) / C * 100]);
+  }
+  return out;
+}
+
+// Drawdown of the portfolio's TWR index (immune to contributions/withdrawals).
+function portDrawdown(E, W) {
+  const pts = portTwrCore(E, null, W);
+  let peak = -Infinity, peakIdx = null;
+  let worst = { value: 0, peakIdx: null, troughIdx: null };
+  const series = pts.map(([i, m]) => {
+    if (m > peak) { peak = m; peakIdx = i; }
+    const dd = (m / peak - 1) * 100;
+    if (dd < worst.value) worst = { value: dd, peakIdx, troughIdx: i };
+    return [i, dd];
+  });
+  return { series, worst };
+}
+
+function portComputeKpis(E, W) {
+  if (!W || W.endIdx <= W.startIdx) return null;
+  let gain = 0, flow = 0;
+  const intervals = [];
+  for (let i = W.startIdx + 1; i <= W.endIdx; i++) {
+    const st = portIntervalStats(E.snaps, i, null);
+    gain += st.gain; flow += st.flow;
+    if (st.r !== null) intervals.push({ i, r: st.r * 100 });
+  }
+  const pts = portTwrCore(E, null, W);
+  const mult = pts.length ? pts[pts.length - 1][1] : 1;
+  const days = (new Date(E.dates[W.endIdx]) - new Date(E.dates[W.startIdx])) / 86400000;
+  const dd = portDrawdown(E, W).worst;
+  return {
+    gain, flow,
+    twr: (mult - 1) * 100,
+    annualized: days >= 365 ? (Math.pow(mult, 365 / days) - 1) * 100 : null,
+    best: intervals.length ? intervals.reduce((a, b) => (b.r > a.r ? b : a)) : null,
+    worst: intervals.length ? intervals.reduce((a, b) => (b.r < a.r ? b : a)) : null,
+    dd: dd.troughIdx !== null ? dd : null
+  };
+}
+
+function portPresentInWindow(E, W, k) {
+  for (let i = W.startIdx; i <= W.endIdx; i++) if (E.snaps[i].assets[k]) return true;
+  return false;
+}
+
+// Market gain and TWR of every asset that was held at some point in the window.
+function portContributions(E, W) {
+  const rows = [];
+  E.keys.forEach(k => {
+    if (!portPresentInWindow(E, W, k)) return;
+    const set = new Set([k]);
+    let gain = 0;
+    for (let i = W.startIdx + 1; i <= W.endIdx; i++) gain += portIntervalStats(E.snaps, i, set).gain;
+    const pts = portTwrCore(E, set, W);
+    rows.push({ key: k, label: E.meta[k].short, gain, twr: pts.length ? (pts[pts.length - 1][1] - 1) * 100 : null, closed: !E.meta[k].held });
+  });
+  return rows;
+}
+
+// Capital / value of the invested portfolio (cash excluded) per snapshot.
+function portAreaRows(E, W) {
+  const rows = [];
+  for (let i = W.startIdx; i <= W.endIdx; i++) {
+    let C = 0, V = 0;
+    Object.values(E.snaps[i].assets).forEach(x => { C += x.C; V += x.V; });
+    rows.push({ date: E.dates[i], C, V, cash: E.snaps[i].cash.V });
+  }
+  return rows;
+}
+
+
+// ─────────────────────────────────────────────────────────────────────
+// UI STATE + WINDOW
+// ─────────────────────────────────────────────────────────────────────
+
+const PORT_UI = { view: 'clases', metric: 'twr', preset: 'all', selected: null, inclCash: false, closedOpen: false, bound: false };
+let PORT_ENGINE = null;
+
+function portResolveWindow(E) {
+  const { dates } = E;
+  const last = dates.length - 1;
+  if (last < 0) return null;
+  let first, end = last;
+  if (PORT_UI.preset) {
+    const p = PORT_UI.preset;
+    if (p === 'ytd') first = dates.findIndex(d => d.slice(0, 4) === dates[last].slice(0, 4));
+    else if (p === '1y' || p === '3y') {
+      const cut = new Date(dates[last]);
+      cut.setFullYear(cut.getFullYear() - (p === '1y' ? 1 : 3));
+      first = dates.findIndex(d => new Date(d) >= cut);
+    } else first = 0;
+  } else {
+    const from = document.getElementById('filter-port-year-from').value || '0000';
+    const to = document.getElementById('filter-port-year-to').value || '9999';
+    first = dates.findIndex(d => d.slice(0, 4) >= from);
+    end = -1;
+    dates.forEach((d, i) => { if (d.slice(0, 4) <= to) end = i; });
+  }
+  if (first < 0 || end < first) return null;
+  // One snapshot BEFORE the first displayed one is the baseline (0 %), so the
+  // change between the previous snapshot and the first one belongs to the period.
+  return { firstIdx: first, startIdx: Math.max(0, first - 1), endIdx: end };
+}
+
+function portChartInit(id) {
+  const dom = document.getElementById(id);
+  if (!dom) return null;
+  const old = echarts.getInstanceByDom(dom);
+  if (old) old.dispose();
+  dom.innerHTML = '';
+  return echarts.init(dom, null, { renderer: 'svg' });
+}
+function portChartEmpty(id, msg) {
+  const dom = document.getElementById(id);
+  if (!dom) return;
+  const old = echarts.getInstanceByDom(dom);
+  if (old) old.dispose();
+  dom.style.height = '';
+  dom.innerHTML = `<div class="empty">${msg}</div>`;
+}
+const portPrivate = () => (typeof PRIVACY_MODE !== 'undefined' && PRIVACY_MODE);
+
+
+// ─────────────────────────────────────────────────────────────────────
+// CHART OPTIONS (pure)
+// ─────────────────────────────────────────────────────────────────────
+
+const PORT_TOOLTIP = { backgroundColor: '#1E2D40', textStyle: { color: '#E2E8F0', fontSize: 12 } };
+const PORT_TIME_AXIS = { type: 'time', axisLine: { lineStyle: { color: '#1E2D40' } }, axisLabel: { color: '#94A3B8', fontSize: 10 }, splitLine: { show: false } };
+
+// "Capital aportado y plusvalía": capital + gain (green) / loss (red) = market value.
+function buildPortAreaOption(rows, inclCash, privacy) {
+  const m = v => (privacy ? '•••' : fmt(v));
+  const band = (name, color, f) => ({
+    name, type: 'line', stack: 'total', symbol: 'none', lineStyle: { width: 0 },
+    areaStyle: { color, opacity: 0.9 }, itemStyle: { color }, emphasis: { disabled: true },   // itemStyle.color also colors the legend marker
+    data: rows.map(r => [r.date, +f(r).toFixed(2)])
+  });
+  const series = [];
+  if (inclCash) series.push(band('Efectivo', '#1E3A5F', r => r.cash));
+  series.push(band('Capital aportado', '#475569', r => Math.min(r.C, r.V)));
+  series.push(band('Plusvalía', '#10B981', r => Math.max(r.V - r.C, 0)));
+  if (rows.some(r => r.C > r.V)) series.push(band('Minusvalía', '#F87171', r => Math.max(r.C - r.V, 0)));
+
+  // Market value outline on top
+  series.push({
+    name: 'Valor de mercado', type: 'line', symbol: 'none', z: 5,
+    lineStyle: { color: '#E2E8F0', width: 1.5 }, itemStyle: { color: '#E2E8F0' },
+    data: rows.map(r => [r.date, +(r.V + (inclCash ? r.cash : 0)).toFixed(2)])
+  });
+
+  // Housing goal only makes sense against total net worth (cash included)
+  if (inclCash && typeof META_VIVIENDA !== 'undefined') {
+    series[series.length - 1].markLine = {
+      silent: true, symbol: 'none',
+      lineStyle: { color: '#FBBF24', type: 'dashed', width: 1 },
+      label: { formatter: 'Meta vivienda', color: '#FBBF24', position: 'insideStartTop', fontSize: 10 },
+      data: [{ yAxis: META_VIVIENDA }]
+    };
+  }
+
+  return {
+    backgroundColor: 'transparent',
+    tooltip: {
+      ...PORT_TOOLTIP, trigger: 'axis',
+      formatter: params => {
+        const r = rows[params[0].dataIndex];
+        const gain = r.V - r.C;
+        const pct = r.C > 0 ? gain / r.C * 100 : 0;
+        const col = gain >= 0 ? '#10B981' : '#F87171';
+        let html = `<b>${portDateLabel(r.date)}</b><br/>`;
+        if (inclCash) html += `Efectivo: ${m(r.cash)}<br/>`;
+        html += `Valor de mercado: <b>${m(r.V)}</b><br/>Capital aportado: ${m(r.C)}<br/>`;
+        html += `<span style="color:${col}">Plusvalía: ${m(gain)} (${portPct(pct)})</span>`;
+        if (inclCash) html += `<br/>Patrimonio total: <b>${m(r.V + r.cash)}</b>`;
+        return html;
+      }
+    },
+    legend: { data: series.filter(s => s.name !== 'Valor de mercado').map(s => s.name), top: 0, textStyle: { color: '#94A3B8', fontSize: 11 } },
+    grid: { top: 34, left: privacy ? 16 : 56, right: 20, bottom: 26 },
+    xAxis: PORT_TIME_AXIS,
+    yAxis: { type: 'value', min: 0, axisLabel: { show: !privacy, color: '#94A3B8', fontSize: 10, formatter: v => (v >= 1000 ? (v / 1000).toFixed(v % 1000 ? 1 : 0) + 'k' : v) }, splitLine: { lineStyle: { color: '#1E2D4033' } } },
+    series
+  };
+}
+
+// Return lines: portfolio always (thick), plus classes or the selected assets.
+function buildPortLinesOption(E, W, ui) {
+  const fn = ui.metric === 'simple' ? portSimpleSeries : portTwrSeries;
+  // One entry per snapshot in the window; null where the group is not held, so a
+  // class/asset with no position in between shows a GAP instead of a bridging line.
+  const toData = pts => {
+    const m = new Map(pts);
+    const out = [];
+    for (let i = W.startIdx; i <= W.endIdx; i++) out.push([E.dates[i], m.has(i) ? +m.get(i).toFixed(2) : null]);
+    return out;
+  };
+  const mk = (name, color, width, pts, extra = {}) => ({
+    name, type: 'line', symbol: 'circle', symbolSize: width > 2 ? 6 : 4, connectNulls: false,
+    lineStyle: { color, width }, itemStyle: { color }, emphasis: { focus: 'series' },
+    data: toData(pts), ...extra
+  });
+
+  const series = [mk('Cartera', '#E2E8F0', 3, fn(E, null, W), {
+    z: 10,
+    markLine: { silent: true, symbol: 'none', label: { show: false }, lineStyle: { color: '#4B5563', type: 'dashed', width: 1 }, data: [{ yAxis: 0 }] }
+  })];
+
+  if (ui.view === 'clases') {
+    const byClass = {};
+    E.keys.forEach(k => { if (portPresentInWindow(E, W, k)) (byClass[E.meta[k].clase] = byClass[E.meta[k].clase] || []).push(k); });
+    Object.keys(byClass).sort().forEach(c => series.push(mk(c, portClassColor(c), 1.8, fn(E, new Set(byClass[c]), W))));
+  } else if (ui.view === 'activos') {
+    E.keys.filter(k => ui.selected && ui.selected.has(k) && portPresentInWindow(E, W, k))
+      .forEach(k => series.push(mk(E.meta[k].short, E.meta[k].color, 1.8, fn(E, new Set([k]), W))));
+  }
+
+  return {
+    backgroundColor: 'transparent',
+    tooltip: {
+      ...PORT_TOOLTIP, trigger: 'axis',
+      formatter: params => {
+        const rows = params.filter(p => p.value && p.value[1] != null).sort((a, b) => b.value[1] - a.value[1]);
+        if (!rows.length) return '';
+        let html = `<b>${portDateLabel(params[0].value[0])}</b><br/>`;
+        rows.slice(0, 10).forEach(p => {
+          const t = `${p.marker} ${p.seriesName}: ${portPct(p.value[1])}`;
+          html += (p.seriesName === 'Cartera' ? `<b>${t}</b>` : t) + '<br/>';
+        });
+        if (rows.length > 10) html += `<span style="color:#94A3B8">+${rows.length - 10} más</span>`;
+        return html;
+      }
+    },
+    legend: { show: ui.view !== 'activos', data: series.map(s => s.name), top: 0, textStyle: { color: '#94A3B8', fontSize: 11 } },
+    grid: { top: ui.view === 'activos' ? 14 : 36, left: 50, right: 20, bottom: 26 },
+    xAxis: PORT_TIME_AXIS,
+    yAxis: { type: 'value', scale: true, axisLabel: { color: '#94A3B8', fontSize: 10, formatter: v => v + '%' }, splitLine: { lineStyle: { color: '#1E2D4033' } } },
+    series
+  };
+}
+
+function buildPortDrawdownOption(E, W) {
+  const dd = portDrawdown(E, W);
+  return {
+    backgroundColor: 'transparent',
+    tooltip: { ...PORT_TOOLTIP, trigger: 'axis', formatter: p => `<b>${portDateLabel(p[0].value[0])}</b><br/>Desde el máximo: <b>${p[0].value[1].toFixed(1)}%</b>` },
+    grid: { top: 8, left: 50, right: 20, bottom: 24 },
+    xAxis: PORT_TIME_AXIS,
+    yAxis: { type: 'value', max: 0, axisLabel: { color: '#94A3B8', fontSize: 10, formatter: v => v + '%' }, splitLine: { lineStyle: { color: '#1E2D4033' } } },
+    series: [{
+      type: 'line', symbol: 'none', lineStyle: { color: '#F87171', width: 1.5 }, areaStyle: { color: '#F8717140' },
+      data: dd.series.map(([i, v]) => [E.dates[i], +v.toFixed(2)])
+    }]
+  };
+}
+
+// Market gain per asset in the window (diverging bars, closed positions muted).
+function buildPortContribOption(rows, privacy) {
+  const maxG = Math.max(0, ...rows.map(r => r.gain)), minG = Math.min(0, ...rows.map(r => r.gain));
+  const pad = Math.max((maxG - minG) * 0.5, 1);
+  return {
+    backgroundColor: 'transparent',
+    tooltip: {
+      ...PORT_TOOLTIP, trigger: 'axis', axisPointer: { type: 'shadow', shadowStyle: { color: 'rgba(255,255,255,0.04)' } },
+      formatter: params => {
+        const r = rows[params[0].dataIndex];
+        let html = `<b>${portEscape(r.label)}</b>${r.closed ? ' <span style="color:#94A3B8">(cerrada)</span>' : ''}<br/>`;
+        html += `Plusvalía generada: <b>${privacy ? '•••' : fmt(r.gain)}</b>`;
+        if (r.twr !== null) html += `<br/>Rentabilidad (TWR): ${portPct(r.twr)}`;
+        return html;
+      }
+    },
+    grid: { top: 8, left: 8, right: 12, bottom: 8, containLabel: true },
+    xAxis: { type: 'value', min: minG - (minG < 0 ? pad : 0), max: maxG + pad, axisLabel: { show: false }, axisLine: { show: false }, splitLine: { lineStyle: { color: '#1E2D4033' } } },
+    yAxis: {
+      type: 'category', inverse: true, data: rows.map(r => r.label + (r.closed ? ' (cerrada)' : '')),
+      axisTick: { show: false }, axisLine: { show: false, onZero: false },
+      axisLabel: { color: '#E2E8F0', fontSize: 11, width: 190, overflow: 'truncate' }
+    },
+    series: [{
+      type: 'bar', barMaxWidth: 16,
+      data: rows.map(r => ({
+        value: +r.gain.toFixed(2),
+        itemStyle: { color: (r.gain >= 0 ? '#10B981' : '#F87171') + (r.closed ? '88' : ''), borderRadius: r.gain >= 0 ? [0, 3, 3, 0] : [3, 0, 0, 3] },
+        label: { position: r.gain >= 0 ? 'right' : 'left' }
+      })),
+      label: {
+        show: true, color: '#94A3B8', fontSize: 11,
+        formatter: p => {
+          const r = rows[p.dataIndex];
+          const money = privacy ? '•••' : (r.gain >= 0 ? '+' : '−') + portMoney0(Math.abs(r.gain));
+          return r.twr !== null ? `${money} · ${portPct(r.twr)}` : money;
+        }
+      },
+      markLine: { silent: true, symbol: 'none', label: { show: false }, lineStyle: { color: '#4B5563', width: 1, type: 'solid' }, data: [{ xAxis: 0 }] }
+    }]
+  };
+}
+
+
+// ─────────────────────────────────────────────────────────────────────
+// RENDERING
+// ─────────────────────────────────────────────────────────────────────
+
+function portSetSigned(el, v) {
+  el.classList.remove('green-val', 'red-val');
+  if (v > 0.0049) el.classList.add('green-val');
+  else if (v < -0.0049) el.classList.add('red-val');
+}
+
+function portRenderKpis(E, W) {
+  const $ = id => document.getElementById(id);
+  const k = portComputeKpis(E, W);
+  if (!k) {
+    ['port-hito-plusvalia', 'port-hito-rentabilidad', 'port-hito-aportaciones', 'port-hito-drawdown', 'port-hito-mejor-fecha', 'port-hito-peor-fecha']
+      .forEach(id => { $(id).textContent = '—'; });
+    ['port-hito-rent-sub', 'port-hito-dd-sub'].forEach(id => { $(id).textContent = 'Se necesitan al menos 2 capturas'; });
+    return;
+  }
+  animateValue($('port-hito-plusvalia'), k.gain);
+  portSetSigned($('port-hito-plusvalia'), k.gain);
+
+  $('port-hito-rentabilidad').textContent = portPct(k.twr);
+  portSetSigned($('port-hito-rentabilidad'), k.twr);
+  $('port-hito-rent-sub').textContent = k.annualized !== null ? `${portPct(k.annualized)} anualizada` : `desde ${portDateLabel(E.dates[W.startIdx])}`;
+
+  animateValue($('port-hito-aportaciones'), k.flow);
+
+  if (k.dd) {
+    $('port-hito-drawdown').textContent = k.dd.value.toFixed(1) + '%';
+    $('port-hito-dd-sub').textContent = `${portDateLabel(E.dates[k.dd.peakIdx])} → ${portDateLabel(E.dates[k.dd.troughIdx])}`;
+  } else {
+    $('port-hito-drawdown').textContent = '0.0%';
+    $('port-hito-dd-sub').textContent = 'Sin caídas en el periodo';
+  }
+  $('port-hito-mejor-fecha').textContent = k.best ? `${portDateLabel(E.dates[k.best.i])} · ${portPct(k.best.r)}` : '—';
+  $('port-hito-peor-fecha').textContent = k.worst ? `${portDateLabel(E.dates[k.worst.i])} · ${portPct(k.worst.r)}` : '—';
+}
+
+function portRenderArea(E, W) {
+  const rows = portAreaRows(E, W);
+  const chart = portChartInit('chart-port-area');
+  chart.setOption(buildPortAreaOption(rows, PORT_UI.inclCash, portPrivate()));
+}
+
+function portRenderLines(E, W) {
+  const note = document.getElementById('port-lines-note');
+  note.textContent = PORT_UI.metric === 'twr'
+    ? 'TWR: rentabilidad ponderada por tiempo desde el inicio del periodo; no depende de cuándo aportas. Cada activo arranca en su primera captura.'
+    : 'Simple: plusvalía / capital aportado, acumulada desde la compra (la misma que ves en Estado Actual).';
+  const chart = portChartInit('chart-port-lines');
+  chart.setOption(buildPortLinesOption(E, W, PORT_UI));
+}
+
+function portRenderDrawdown(E, W) {
+  const chart = portChartInit('chart-port-dd');
+  chart.setOption(buildPortDrawdownOption(E, W));
+}
+
+function portRenderContrib(E, W) {
+  const all = portContributions(E, W);
+  const rows = all.sort((a, b) => Math.abs(b.gain) - Math.abs(a.gain)).slice(0, 15).sort((a, b) => b.gain - a.gain);
+  if (!rows.length) { portChartEmpty('chart-port-contrib', 'Sin posiciones en este periodo'); return; }
+  document.getElementById('chart-port-contrib').style.height = Math.max(180, rows.length * 30 + 30) + 'px';
+  const chart = portChartInit('chart-port-contrib');
+  chart.setOption(buildPortContribOption(rows, portPrivate()));
+}
+
+function portEnsureSelection(E) {
+  if (PORT_UI.selected === null) {
+    const active = E.keys.filter(k => E.meta[k].held).sort((a, b) => E.meta[b].lastV - E.meta[a].lastV);
+    PORT_UI.selected = new Set(active.slice(0, 3));
+  }
+}
+
+function portRenderChips(E, W) {
+  const panel = document.getElementById('port-asset-panel');
+  panel.style.display = PORT_UI.view === 'activos' ? '' : 'none';
+  if (PORT_UI.view !== 'activos') return;
+
+  const inWin = E.keys.filter(k => portPresentInWindow(E, W, k));
+  const active = inWin.filter(k => E.meta[k].held).sort((a, b) => E.meta[b].lastV - E.meta[a].lastV);
+  const closed = inWin.filter(k => !E.meta[k].held).sort((a, b) => E.meta[b].lastIdx - E.meta[a].lastIdx);
+  const chip = k => `<button class="chip${PORT_UI.selected.has(k) ? ' on' : ''}${E.meta[k].held ? '' : ' closed'}" data-k="${encodeURIComponent(k)}" title="${portEscape(k)}">` +
+    `<span class="dot" style="background:${E.meta[k].color}"></span><span class="t">${portEscape(E.meta[k].short)}</span></button>`;
+
+  panel.innerHTML =
+    `<div class="chip-actions"><span>En cartera (${active.length})</span>` +
+    `<button data-act="top5">Top 5</button><button data-act="all">Todas</button><button data-act="none">Ninguna</button></div>` +
+    `<div class="chips">${active.map(chip).join('') || '<span style="color:var(--muted);font-size:0.75rem">Sin posiciones en cartera en este periodo</span>'}</div>` +
+    (closed.length
+      ? `<details class="chip-closed"${PORT_UI.closedOpen ? ' open' : ''}><summary>Posiciones cerradas (${closed.length})</summary><div class="chips">${closed.map(chip).join('')}</div></details>`
+      : '');
+}
+
+function portSyncControls(E, W) {
+  document.querySelectorAll('#port-presets button').forEach(b => b.classList.toggle('on', b.dataset.preset === PORT_UI.preset));
+  document.querySelectorAll('#port-view-seg button').forEach(b => b.classList.toggle('on', b.dataset.view === PORT_UI.view));
+  document.querySelectorAll('#port-metric-seg button').forEach(b => b.classList.toggle('on', b.dataset.metric === PORT_UI.metric));
+  document.getElementById('port-incl-cash').checked = PORT_UI.inclCash;
+  if (PORT_UI.preset) {                      // keep the year selects in line with a preset
+    document.getElementById('filter-port-year-from').value = E.dates[W.firstIdx].slice(0, 4);
+    document.getElementById('filter-port-year-to').value = E.dates[W.endIdx].slice(0, 4);
+  }
+}
+
+// Return chart + asset chips only (cheap: used by view / metric / chip changes).
+function portRenderLinesBlock() {
+  const E = PORT_ENGINE, W = portResolveWindow(E);
+  if (!E || !W) return;
+  portSyncControls(E, W);
+  portRenderChips(E, W);
+  portRenderLines(E, W);
+}
+
+function renderPortfolioHistorico() {
+  if (!FECHAS_PORT.length || !PORT_ENGINE) return;
+  const E = PORT_ENGINE;
+  const W = portResolveWindow(E);
+  if (!W) {
+    ['chart-port-area', 'chart-port-lines', 'chart-port-dd', 'chart-port-contrib'].forEach(id => portChartEmpty(id, 'Selecciona un rango de años válido'));
+    return;
+  }
+  portEnsureSelection(E);
+  portSyncControls(E, W);
+  portRenderKpis(E, W);
+  portRenderArea(E, W);
+  portRenderChips(E, W);
+  portRenderLines(E, W);
+  portRenderDrawdown(E, W);
+  portRenderContrib(E, W);
+}
+
+// Called from togglePrivacyMode(): charts show amounts in axes/tooltips/labels.
+function portPrivacyRefresh() {
+  const panel = document.getElementById('tab-port-historico');
+  if (panel && panel.classList.contains('active')) renderPortfolioHistorico();
+}
+
+
+// ─────────────────────────────────────────────────────────────────────
+// DATA PROCESSING + CONTROLS  (REPLACES processPortfolio)
+// ─────────────────────────────────────────────────────────────────────
+
+function processPortfolio() {
+  SNAPSHOTS = {};
+  RAW_PORTFOLIO.forEach(r => {
+    if (!SNAPSHOTS[r.fecha_captura]) SNAPSHOTS[r.fecha_captura] = [];
+    SNAPSHOTS[r.fecha_captura].push(r);
+  });
+  FECHAS_PORT = Object.keys(SNAPSHOTS).sort();
+  PORT_ENGINE = portBuildEngine();
+  PORT_UI.selected = null;
+
+  const years = [...new Set(FECHAS_PORT.map(f => f.substring(0, 4)))].sort();
+  const selFrom = document.getElementById('filter-port-year-from');
+  const selTo = document.getElementById('filter-port-year-to');
+  if (selFrom && selTo && years.length) {
+    [selFrom, selTo].forEach(sel => {
+      sel.innerHTML = '';
+      years.forEach(y => { const o = document.createElement('option'); o.value = y; o.textContent = y; sel.appendChild(o); });
+    });
+    selFrom.value = years[0];
+    selTo.value = years[years.length - 1];
+  }
+  portBindControls();
+}
+
+function portBindControls() {
+  if (PORT_UI.bound) return;
+  const $ = id => document.getElementById(id);
+  if (!$('port-presets')) return;
+  PORT_UI.bound = true;
+
+  const full = () => renderPortfolioHistorico();
+
+  [$('filter-port-year-from'), $('filter-port-year-to')].forEach(sel =>
+    sel.addEventListener('change', () => { PORT_UI.preset = null; full(); }));
+
+  $('port-presets').addEventListener('click', e => {
+    const b = e.target.closest('button[data-preset]');
+    if (!b) return;
+    PORT_UI.preset = b.dataset.preset;
+    full();
+  });
+  $('port-view-seg').addEventListener('click', e => {
+    const b = e.target.closest('button[data-view]');
+    if (!b) return;
+    PORT_UI.view = b.dataset.view;
+    portRenderLinesBlock();
+  });
+  $('port-metric-seg').addEventListener('click', e => {
+    const b = e.target.closest('button[data-metric]');
+    if (!b) return;
+    PORT_UI.metric = b.dataset.metric;
+    portRenderLinesBlock();
+  });
+  $('port-incl-cash').addEventListener('change', e => {
+    PORT_UI.inclCash = e.target.checked;
+    const E = PORT_ENGINE, W = portResolveWindow(E);
+    if (E && W) portRenderArea(E, W);
+  });
+
+  const panel = $('port-asset-panel');
+  panel.addEventListener('click', e => {
+    const E = PORT_ENGINE;
+    const chip = e.target.closest('button.chip');
+    const act = e.target.closest('button[data-act]');
+    if (chip) {
+      const k = decodeURIComponent(chip.dataset.k);
+      if (PORT_UI.selected.has(k)) PORT_UI.selected.delete(k); else PORT_UI.selected.add(k);
+    } else if (act) {
+      const active = E.keys.filter(k => E.meta[k].held).sort((a, b) => E.meta[b].lastV - E.meta[a].lastV);
+      if (act.dataset.act === 'top5') PORT_UI.selected = new Set(active.slice(0, 5));
+      if (act.dataset.act === 'all') PORT_UI.selected = new Set(active);
+      if (act.dataset.act === 'none') PORT_UI.selected = new Set();
+    } else return;
+    portRenderLinesBlock();
+  });
+  // <details> 'toggle' does not bubble: listen in the capture phase
+  panel.addEventListener('toggle', e => { if (e.target.matches('details.chip-closed')) PORT_UI.closedOpen = e.target.open; }, true);
+}
+
  
 // ══════════════════════════════════════════════════════
 // INICIALIZACIÓN DE LA APLICACIÓN

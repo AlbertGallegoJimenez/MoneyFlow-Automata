@@ -176,15 +176,7 @@
       <button class="tab-btn" data-tab="presupuesto">Presupuesto</button>
     </div>
 
-    <div class="filters-bar">
-      <span class="filter-label">Banco</span>
-      <select id="filter-bank">
-        <option value="all">Todos los bancos</option>
-        <option value="Trade Republic">Trade Republic</option>
-        <option value="Caixabank">Caixabank</option>
-        <option value="MyInvestor">MyInvestor</option>
-      </select>
-    </div>
+
 
     <main>
       <div class="tab-panel active" id="tab-resumen">
@@ -519,7 +511,7 @@
 // ══════════════════════════════════════════════════════
 // CONFIGURACIÓN PERSONALIZADA
 // ══════════════════════════════════════════════════════
-const META_VIVIENDA = 100000; 
+const META_VIVIENDA = 85000; 
 
 const COLOR_BROKER = {
   "Trade Republic": "#000000",  
@@ -736,7 +728,7 @@ function initFilters() {
   selHist.addEventListener('change', renderHistorico);
   selYM.addEventListener('change', renderMensual);
   selMM.addEventListener('change', renderMensual);
-  document.getElementById('filter-bank').addEventListener('change', applyBankFilter);
+
   initPresupuestoFilters(); 
 }
 
@@ -761,8 +753,7 @@ function initPresupuestoFilters() {
 }
 
 function applyBankFilter() {
-  const bank = document.getElementById('filter-bank').value;
-  FILTERED = bank === 'all' ? RAW : RAW.filter(t => t.banco === bank);
+  FILTERED = RAW;
   renderAll();
 }
 
@@ -1198,8 +1189,7 @@ function renderBulletPresupuesto(year, month) {
  
   // Context notes
   const notes = [];
-  const bankSel = document.getElementById('filter-bank');
-  if (bankSel && bankSel.value !== 'all') notes.push('El presupuesto es global: este gráfico ignora el filtro de banco.');
+
   if (data.frac !== null) notes.push(`La marca azul es el ritmo esperado a día ${data.day} (${Math.round(data.frac * 100)}% del mes).`);
   if (noteEl) noteEl.textContent = notes.join(' ');
  

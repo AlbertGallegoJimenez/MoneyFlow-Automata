@@ -6,10 +6,11 @@
 
 function guardarFotoPortfolio() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const hojaPortfolio = ss.getSheetByName("Portfolio");
+  const sourceName = CONFIG.PORTFOLIO_SOURCE_SHEET_NAME || "Portfolio";   // optional: default keeps the old name
+  const hojaPortfolio = ss.getSheetByName(sourceName);
   
   if (!hojaPortfolio) {
-    throw new Error("No se ha encontrado la pestaña 'Portfolio'. Revisa el nombre.");
+    throw new Error("No se ha encontrado la pestaña '" + sourceName + "'. Revisa el nombre.");
   }
   
   let hojaHistorico = ss.getSheetByName(CONFIG.PORTFOLIO_SHEET_NAME);
@@ -64,13 +65,22 @@ function guardarFotoPortfolio() {
   const firmaActual = `${capitalActual.toFixed(2)}_${valorActual.toFixed(2)}`;
 
   const ultimaFilaHist = hojaHistorico.getLastRow();
+  const tz = Session.getScriptTimeZone();
+  const dayKey = d => (d instanceof Date ? Utilities.formatDate(d, tz, "yyyy-MM-dd") : String(d).trim());
+  const fechaCaptura = new Date();
+  const hoyKey = dayKey(fechaCaptura);
   
   if (ultimaFilaHist > 1) {
-    const numActivos = datosLimpios.length;
-    const filaInicioHist = Math.max(2, ultimaFilaHist - numActivos + 1);
-    
-    const datosUltimaFoto = hojaHistorico.getRange(filaInicioHist, 2, numActivos, 10).getValues();
-    
+    // The last snapshot = the trailing run of rows that share the same capture day
+    // (its size does not have to match the current number of assets).
+    const dias = hojaHistorico.getRange(2, 1, ultimaFilaHist - 1, 1).getValues().map(r => dayKey(r[0]));
+    const ultimoDia = dias[dias.length - 1];
+    let primero = dias.length - 1;
+    while (primero > 0 && dias[primero - 1] === ultimoDia) primero--;
+    const filaInicioHist = primero + 2;                 // +1 header, +1 base-1
+    const numFilasUltima = dias.length - primero;
+
+    const datosUltimaFoto = hojaHistorico.getRange(filaInicioHist, 2, numFilasUltima, 10).getValues();
     const capitalHist = datosUltimaFoto.reduce((acc, fila) => acc + (Number(fila[4]) || 0), 0);
     const valorHist = datosUltimaFoto.reduce((acc, fila) => acc + (Number(fila[5]) || 0), 0);
     const firmaHist = `${capitalHist.toFixed(2)}_${valorHist.toFixed(2)}`;
@@ -79,9 +89,13 @@ function guardarFotoPortfolio() {
       ss.toast("Los datos son idénticos a la última vez. No se ha guardado ningún duplicado.", "Anti-duplicados", 4);
       return;
     }
+
+    // Same day, different numbers: REPLACE that day's snapshot. Appending a second one
+    // would make the dashboard (which groups snapshots by day) count every asset twice.
+    if (ultimoDia === hoyKey) {
+      hojaHistorico.deleteRows(filaInicioHist, numFilasUltima);
+    }
   }
-  
-  const fechaCaptura = new Date();
   
   // 5. Saneamiento de tipos de datos antes del volcado
   const datosParaGuardar = datosLimpios.map(fila => {
@@ -116,6 +130,10 @@ function guardarFotoPortfolio() {
  */
 function _mapBrokerLogo(broker_name) {
   const broker = String(broker_name).trim();
+
+  // Optional overrides/additions from config.gs: BROKER_LOGOS: { "My Broker": "https://..." }
+  const custom = (typeof CONFIG !== 'undefined' && CONFIG.BROKER_LOGOS) ? CONFIG.BROKER_LOGOS[broker] : "";
+  if (custom) return custom;
   
   if (broker === "Trade Republic") return "https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/trade-republic/default.svg";
   if (broker === "MyInvestor") return "https://cdn.brandfetch.io/idn8tOHll6/w/400/h/400/theme/dark/icon.jpeg?c=1bxid64Mup7aczewSAYMX&t=1743680844760";

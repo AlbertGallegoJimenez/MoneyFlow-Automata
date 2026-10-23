@@ -162,7 +162,7 @@ function processFolderCSVs() {
 
     // --- PENDIENTES: recogemos las filas sin categoría para incluirlas en el email ---
     const stillPending = getStillPendingRows(sheet);
-    logGeminiResult(0, stillPending.length, stillPending);
+    logPendingResult(stillPending);
   }
 
   // --- CIERRE: LOG + EMAIL ---
@@ -258,13 +258,14 @@ function parseTradeRepublicCSV(csvString) {
     let specialFlag = "no";
     let finalTitle  = name || description;
 
-    // --- BIZUM ENTRANTE ---
-    if (typeUpper === "TRANSFER_INSTANT_INBOUND") {
+    // --- BIZUM ENTRANTE (only if Trade Republic is the bank linked to Bizum: CONFIG.BIZUM_BANK) ---
+    const trHasBizum = (getBizumBank() === "Trade Republic");
+    if (trHasBizum && typeUpper === "TRANSFER_INSTANT_INBOUND") {
       specialFlag = "BizumInbound";
       finalTitle  = counterpartyName || name || "Bizum entrante";
 
     // --- BIZUM SALIENTE ---
-    } else if (typeUpper === "TRANSFER_INSTANT_OUTBOUND") {
+    } else if (trHasBizum && typeUpper === "TRANSFER_INSTANT_OUTBOUND") {
       specialFlag = "BizumOutbound";
       finalTitle  = counterpartyName || name || "Bizum saliente";
 
@@ -370,11 +371,15 @@ function parseCaixabankCSV(rawString) {
       continue;
     }
 
+    // Bizum linked to this bank (CONFIG.BIZUM_BANK = "Caixabank"): detected by the concept.
+    const bizumCB = _detectBizumByConcept("Caixabank", rawConcept.trim(), amountFloat);
+
     rawTransactions.push({
       bookingDate:       cleanDate,
-      title:             rawConcept.trim(),
+      title:             bizumCB ? bizumCB.title : rawConcept.trim(),
+      idTitle:           rawConcept.trim(),          // the id keeps using the ORIGINAL concept
       amount:            amountFloat,
-      isSpecial:         "no",
+      isSpecial:         bizumCB ? bizumCB.flag : "no",
       sourceBank:        "Caixabank",
       originalAmountStr: cleanAmountStr
     });
@@ -383,7 +388,7 @@ function parseCaixabankCSV(rawString) {
   const finalTransactions = filterPreAuthPairs(rawTransactions);
 
   return finalTransactions.map(t => {
-    t.id = Utilities.base64Encode(t.bookingDate + t.title + t.originalAmountStr + "CB");
+    t.id = Utilities.base64Encode(t.bookingDate + (t.idTitle || t.title) + t.originalAmountStr + "CB");
     return t;
   });
 }
@@ -446,11 +451,15 @@ function parseMyInvestorCSV(rawString) {
       continue;
     }
 
+    // Bizum linked to this bank (CONFIG.BIZUM_BANK = "MyInvestor"): detected by the concept.
+    const bizumMI = _detectBizumByConcept("MyInvestor", rawConcept, amountFloat);
+
     rawTransactions.push({
       bookingDate:       cleanDate,
-      title:             rawConcept,
+      title:             bizumMI ? bizumMI.title : rawConcept,
+      idTitle:           rawConcept,                 // the id keeps using the ORIGINAL concept
       amount:            amountFloat,
-      isSpecial:         "no",
+      isSpecial:         bizumMI ? bizumMI.flag : "no",
       sourceBank:        "MyInvestor",
       originalAmountStr: cleanAmountStr
     });
@@ -459,7 +468,7 @@ function parseMyInvestorCSV(rawString) {
   const finalTransactions = filterPreAuthPairs(rawTransactions);
 
   return finalTransactions.map(t => {
-    t.id = Utilities.base64Encode(t.bookingDate + t.title + t.originalAmountStr + "MI");
+    t.id = Utilities.base64Encode(t.bookingDate + (t.idTitle || t.title) + t.originalAmountStr + "MI");
     return t;
   });
 }
@@ -502,4 +511,42 @@ function filterPreAuthPairs(transactions) {
   }
 
   return transactions.filter((_, index) => !indicesToSkip.has(index));
+}
+
+// ==========================================
+// BIZUM: BANK LINKED TO BIZUM (config.gs -> BIZUM_BANK)
+// ==========================================
+
+/**
+ * Bank where the user's Bizum is linked: "Trade Republic", "Caixabank" or "MyInvestor".
+ * An empty value ("") disables the Bizum reconciliation. If the setting does not
+ * exist in config.gs the old behaviour is kept ("Trade Republic").
+ */
+function getBizumBank() {
+  if (typeof CONFIG.BIZUM_BANK === "undefined") return "Trade Republic";
+  return String(CONFIG.BIZUM_BANK || "").trim();
+}
+
+/**
+ * Trade Republic identifies Bizums by transaction type (instant transfers). Caixabank and
+ * MyInvestor have no such field, so their Bizums are detected by the word "bizum" in the
+ * concept: positive amount = incoming, negative = outgoing.
+ * NOTE: the exact concept text of these two banks has not been verified with real exports.
+ * @returns {{flag: string, title: string}|null}
+ */
+function _detectBizumByConcept(bank, concept, amount) {
+  if (getBizumBank() !== bank) return null;
+  if (!/bizum/i.test(concept)) return null;
+  return {
+    flag:  amount > 0 ? "BizumInbound" : "BizumOutbound",
+    title: _bizumCounterparty(concept)
+  };
+}
+
+/** Best-effort counterparty name: "Bizum de Juan Pérez" -> "Juan Pérez". */
+function _bizumCounterparty(concept) {
+  const name = String(concept)
+    .replace(/^.*?bizum\s*(recibido|rebut|enviado|enviat)?\s*(de|a|from|to)?\s*[:\-]?\s*/i, "")
+    .trim();
+  return name || String(concept).trim();
 }

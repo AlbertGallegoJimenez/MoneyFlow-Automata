@@ -135,7 +135,8 @@ function getDashboardData() {
     total_transactions: transactions.length,
     transactions: transactions,
     portfolio_records: dataPort,
-    presupuesto: dataPresupuesto
+    presupuesto: dataPresupuesto,
+    config: getDashboardConfig()
   };
 }
 
@@ -144,6 +145,9 @@ function _extractBank(metodoPago) {
   if (m.includes("trade republic")) return "Trade Republic";
   if (m.includes("caixabank") || m.includes("cuenta principal")) return "Caixabank";
   if (m.includes("myinvestor")) return "MyInvestor";
+  // Legacy: processTransactionLogic gives MyInvestor rows the generic payment
+  // method "Tarjeta/Transferencia", which used to fall through to "Otro".
+  if (m.includes("tarjeta/transferencia")) return "MyInvestor";
   if (m.includes("binance")) return "Binance";
   if (m.includes("occident")) return "Occident";
   return "Otro";

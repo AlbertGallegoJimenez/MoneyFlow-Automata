@@ -309,8 +309,8 @@ function mapConceptToKeyword(conceptLower) {
     ["inditex",      "Ropa y calzado", "Ropa"],
 
     // Regalos y donaciones
-    ["colvin",                   "Regalos", "Cumpleaños"],
-    ["fundación francisco luzon","Regalos", "Donación"],
+    ["colvin",                   "Regalos y donaciones", "Cumpleaños"],
+    ["fundación francisco luzon","Regalos y donaciones", "Donación"],
 
     // MyInvestor
     ["ishares",            "Inversión y ahorro", "Fondo indexado"],
@@ -322,11 +322,30 @@ function mapConceptToKeyword(conceptLower) {
   ];
 
   for (const [keyword, categoria, subcategoria] of mappings) {
-    if (conceptLower.includes(keyword)) {
+    if (_keywordMatches(conceptLower, keyword)) {
       return { categoria, subcategoria };
     }
   }
   return null;
+}
+
+// Very short keywords that must match a COMPLETE word (e.g. the supermarket chain
+// "dia" must not match "diario" or "diamante"). Every other keyword may be a stem
+// ("supermerc" matches "supermercados", "gasolin" matches "gasolinera").
+const EXACT_WORD_KEYWORDS = ["dia"];
+
+/**
+ * Keyword match anchored at the START of a word, so "dia" no longer matches
+ * inside "media markt" or "comedia teatro". Keywords with spaces or punctuation
+ * ("core s&p 500", "apple.com/bill") work as phrases.
+ * @param {string} text    - Concept already in lower case
+ * @param {string} keyword - Keyword from the dictionary (lower case)
+ * @returns {boolean}
+ */
+function _keywordMatches(text, keyword) {
+  const esc = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const right = EXACT_WORD_KEYWORDS.includes(keyword) ? '([^a-záéíóúüñ0-9]|$)' : '';
+  return new RegExp('(^|[^a-záéíóúüñ0-9])' + esc + right).test(text);   // text is already lower case (as with includes())
 }
 
 // ==========================================

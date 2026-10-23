@@ -26,8 +26,6 @@ function initLogger() {
     filesProcessed:   [],          // Nombres de archivos procesados
     newRowsTotal:     0,           // Total de filas insertadas
     rowsByBank:       {},          // { "Caixabank": 3, "Trade Republic": 5, ... }
-    geminiResolved:   0,           // Pendientes resueltos por Gemini
-    geminiFailed:     0,           // Pendientes que Gemini no pudo resolver
     pendingRows:      [],          // { sheetRow, concepto } — los que siguen pendientes al final
     errors:           [],          // Errores críticos
     skippedFiles:     []           // Archivos con formato desconocido
@@ -41,7 +39,7 @@ function initLogger() {
 
 /**
  * Registra un evento genérico.
- * @param {"INFO"|"WARN"|"ERROR"|"GEMINI"|"SKIP"} level
+ * @param {"INFO"|"WARN"|"ERROR"|"SKIP"} level
  * @param {string} message
  */
 function logEvent(level, message) {
@@ -65,13 +63,16 @@ function logSkippedFile(fileName, firstLine) {
   _log("SKIP", `Formato desconocido: "${fileName}" | Primera línea: ${firstLine.substring(0, 100)}`);
 }
 
-/** Registra el resultado de Gemini. */
-function logGeminiResult(resolved, failed, pendingRows) {
+/** Registra las transacciones que siguen sin categoría al final de la ejecución. */
+function logPendingResult(pendingRows) {
   if (!_logSession) initLogger();
-  _logSession.geminiResolved = resolved;
-  _logSession.geminiFailed   = failed;
-  _logSession.pendingRows    = pendingRows || [];
-  _log("GEMINI", `Categorización Gemini: ${resolved} resueltos, ${failed} sin resolver`);
+  _logSession.pendingRows = pendingRows || [];
+  _log("INFO", `Pendientes de categorizar manualmente: ${_logSession.pendingRows.length}`);
+}
+
+/** @deprecated Alias antiguo (la categorización con Gemini ya no existe). Usa logPendingResult(). */
+function logGeminiResult(resolved, failed, pendingRows) {
+  logPendingResult(pendingRows);
 }
 
 /** Registra un error crítico. */
@@ -92,6 +93,11 @@ function logError(context, errorMessage) {
  */
 function finalizeLogger(recipientEmail) {
   if (!_logSession) return;
+
+  // Sin correo configurado (o con el valor de ejemplo): usamos el del propio usuario.
+  if (!recipientEmail || /YOUR_EMAIL/i.test(recipientEmail)) {
+    recipientEmail = Session.getEffectiveUser().getEmail();
+  }
 
   const endTime   = new Date();
   const duration  = Math.round((endTime - _logSession.startTime) / 1000);
@@ -186,7 +192,7 @@ function _buildEmailBody(dateStr, duration) {
   if (s.pendingRows.length > 0) {
     const ssUrl = SpreadsheetApp.getActiveSpreadsheet().getUrl();
     body += `PENDIENTES — REQUIEREN CATEGORIZACIÓN MANUAL\n${"─".repeat(30)}\n`;
-    body += `${s.pendingRows.length} transacción(es) sin categoría en la hoja "Gastos" (columna C = "Pendiente Categorizar").\n`;
+    body += `${s.pendingRows.length} transacción(es) sin categoría en la hoja "${CONFIG.CASH_FLOW_SHEET_NAME}" (columna C = "Pendiente Categorizar").\n`;
     body += `Una vez categorizadas a mano, el sistema las reconocerá automáticamente en el futuro.\n\n`;
     s.pendingRows.forEach((row, i) => {
       body += `  ${i + 1}. Fila ${row.sheetRow} — "${row.concepto}"\n`;

@@ -246,7 +246,10 @@ function parseTradeRepublicCSV(csvString) {
     const counterpartyName = col.counterpartyName !== -1 ? (row[col.counterpartyName] || "").trim() : "";
 
     // Filtro de transferencias propias
-    if (CONFIG.MY_NAMES.some(n => description.includes(n) || counterpartyName.includes(n))) continue;
+    // Nota: en domiciliaciones (TRANSFER_DIRECT_DEBIT_INBOUND) TR pone el nombre del
+    // titular en counterparty_name, no el del acreedor, por lo que lo excluimos del filtro.
+    const isDirectDebit = type.toUpperCase() === "TRANSFER_DIRECT_DEBIT_INBOUND";
+    if (CONFIG.MY_NAMES.some(n => description.includes(n) || (!isDirectDebit && counterpartyName.includes(n)))) continue;
 
     // Flujo de caja neto
     const netAmount = amount + fee + tax;
@@ -256,7 +259,20 @@ function parseTradeRepublicCSV(csvString) {
     const descUpper = description.toUpperCase();
 
     let specialFlag = "no";
-    let finalTitle  = name || description;
+
+    // --- DOMICILIACIONES: el campo "name" de TR a veces contiene el nombre del propio
+    //     titular (en lugar del beneficiario). En esos casos usamos "description" para
+    //     extraer el nombre real del comercio/servicio.
+    const nameIsOwner = name && CONFIG.MY_NAMES.some(n => name.toLowerCase().includes(n.toLowerCase()));
+    let resolvedName = name;
+    if (nameIsOwner && description) {
+      // La description de las domiciliaciones sigue el patron:
+      // "Sepa Direct Debit transfer to <BENEFICIARIO> - ..."
+      const ddMatch = description.match(/^Sepa Direct Debit transfer to ([^-]+)/i);
+      resolvedName = ddMatch ? ddMatch[1].trim() : description;
+    }
+
+    let finalTitle  = resolvedName || description;
 
     // --- BIZUM ENTRANTE (only if Trade Republic is the bank linked to Bizum: CONFIG.BIZUM_BANK) ---
     const trHasBizum = (getBizumBank() === "Trade Republic");
